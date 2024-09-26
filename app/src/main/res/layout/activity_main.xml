@@ -19,8 +19,8 @@
             android:id="@+id/Logo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="SplitUp"
             android:layout_marginStart="10dp"
-            android:text="SlitUp"
             android:textColor="#DDFFFFFF"
             android:textSize="45sp" />
 
@@ -77,8 +77,9 @@
         android:id="@+id/buttonLayout"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:background="@drawable/boton_circular"
+        android:backgroundTint="#4E00CC"
         android:text="+"
+        android:textColor="@color/white"
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

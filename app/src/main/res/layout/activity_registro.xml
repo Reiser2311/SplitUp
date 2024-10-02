@@ -36,74 +36,50 @@
         android:textSize="30sp"
         android:textStyle="bold"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:layout_marginStart="40dp"
-        android:textSize="20sp"
-        android:text="Nombre:"/>
-
     <EditText
         android:id="@+id/editTextNombre"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:hint="Nombre"
         android:inputType="textPersonName"
         android:layout_marginStart="40dp"
         android:layout_marginEnd="40dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:textColor="@color/white"
-        android:layout_marginStart="40dp"
-        android:textSize="20sp"
-        android:text="Correo electrónico:"/>
 
     <EditText
         android:id="@+id/editTextCorreo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textColorHint="@color/white"
         android:textColor="@color/white"
         android:inputType="textEmailAddress"
+        android:hint="Correo electrónico"
         android:layout_marginStart="40dp"
         android:layout_marginEnd="40dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="40dp"
-        android:textSize="20sp"
-        android:text="Contraseña:"/>
 
     <EditText
         android:id="@+id/editTextContrasenya"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:layout_marginTop="16dp"
         android:inputType="textPassword"
+        android:hint="Contraseña"
         android:layout_marginStart="40dp"
         android:layout_marginEnd="40dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        android:layout_marginStart="40dp"
-        android:text="Confirmar contraseña:"/>
 
     <EditText
         android:id="@+id/editTextConfirmar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
+        android:textColorHint="@color/white"
         android:inputType="textPassword"
+        android:hint="Confirmar contraseña"
+        android:layout_marginTop="16dp"
         android:layout_marginStart="40dp"
         android:layout_marginEnd="40dp"/>
 

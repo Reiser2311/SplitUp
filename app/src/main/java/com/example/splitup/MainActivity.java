@@ -64,8 +64,6 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(miToolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
-        actualizarLista(lista, miLista);
-
 
     }
 

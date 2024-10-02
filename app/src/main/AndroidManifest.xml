@@ -13,6 +13,9 @@
         android:theme="@style/Theme.SplitUp"
         tools:targetApi="31">
         <activity
+            android:name=".Split"
+            android:exported="false" />
+        <activity
             android:name=".SplitNuevoEditar"
             android:exported="false" />
         <activity

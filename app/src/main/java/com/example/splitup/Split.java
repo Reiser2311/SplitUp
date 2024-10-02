@@ -6,54 +6,28 @@ import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity {
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_inicio_sesion, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.InicioSesion) {
-            Intent intent = new Intent(this, InicioSesion.class);
-            startActivity(intent);
-        } else if (id == R.id.Registro) {
-            Intent intent = new Intent(this, Registro.class);
-            startActivity(intent);
-        }
-
-        return true;
-    }
+public class Split extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_split);
 
         TextView logo = findViewById(R.id.Logo);
-        Toolbar miToolbar= findViewById(R.id.miToolbar);
-        ListView miLista = findViewById(R.id.listViewSplits);
-        ArrayList<String> lista = new ArrayList<>();
-        Button nuevoSplit = findViewById(R.id.botonNuevosSplit);
+        Toolbar miToolbar = findViewById(R.id.miToolbar);
+        Button botonNuevosSplit = findViewById(R.id.botonNuevosSplit);
+
 
         String text = "SplitUp";
         SpannableString spannable = new SpannableString(text);
@@ -64,12 +38,13 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(miToolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
-        nuevoSplit.setOnClickListener(new View.OnClickListener() {
+        botonNuevosSplit.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, Split.class);
+                Intent intent = new Intent(Split.this, SplitNuevoEditar.class);
                 startActivity(intent);
             }
-            });
+        });
     }
 }

@@ -1,5 +1,6 @@
 package com.example.splitup;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Spannable;
@@ -7,12 +8,17 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
@@ -28,9 +34,11 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.InicioSesion) {
-
+            Intent intent = new Intent(this, InicioSesion.class);
+            startActivity(intent);
         } else if (id == R.id.Registro) {
-
+            Intent intent = new Intent(this, Registro.class);
+            startActivity(intent);
         }
 
         return true;
@@ -43,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
 
         TextView logo = findViewById(R.id.Logo);
         Toolbar miToolbar= findViewById(R.id.miToolbar);
+        ListView miLista = findViewById(R.id.listViewSplits);
+        ArrayList<String> lista = new ArrayList<>();
+        Button nuevoSplit = findViewById(R.id.botonNuevosSplit);
 
         String text = "SplitUp";
         SpannableString spannable = new SpannableString(text);
@@ -53,6 +64,18 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(miToolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
+        actualizarLista(lista, miLista);
 
+
+    }
+
+    private void actualizarLista(ArrayList<String> lista, ListView miLista) {
+        if (lista.isEmpty()) {
+            miLista.setVisibility(View.GONE);
+        } else {
+            miLista.setVisibility(View.VISIBLE);
+            ArrayAdapter<String> adaptador = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, lista);
+            miLista.setAdapter(adaptador);
+        }
     }
 }

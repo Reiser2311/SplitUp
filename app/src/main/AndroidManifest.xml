@@ -13,7 +13,13 @@
         android:theme="@style/Theme.SplitUp"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity2"
+            android:name=".SplitNuevoEditar"
+            android:exported="false" />
+        <activity
+            android:name=".InicioSesion"
+            android:exported="false" />
+        <activity
+            android:name=".Registro"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

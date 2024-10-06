@@ -1,6 +1,7 @@
 package com.example.splitup;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Spannable;
@@ -9,7 +10,6 @@ import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -23,9 +23,20 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
+    TextView logo;
+    Toolbar miToolbar;
+    ListView miLista;
+    ArrayList<String> lista;
+    Button nuevoSplit;
+    Boolean sesionIniciada;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_inicio_sesion, menu);
+        if (!sesionIniciada) {
+            getMenuInflater().inflate(R.menu.menu_inicio_sesion, menu);
+        } else {
+            getMenuInflater().inflate(R.menu.menu_cerrar_sesion, menu);
+        }
         return true;
     }
 
@@ -39,9 +50,24 @@ public class MainActivity extends AppCompatActivity {
         } else if (id == R.id.Registro) {
             Intent intent = new Intent(this, Registro.class);
             startActivity(intent);
+        } else if (id == R.id.CerrarSesion) {
+            sesionIniciada = false;
+            SharedPreferences sharedPreferences = getSharedPreferences("InicioSesion", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.remove("sesionIniciada");
+            editor.apply();
+            recreate();
         }
 
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPreferences preferences = getSharedPreferences("InicioSesion", MODE_PRIVATE);
+        sesionIniciada = preferences.getBoolean("sesionIniciada", false);
+        invalidateOptionsMenu();
     }
 
     @Override
@@ -49,11 +75,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TextView logo = findViewById(R.id.Logo);
-        Toolbar miToolbar= findViewById(R.id.miToolbar);
-        ListView miLista = findViewById(R.id.listViewSplits);
-        ArrayList<String> lista = new ArrayList<>();
-        Button nuevoSplit = findViewById(R.id.botonNuevosSplit);
+        logo = findViewById(R.id.Logo);
+        miToolbar= findViewById(R.id.miToolbar);
+        miLista = findViewById(R.id.listViewSplits);
+        lista = new ArrayList<>();
+        nuevoSplit = findViewById(R.id.botonNuevosSplit);
+        sesionIniciada = false;
 
         String text = "SplitUp";
         SpannableString spannable = new SpannableString(text);
@@ -67,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         nuevoSplit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, Split.class);
+                Intent intent = new Intent(MainActivity.this, SplitNuevoEditar.class);
                 startActivity(intent);
             }
             });

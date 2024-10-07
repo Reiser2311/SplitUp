@@ -16,7 +16,7 @@
             android:name=".Split"
             android:exported="false" />
         <activity
-            android:name=".SplitNuevoEditar"
+            android:name=".SplitNuevo"
             android:exported="false" />
         <activity
             android:name=".InicioSesion"

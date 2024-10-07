@@ -40,19 +40,19 @@
         android:id="@+id/editTextNombre"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:textColorHint="@color/white"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
         android:hint="Nombre"
         android:inputType="textPersonName"
-        android:layout_marginStart="40dp"
-        android:layout_marginEnd="40dp"/>
+        android:textColor="@color/white"
+        android:textColorHint="@color/hint" />
 
     <EditText
         android:id="@+id/editTextCorreo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:textColorHint="@color/white"
+        android:textColorHint="@color/hint"
         android:textColor="@color/white"
         android:inputType="textEmailAddress"
         android:hint="Correo electrónico"
@@ -64,7 +64,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
-        android:textColorHint="@color/white"
+        android:textColorHint="@color/hint"
         android:layout_marginTop="16dp"
         android:inputType="textPassword"
         android:hint="Contraseña"
@@ -75,8 +75,9 @@
         android:id="@+id/editTextConfirmar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:autofillHints="erteg"
         android:textColor="@color/white"
-        android:textColorHint="@color/white"
+        android:textColorHint="@color/hint"
         android:inputType="textPassword"
         android:hint="Confirmar contraseña"
         android:layout_marginTop="16dp"
@@ -91,6 +92,7 @@
         android:layout_marginTop="24dp"
         android:textSize="20sp"
         android:backgroundTint="@color/boton"
-        android:text="Registrarse"/>
+        android:text="Registrarse"
+        android:textColor="@color/white"/>
 
 </LinearLayout>

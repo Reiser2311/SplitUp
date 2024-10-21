@@ -67,7 +67,8 @@
         android:id="@+id/listViewParticipantes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:layout_weight="1"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -101,6 +102,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="24dp"
+        android:layout_marginBottom="10dp"
         android:textSize="20sp"
         android:backgroundTint="@color/boton"
         android:text="Crear Split"

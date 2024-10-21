@@ -14,7 +14,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import java.util.Objects;
 
-public class PagoNuevo extends AppCompatActivity {
+public class PagoNuevoEditar extends AppCompatActivity {
 
     TextView logo;
     Toolbar miToolbar;

@@ -64,7 +64,7 @@
         android:layout_marginStart="20dp"/>
 
     <EditText
-        android:id="@+id/edtxtImporte"
+        android:id="@+id/edtxtImportePago"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -83,6 +83,7 @@
         android:layout_marginStart="20dp"/>
 
     <Spinner
+        android:id="@+id/spinnerMiembrosPago"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
@@ -101,20 +102,22 @@
 
     <ListView
         android:id="@+id/listaDivir"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"/>
+        android:layout_marginEnd="20dp"
+        android:layout_weight="1"/>
 
     <Button
         android:id="@+id/buttonCrearPago"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:textSize="20sp"
         android:backgroundTint="@color/boton"
-        android:text="Crear Split"
+        android:text="Crear Pago"
         android:textColor="@color/white"/>
 
 </LinearLayout>

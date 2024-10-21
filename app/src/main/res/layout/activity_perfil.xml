@@ -7,12 +7,12 @@
     android:background="@color/black">
 
     <androidx.appcompat.widget.Toolbar
-            android:id="@+id/miToolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:elevation="4dp"
-            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-            android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:id="@+id/miToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         android:layout_marginBottom="24dp">
 
         <TextView
@@ -31,68 +31,67 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="24dp"
-        android:text="Registro de Usuario"
+        android:text="Perfil"
         android:textColor="@color/white"
         android:textSize="30sp"
         android:textStyle="bold"/>
 
     <EditText
-        android:id="@+id/edtxtNombreRegistro"
+        android:id="@+id/editTextNombrePerfil"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
-        android:layout_marginEnd="40dp"
-        android:hint="Nombre"
-        android:inputType="textPersonName"
-        android:textColor="@color/white"
-        android:textColorHint="@color/hint" />
-
-    <EditText
-        android:id="@+id/edtxtCorreoRegistro"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:textColorHint="@color/hint"
         android:textColor="@color/white"
         android:inputType="textEmailAddress"
-        android:hint="Correo electrónico"
+        android:hint="Nombre de usuario"
+        android:textColorHint="@color/hint"
         android:layout_marginStart="40dp"
         android:layout_marginEnd="40dp"/>
 
     <EditText
-        android:id="@+id/edtxtContrasenyaRegistro"
+        android:id="@+id/editTextCorreoPerfil"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
+        android:inputType="textPassword"
+        android:hint="Correo electronico"
         android:textColorHint="@color/hint"
         android:layout_marginTop="16dp"
-        android:inputType="textPassword"
-        android:hint="Contraseña"
         android:layout_marginStart="40dp"
         android:layout_marginEnd="40dp"/>
 
     <EditText
-        android:id="@+id/edtxtConfirmarContrasenyaRegistro"
+        android:id="@+id/editTextContrasenyaPerfil"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:autofillHints="erteg"
         android:textColor="@color/white"
+        android:inputType="textPassword"
+        android:hint="Contraseña (dejar vacio para no cambiar)"
         android:textColorHint="@color/hint"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"/>
+
+    <EditText
+        android:id="@+id/editTextConfirmarContrasenyaPerfil"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
         android:inputType="textPassword"
         android:hint="Confirmar contraseña"
+        android:textColorHint="@color/hint"
         android:layout_marginTop="16dp"
         android:layout_marginStart="40dp"
         android:layout_marginEnd="40dp"/>
 
     <Button
-        android:id="@+id/buttonRegistro"
+        android:id="@+id/buttonIniciarSesion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="24dp"
         android:textSize="20sp"
         android:backgroundTint="@color/boton"
-        android:text="Registrarse"
+        android:text="Actualizar perfil"
         android:textColor="@color/white"/>
 
 </LinearLayout>

@@ -37,8 +37,8 @@ public class InicioSesion extends AppCompatActivity {
         logo = findViewById(R.id.Logo);
         miToolbar= findViewById(R.id.miToolbar);
         botonInicioSesion = findViewById(R.id.buttonIniciarSesion);
-        editTextCorreo = findViewById(R.id.editTextCorreo);
-        editTextContrasenya = findViewById(R.id.editTextContrasenya);
+        editTextCorreo = findViewById(R.id.editTextSesionCorreo);
+        editTextContrasenya = findViewById(R.id.editTextSesionContrasenya);
 
         String text = "SplitUp";
         SpannableString spannable = new SpannableString(text);
@@ -64,7 +64,7 @@ public class InicioSesion extends AppCompatActivity {
                     editTextCorreo.setError("El correo electrónico no puede estar vacío");
                 } else if (editTextContrasenya.getText().toString().isEmpty()) {
                     editTextContrasenya.setError("La contraseña no puede estar vacía");
-                } else if (!editTextCorreo.getText().toString().equals("*@gmail.com")) {
+                } else if (!editTextCorreo.getText().toString().endsWith("@gmail.com")) {
                     editTextCorreo.setError("El correo electrónico no es válido");
                 }
             }

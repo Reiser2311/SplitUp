@@ -7,6 +7,8 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -17,7 +19,7 @@ import androidx.appcompat.widget.Toolbar;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class Split extends AppCompatActivity {
+public class Pagos extends AppCompatActivity {
 
     TextView logo;
     Toolbar miToolbar;
@@ -28,7 +30,7 @@ public class Split extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_split);
+        setContentView(R.layout.activity_pagos);
 
         logo = findViewById(R.id.Logo);
         miToolbar= findViewById(R.id.miToolbar);
@@ -46,8 +48,20 @@ public class Split extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
         nuevoPago.setOnClickListener(v -> {
-            Intent intent = new Intent(Split.this, SplitNuevo.class);
+            Intent intent = new Intent(Pagos.this, PagoNuevo.class);
             startActivity(intent);
+        });
+
+        lista.add("Pago 1");
+        ArrayAdapter<String> adaptador = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, lista);
+        miLista.setAdapter(adaptador);
+
+        miLista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(Pagos.this, PagoNuevo.class);
+                startActivity(intent);
+            }
         });
     }
 }

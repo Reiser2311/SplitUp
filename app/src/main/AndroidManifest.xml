@@ -16,10 +16,13 @@
             android:name=".Perfil"
             android:exported="false" />
         <activity
-            android:name=".Split"
+            android:name=".Pagos"
             android:exported="false" />
         <activity
             android:name=".SplitNuevo"
+            android:exported="false" />
+        <activity
+            android:name=".PagoNuevo"
             android:exported="false" />
         <activity
             android:name=".InicioSesion"
@@ -28,7 +31,7 @@
             android:name=".Registro"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".Splits"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

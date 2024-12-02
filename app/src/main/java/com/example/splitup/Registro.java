@@ -1,7 +1,6 @@
 package com.example.splitup;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Spannable;
@@ -12,12 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import java.util.Objects;
 
@@ -56,7 +51,7 @@ public class Registro extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!editTextCorreo.getText().toString().isEmpty() && !editTextContrasenya.getText().toString().isEmpty() && editTextCorreo.getText().toString().endsWith("@gmail.com")) {
-                    Intent intent = new Intent(Registro.this, MainActivity.class);
+                    Intent intent = new Intent(Registro.this, Splits.class);
                     startActivity(intent);
                 } else if (editTextCorreo.getText().toString().isEmpty()) {
                     editTextCorreo.setError("El correo electrónico no puede estar vacío");

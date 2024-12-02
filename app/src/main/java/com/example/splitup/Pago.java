@@ -38,12 +38,4 @@ public class Pago {
     public void setSplitId(int splitId) {
         this.splitId = splitId;
     }
-
-    public int getPagadorId() {
-        return pagadorId;
-    }
-
-    public void setPagadorId(int pagadorId) {
-        this.pagadorId = pagadorId;
-    }
 }

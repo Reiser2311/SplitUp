@@ -1,6 +1,6 @@
 package com.example.splitup;
 
-public class Split {
+public class SplitObjeto {
     private int id;
     private String nombre;
     private int creadorId;

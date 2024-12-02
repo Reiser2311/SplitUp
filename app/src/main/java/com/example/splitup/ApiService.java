@@ -10,16 +10,16 @@ import retrofit2.http.Path;
 
 public interface ApiService {
     @POST("usuarios")
-    Call<Usuario> crearUsuario(@Body Usuario usuario);
+    Call<UsuarioObjeto> crearUsuario(@Body UsuarioObjeto usuarioObjeto);
 
     @GET("usuarios/{id}")
-    Call<Usuario> obtenerUsuario(@Path("id") int id);
+    Call<UsuarioObjeto> obtenerUsuario(@Path("id") int id);
 
     @PUT("usuarios/{id}")
-    Call<Usuario> actualizarUsuario(@Path("id") int id, @Body Usuario usuario);
+    Call<UsuarioObjeto> actualizarUsuario(@Path("id") int id, @Body UsuarioObjeto usuarioObjeto);
 
     @DELETE("usuarios/{id}")
     Call<Void> eliminarUsuario(@Path("id") int id);
 
-    //Hacer lo mismo con Split y Pago
+    //Hacer lo mismo con SplitObjeto y PagoObjeto
 }

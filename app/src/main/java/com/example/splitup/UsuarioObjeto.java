@@ -1,6 +1,6 @@
 package com.example.splitup;
 
-public class Usuario {
+public class UsuarioObjeto {
     private int id;
     private String nombre;
     private String email;

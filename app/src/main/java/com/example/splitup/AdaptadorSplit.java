@@ -17,7 +17,7 @@ public class AdaptadorSplit extends ArrayAdapter<Datos> {
     private ArrayList<Datos> datos;
 
     public AdaptadorSplit(Context context, ArrayList<Datos> datos){
-        super(context, R.layout.vista_lista_splits, datos);
+        super(context, R.layout.vista_lista_pagos, datos);
         this.datos = datos;
     }
 
@@ -26,7 +26,7 @@ public class AdaptadorSplit extends ArrayAdapter<Datos> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
         LayoutInflater mostrado = LayoutInflater.from(getContext());
-        View elemento = mostrado.inflate(R.layout.vista_lista_splits, parent, false);
+        View elemento = mostrado.inflate(R.layout.vista_lista_pagos, parent, false);
 
         TextView nombre = elemento.findViewById(R.id.txtNombre);
         TextView pagadoPor = elemento.findViewById(R.id.txtPagadoPor);

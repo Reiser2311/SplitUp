@@ -16,24 +16,19 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class SplitNuevoEditar extends AppCompatActivity {
+public class SplitNuevo extends AppCompatActivity {
 
     TextView logo;
     Toolbar miToolbar;
     ListView listViewParticipantes;
-    Button buttonAñadirParticipante;
+    Button buttonAnyadirParticipante;
     Button buttonCrearSplit;
     EditText edtxtNombreParticipante;
     ArrayList<String> participantes;
@@ -55,7 +50,7 @@ public class SplitNuevoEditar extends AppCompatActivity {
         if (participantes.isEmpty()) {
             listViewParticipantes.setVisibility(View.GONE);
         } else {
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(SplitNuevoEditar.this, android.R.layout.simple_list_item_1, participantes);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(SplitNuevo.this, android.R.layout.simple_list_item_1, participantes);
             listViewParticipantes.setAdapter(adapter);
         }
         return super.onContextItemSelected(item);
@@ -64,12 +59,12 @@ public class SplitNuevoEditar extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_split_nuevo_editar);
+        setContentView(R.layout.activity_split_nuevo);
 
         logo = findViewById(R.id.Logo);
         miToolbar= findViewById(R.id.miToolbar);
         listViewParticipantes = findViewById(R.id.listViewParticipantes);
-        buttonAñadirParticipante = findViewById(R.id.buttonAñadirParticipante);
+        buttonAnyadirParticipante = findViewById(R.id.buttonAnyadirParticipante);
         buttonCrearSplit = findViewById(R.id.buttonCrearSplit);
         edtxtNombreParticipante = findViewById(R.id.edtxtNombreParticipante);
 
@@ -85,7 +80,7 @@ public class SplitNuevoEditar extends AppCompatActivity {
         setSupportActionBar(miToolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
-        buttonAñadirParticipante.setOnClickListener(new View.OnClickListener() {
+        buttonAnyadirParticipante.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -94,7 +89,7 @@ public class SplitNuevoEditar extends AppCompatActivity {
                 if (!nombreParticipante.isEmpty()) {
                     listViewParticipantes.setVisibility(View.VISIBLE);
                     participantes.add(nombreParticipante);
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(SplitNuevoEditar.this, android.R.layout.simple_list_item_1, participantes);
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(SplitNuevo.this, android.R.layout.simple_list_item_1, participantes);
                     listViewParticipantes.setAdapter(adapter);
                     edtxtNombreParticipante.setText("");
                 }

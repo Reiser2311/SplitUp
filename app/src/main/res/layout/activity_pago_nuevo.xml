@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="24dp"
-        android:text="Nuevo Split"
+        android:text="Nuevo Pago"
         android:textColor="@color/white"
         android:textSize="30sp"
         android:textStyle="bold"/>
@@ -44,11 +44,11 @@
         android:layout_marginStart="20dp"/>
 
     <EditText
-        android:id="@+id/editTextNombre"
+        android:id="@+id/editTextNombrePago"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
-        android:textColorHint="@color/white"
+        android:textColorHint="#838487"
         android:hint="Por ejemplo, compra supermercado"
         android:inputType="textPersonName"
         android:layout_marginStart="20dp"
@@ -57,50 +57,67 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Participantes"
+        android:text="Importe"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="20dp"/>
+
+    <EditText
+        android:id="@+id/edtxtImportePago"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:inputType="numberDecimal"
+        android:hint="0.00"
+        android:textColorHint="#838487"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pagado por"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="20dp"/>
+
+    <Spinner
+        android:id="@+id/spinnerMiembrosPago"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dividir"
         android:textColor="@color/white"
         android:textSize="20sp"
         android:layout_marginTop="16dp"
         android:layout_marginStart="20dp"/>
 
     <ListView
-        android:id="@+id/listViewParticipantes"
+        android:id="@+id/listaDivir"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center">
-
-        <EditText
-            android:id="@+id/edtxtNombreParticipante"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_weight="1"/>
-
-        <Button
-            android:id="@+id/buttonAñadirParticipante"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Añadir"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:backgroundTint="@color/boton"/>
-
-    </LinearLayout>
+        android:layout_height="match_parent"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_weight="1"/>
 
     <Button
-        android:id="@+id/buttonCrearSplit"
+        android:id="@+id/buttonCrearPago"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:textSize="20sp"
         android:backgroundTint="@color/boton"
-        android:text="Crear Split"/>
+        android:text="Crear Pago"
+        android:textColor="@color/white"/>
 
 </LinearLayout>

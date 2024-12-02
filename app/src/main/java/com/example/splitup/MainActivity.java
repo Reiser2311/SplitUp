@@ -91,12 +91,9 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(miToolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
-        nuevoSplit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, SplitNuevoEditar.class);
-                startActivity(intent);
-            }
-            });
+        nuevoSplit.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, SplitNuevo.class);
+            startActivity(intent);
+        });
     }
 }

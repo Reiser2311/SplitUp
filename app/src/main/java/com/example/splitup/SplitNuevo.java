@@ -1,5 +1,6 @@
 package com.example.splitup;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Spannable;
@@ -96,6 +97,13 @@ public class SplitNuevo extends AppCompatActivity {
             }
         });
 
+        buttonCrearSplit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SplitNuevo.this, Splits.class);
+                startActivity(intent);
+            }
+        });
     }
 }
 

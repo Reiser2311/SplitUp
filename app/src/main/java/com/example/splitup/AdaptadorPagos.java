@@ -12,11 +12,11 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
-public class AdaptadorSplit extends ArrayAdapter<Datos> {
+public class AdaptadorPagos extends ArrayAdapter<Datos> {
 
     private ArrayList<Datos> datos;
 
-    public AdaptadorSplit(Context context, ArrayList<Datos> datos){
+    public AdaptadorPagos(Context context, ArrayList<Datos> datos){
         super(context, R.layout.vista_lista_pagos, datos);
         this.datos = datos;
     }

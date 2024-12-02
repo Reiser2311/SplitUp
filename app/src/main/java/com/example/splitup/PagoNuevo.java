@@ -1,10 +1,12 @@
 package com.example.splitup;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -14,7 +16,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import java.util.Objects;
 
-public class PagoNuevoEditar extends AppCompatActivity {
+public class PagoNuevo extends AppCompatActivity {
 
     TextView logo;
     Toolbar miToolbar;
@@ -39,5 +41,13 @@ public class PagoNuevoEditar extends AppCompatActivity {
 
         setSupportActionBar(miToolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+
+        buttonCrearPago.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(PagoNuevo.this, Pagos.class);
+                startActivity(intent);
+            }
+        });
     }
 }

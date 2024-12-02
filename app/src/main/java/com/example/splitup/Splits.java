@@ -10,6 +10,8 @@ import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -21,7 +23,7 @@ import androidx.appcompat.widget.Toolbar;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity {
+public class Splits extends AppCompatActivity {
 
     TextView logo;
     Toolbar miToolbar;
@@ -73,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_splits);
 
         logo = findViewById(R.id.Logo);
         miToolbar= findViewById(R.id.miToolbar);
@@ -91,9 +93,21 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(miToolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
+        lista.add("Split 1");
+        ArrayAdapter<String> adaptador = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, lista);
+        miLista.setAdapter(adaptador);
+
         nuevoSplit.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, SplitNuevo.class);
+            Intent intent = new Intent(Splits.this, SplitNuevo.class);
             startActivity(intent);
+        });
+
+        miLista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(Splits.this, Pagos.class);
+                startActivity(intent);
+            }
         });
     }
 }

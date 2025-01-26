@@ -96,7 +96,7 @@ public class Splits extends AppCompatActivity {
         setSupportActionBar(miToolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
-        lista.add("ObjetoSplit 1");
+        lista.add("Split de ejemplo");
         ArrayAdapter<String> adaptador = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, lista);
         miLista.setAdapter(adaptador);
 

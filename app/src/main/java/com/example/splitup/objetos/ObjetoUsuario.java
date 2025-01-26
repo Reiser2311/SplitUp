@@ -22,11 +22,11 @@ public class ObjetoUsuario {
         this.nombre = nombre;
     }
 
-    public String getEmail() {
+    public String getCorreo() {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setCorreo(String email) {
         this.email = email;
     }
 

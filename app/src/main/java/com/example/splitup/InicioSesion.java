@@ -48,7 +48,22 @@ public class InicioSesion extends AppCompatActivity {
         botonInicioSesion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!editTextCorreo.getText().toString().isEmpty() && !editTextContrasenya.getText().toString().isEmpty() && editTextCorreo.getText().toString().endsWith("@gmail.com")) {
+                String correo = editTextCorreo.getText().toString();
+                String contrasenya = editTextContrasenya.getText().toString();
+
+                String[] dominiosValidos = {
+                        "@gmail.com", "@hotmail.com", "@outlook.com", "@yahoo.com", "@live.com", "@icloud.com", "@gmx.com", "@mail.com", "@protonmail.com", "@zoho.com"
+                };
+
+                boolean esCorreoValido = false;
+                for (String dominio : dominiosValidos) {
+                    if (correo.endsWith(dominio)) {
+                        esCorreoValido = true;
+                        break;
+                    }
+                }
+
+                if (!correo.isEmpty() && !contrasenya.isEmpty() && esCorreoValido) {
                     SharedPreferences preferences = getSharedPreferences("InicioSesion", MODE_PRIVATE);
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putBoolean("sesionIniciada", true);
@@ -56,11 +71,11 @@ public class InicioSesion extends AppCompatActivity {
 
                     Intent intent = new Intent(InicioSesion.this, Splits.class);
                     startActivity(intent);
-                } else if (editTextCorreo.getText().toString().isEmpty()) {
+                } else if (correo.isEmpty()) {
                     editTextCorreo.setError("El correo electrónico no puede estar vacío");
-                } else if (editTextContrasenya.getText().toString().isEmpty()) {
+                } else if (contrasenya.isEmpty()) {
                     editTextContrasenya.setError("La contraseña no puede estar vacía");
-                } else if (!editTextCorreo.getText().toString().endsWith("@gmail.com")) {
+                } else if (!esCorreoValido) {
                     editTextCorreo.setError("El correo electrónico no es válido");
                 }
             }

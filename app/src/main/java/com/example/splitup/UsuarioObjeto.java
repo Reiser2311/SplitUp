@@ -4,7 +4,7 @@ public class UsuarioObjeto {
     private int id;
     private String nombre;
     private String email;
-    private String contraseña;
+    private String contrasenya;
 
     public int getId() {
         return id;
@@ -30,11 +30,11 @@ public class UsuarioObjeto {
         this.email = email;
     }
 
-    public String getContraseña() {
-        return contraseña;
+    public String getContrasenya() {
+        return contrasenya;
     }
 
-    public void setContraseña(String contraseña) {
-        this.contraseña = contraseña;
+    public void setContrasenya(String contrasenya) {
+        this.contrasenya = contrasenya;
     }
 }

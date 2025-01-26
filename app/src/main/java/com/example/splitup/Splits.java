@@ -59,6 +59,9 @@ public class Splits extends AppCompatActivity {
             editor.remove("sesionIniciada");
             editor.apply();
             recreate();
+        } else if (id == R.id.Perfil) {
+            Intent intent = new Intent(this, Perfil.class);
+            startActivity(intent);
         }
 
         return true;

@@ -52,7 +52,7 @@ public class Pagos extends AppCompatActivity {
             startActivity(intent);
         });
 
-        lista.add("PagoObjeto 1");
+        lista.add("ObjetoPago 1");
         ArrayAdapter<String> adaptador = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, lista);
         miLista.setAdapter(adaptador);
 

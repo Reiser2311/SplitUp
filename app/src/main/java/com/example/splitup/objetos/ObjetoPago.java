@@ -1,6 +1,6 @@
-package com.example.splitup;
+package com.example.splitup.objetos;
 
-public class PagoObjeto {
+public class ObjetoPago {
     private int id;
     private double cantidad;
     private String descripcion;

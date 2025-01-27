@@ -8,6 +8,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.splitup.repositorios.RepositorioUsuario;
+
 public class Perfil extends AppCompatActivity {
 
     @Override
@@ -15,6 +17,6 @@ public class Perfil extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfil);
 
-
+        RepositorioUsuario repositorioUsuario = new RepositorioUsuario();
     }
 }

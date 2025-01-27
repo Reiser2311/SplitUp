@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+<!--        Cambiar IP a la hora de presentar-->
+        <domain includeSubdomains="true">192.168.68.117</domain>
+    </domain-config>
+</network-security-config>

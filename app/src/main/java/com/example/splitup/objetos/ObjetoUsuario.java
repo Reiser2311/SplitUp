@@ -3,7 +3,7 @@ package com.example.splitup.objetos;
 public class ObjetoUsuario {
     private int id;
     private String nombre;
-    private String email;
+    private String correo;
     private String contrasenya;
 
     public int getId() {
@@ -23,11 +23,11 @@ public class ObjetoUsuario {
     }
 
     public String getCorreo() {
-        return email;
+        return correo;
     }
 
     public void setCorreo(String email) {
-        this.email = email;
+        this.correo = email;
     }
 
     public String getContrasenya() {

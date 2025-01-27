@@ -11,11 +11,19 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.splitup.objetos.ObjetoUsuario;
+import com.example.splitup.repositorios.RepositorioUsuario;
+
 import java.util.Objects;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class InicioSesion extends AppCompatActivity {
 
@@ -64,13 +72,38 @@ public class InicioSesion extends AppCompatActivity {
                 }
 
                 if (!correo.isEmpty() && !contrasenya.isEmpty() && esCorreoValido) {
-                    SharedPreferences preferences = getSharedPreferences("InicioSesion", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.putBoolean("sesionIniciada", true);
-                    editor.apply();
+                    RepositorioUsuario repositorioUsuario = new RepositorioUsuario();
 
-                    Intent intent = new Intent(InicioSesion.this, Splits.class);
-                    startActivity(intent);
+                    repositorioUsuario.obtenerUsuario(correo, new Callback<ObjetoUsuario>() {
+                        @Override
+                        public void onResponse(Call<ObjetoUsuario> call, Response<ObjetoUsuario> response) {
+                            if (response.isSuccessful() && response.body() != null) {
+                                ObjetoUsuario usuario = response.body();
+                                Toast.makeText(InicioSesion.this, "Bienvenido, " + usuario.getNombre(), Toast.LENGTH_SHORT).show();
+                                SharedPreferences preferences = getSharedPreferences("InicioSesion", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = preferences.edit();
+                                editor.putBoolean("sesionIniciada", true);
+                                editor.putString("correo", correo);
+                                editor.apply();
+
+                                Intent intent = new Intent(InicioSesion.this, Splits.class);
+                                startActivity(intent);
+                            } else if (response.body() == null){
+                                Toast.makeText(InicioSesion.this, "Usuario no registrado", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(InicioSesion.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<ObjetoUsuario> call, Throwable t) {
+                            Toast.makeText(InicioSesion.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+
+                    });
+
+
                 } else if (correo.isEmpty()) {
                     editTextCorreo.setError("El correo electrónico no puede estar vacío");
                 } else if (contrasenya.isEmpty()) {

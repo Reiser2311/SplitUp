@@ -16,17 +16,17 @@ public interface ApiService {
     @POST("usuarios")
     Call<ObjetoUsuario> crearUsuario(@Body ObjetoUsuario usuarioObjeto);
 
-    @GET("usuarios/{id}")
-    Call<ObjetoUsuario> obtenerUsuario(@Path("id") int id);
+    @GET("usuarios/{correo}")
+    Call<ObjetoUsuario> obtenerUsuario(@Path("correo") String correo);
 
     @GET("/usuarios")
     Call<List<ObjetoUsuario>> obtenerUsuarios();
 
-    @PUT("usuarios/{id}")
-    Call<ObjetoUsuario> actualizarUsuario(@Path("id") int id, @Body ObjetoUsuario usuarioObjeto);
+    @PUT("usuarios/{correo}")
+    Call<ObjetoUsuario> actualizarUsuario(@Path("correo") String correo, @Body ObjetoUsuario usuarioObjeto);
 
-    @DELETE("usuarios/{id}")
-    Call<Void> eliminarUsuario(@Path("id") int id);
+    @DELETE("usuarios/{correo}")
+    Call<Void> eliminarUsuario(@Path("correo") String correo);
 
     @POST("splits")
     Call<ObjetoSplit> crearSplit(@Body ObjetoSplit splitObjeto);
@@ -36,6 +36,9 @@ public interface ApiService {
 
     @GET("/splits")
     Call<List<ObjetoSplit>> obtenerSplits();
+
+    @GET("/splits/usuarios/{correo}")
+    Call<List<ObjetoSplit>> obtenerSplitsPorUsuario(@Path("correo") String correo);
 
     @PUT("splits/{id}")
     Call<ObjetoSplit> actualizarSplit(@Path("id") int id, @Body ObjetoSplit splitObjeto);
@@ -48,6 +51,9 @@ public interface ApiService {
 
     @GET("pagos/{id}")
     Call<ObjetoPago> obtenerPago(@Path("id") int id);
+
+    @GET("pagos/splits/{id}")
+    Call<List<ObjetoPago>> obtenerPagosPorSplit(@Path("id") int id);
 
     @GET("/pagos")
     Call<List<ObjetoPago>> obtenerPagos();

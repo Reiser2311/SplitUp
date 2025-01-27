@@ -21,8 +21,8 @@ public class RepositorioUsuario {
         call.enqueue(callback);
     }
 
-    public void obtenerUsuario(int id, Callback<ObjetoUsuario> callback) {
-        Call<ObjetoUsuario> call = apiService.obtenerUsuario(id);
+    public void obtenerUsuario(String correo, Callback<ObjetoUsuario> callback) {
+        Call<ObjetoUsuario> call = apiService.obtenerUsuario(correo);
         call.enqueue(callback);
     }
 
@@ -31,13 +31,13 @@ public class RepositorioUsuario {
         call.enqueue(callback);
     }
 
-    public void actualizarUsuario(int id, ObjetoUsuario usuario, Callback<ObjetoUsuario> callback) {
-        Call<ObjetoUsuario> call = apiService.actualizarUsuario(id, usuario);
+    public void actualizarUsuario(String correo, ObjetoUsuario usuario, Callback<ObjetoUsuario> callback) {
+        Call<ObjetoUsuario> call = apiService.actualizarUsuario(correo, usuario);
         call.enqueue(callback);
     }
 
-    public void eliminarUsuario(int id, Callback<Void> callback) {
-        Call<Void> call = apiService.eliminarUsuario(id);
+    public void eliminarUsuario(String correo, Callback<Void> callback) {
+        Call<Void> call = apiService.eliminarUsuario(correo);
         call.enqueue(callback);
     }
 

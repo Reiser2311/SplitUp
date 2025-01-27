@@ -1,18 +1,9 @@
 package com.example.splitup.objetos;
 
 public class ObjetoUsuario {
-    private int id;
     private String nombre;
     private String correo;
     private String contrasenya;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getNombre() {
         return nombre;

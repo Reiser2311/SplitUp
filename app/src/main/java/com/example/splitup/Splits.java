@@ -15,13 +15,22 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.splitup.objetos.ObjetoSplit;
+import com.example.splitup.repositorios.RepositorioSplit;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Splits extends AppCompatActivity {
 
@@ -73,6 +82,34 @@ public class Splits extends AppCompatActivity {
         SharedPreferences preferences = getSharedPreferences("InicioSesion", MODE_PRIVATE);
         sesionIniciada = preferences.getBoolean("sesionIniciada", false);
         invalidateOptionsMenu();
+
+        if (sesionIniciada) {
+            RepositorioSplit repositorioSplit = new RepositorioSplit();
+
+            repositorioSplit.obtenerSplitsPorUsuario(preferences.getString("correo", ""), new Callback<List<ObjetoSplit>>() {
+                @Override
+                public void onResponse(Call<List<ObjetoSplit>> call, Response<List<ObjetoSplit>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        List<ObjetoSplit> splits = response.body();
+
+                        List<String> nombresSplits = new ArrayList<>();
+                        for (ObjetoSplit split : splits) {
+                            nombresSplits.add(split.getNombre());
+                        }
+
+                        ArrayAdapter<String> adaptador = new ArrayAdapter<>(Splits.this, android.R.layout.simple_list_item_1, nombresSplits);
+                        miLista.setAdapter(adaptador);
+                    } else if (response.body() != null){
+                        Toast.makeText(Splits.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<ObjetoSplit>> call, Throwable t) {
+                    Toast.makeText(Splits.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     @Override
@@ -108,6 +145,11 @@ public class Splits extends AppCompatActivity {
         miLista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                SharedPreferences preferences = getSharedPreferences("SplitActivo", MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+//                editor.putInt("splitActivo", );
+                editor.apply();
+
                 Intent intent = new Intent(Splits.this, Pagos.class);
                 startActivity(intent);
             }

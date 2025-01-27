@@ -32,6 +32,11 @@ public class RepositorioSplit {
         call.enqueue(callback);
     }
 
+    public void obtenerSplitsPorUsuario(String correo, Callback<List<ObjetoSplit>> callback) {
+        Call<List<ObjetoSplit>> call = apiService.obtenerSplitsPorUsuario(correo);
+        call.enqueue(callback);
+    }
+
     public void actualizarSplit(int id, ObjetoSplit split, Callback<ObjetoSplit> callback) {
         Call<ObjetoSplit> call = apiService.actualizarSplit(id, split);
         call.enqueue(callback);

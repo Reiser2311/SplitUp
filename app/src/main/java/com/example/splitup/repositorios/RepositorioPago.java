@@ -32,6 +32,11 @@ public class RepositorioPago {
         call.enqueue(callback);
     }
 
+    public void obtenerPagosPorSplit(int id, Callback<List<ObjetoPago>> callback) {
+        Call<List<ObjetoPago>> call = apiService.obtenerPagosPorSplit(id);
+        call.enqueue(callback);
+    }
+
     public void actualizarPago(int id, ObjetoPago pago, Callback<ObjetoPago> callback) {
         Call<ObjetoPago> call = apiService.actualizarPago(id, pago);
         call.enqueue(callback);

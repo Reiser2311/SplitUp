@@ -3,7 +3,7 @@ package com.example.splitup.objetos;
 public class ObjetoSplit {
     private int id;
     private String nombre;
-    private int creadorId;
+    private String creadorCorreo;
 
     // Getters y Setters
     public int getId() {
@@ -22,11 +22,11 @@ public class ObjetoSplit {
         this.nombre = nombre;
     }
 
-    public int getCreadorId() {
-        return creadorId;
+    public String getCreadorCorreo() {
+        return creadorCorreo;
     }
 
-    public void setCreadorId(int creadorId) {
-        this.creadorId = creadorId;
+    public void setCreadoCorreo(String creadorCorreo) {
+        this.creadorCorreo = creadorCorreo;
     }
 }

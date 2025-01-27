@@ -12,13 +12,13 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
-public class AdaptadorPagos extends ArrayAdapter<Datos> {
+public class AdaptadorPagos extends ArrayAdapter<DatosPagos> {
 
-    private ArrayList<Datos> datos;
+    private ArrayList<DatosPagos> datoPagos;
 
-    public AdaptadorPagos(Context context, ArrayList<Datos> datos){
-        super(context, R.layout.vista_lista_pagos, datos);
-        this.datos = datos;
+    public AdaptadorPagos(Context context, ArrayList<DatosPagos> datoPagos){
+        super(context, R.layout.vista_lista_pagos, datoPagos);
+        this.datoPagos = datoPagos;
     }
 
     @NonNull
@@ -32,9 +32,9 @@ public class AdaptadorPagos extends ArrayAdapter<Datos> {
         TextView pagadoPor = elemento.findViewById(R.id.txtPagadoPor);
         TextView gasto = elemento.findViewById(R.id.txtGasto);
 
-        nombre.setText(datos.get(position).getNombre());
-        pagadoPor.setText(datos.get(position).getPagadoPor());
-        gasto.setText(datos.get(position).getGasto());
+        nombre.setText(datoPagos.get(position).getNombre());
+        pagadoPor.setText(datoPagos.get(position).getPagadoPor());
+        gasto.setText(datoPagos.get(position).getGasto());
 
         return elemento;
     }

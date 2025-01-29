@@ -81,15 +81,35 @@ public class Registro extends AppCompatActivity {
                     usuario.setContrasenya(editTextContrasenya.getText().toString());
 
                     RepositorioUsuario repositorioUsuario = new RepositorioUsuario();
-                    repositorioUsuario.crearUsuario(usuario, new Callback<ObjetoUsuario>() {
+
+                    //Comprobacion de si el usario existe
+                    repositorioUsuario.obtenerUsuario(correo, new Callback<ObjetoUsuario>() {
                         @Override
                         public void onResponse(Call<ObjetoUsuario> call, Response<ObjetoUsuario> response) {
                             if (response.isSuccessful()) {
-                                ObjetoUsuario usuarioCreado = response.body();
-                                Toast.makeText(Registro.this, "Usuario creado: " + usuarioCreado.getNombre(), Toast.LENGTH_SHORT).show();
+                                //en caso de que existe avisa al usuario
+                                Toast.makeText(Registro.this, "El usuario ya existe", Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(Registro.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                                //en caso de que no exista lo crea
+                                repositorioUsuario.crearUsuario(usuario, new Callback<ObjetoUsuario>() {
+                                    @Override
+                                    public void onResponse(Call<ObjetoUsuario> call, Response<ObjetoUsuario> response) {
+                                        if (response.isSuccessful()) {
+                                            ObjetoUsuario usuarioCreado = response.body();
+                                            Toast.makeText(Registro.this, "Usuario creado: " + usuarioCreado.getNombre(), Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Toast.makeText(Registro.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<ObjetoUsuario> call, Throwable t) {
+                                        Toast.makeText(Registro.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+
+                                });
                             }
+
                         }
 
                         @Override
@@ -98,13 +118,16 @@ public class Registro extends AppCompatActivity {
                         }
 
                     });
+
+
                     Intent intent = new Intent(Registro.this, Splits.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                 } else if (correo.isEmpty()) {
                     editTextCorreo.setError("El correo electrónico no puede estar vacío");
                 } else if (contrasenya.isEmpty()) {
                     editTextContrasenya.setError("La contraseña no puede estar vacía");
-                } else if (!esCorreoValido) {
+                } else {
                     editTextCorreo.setError("El correo electrónico no es válido");
                 }
             }

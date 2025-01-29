@@ -88,6 +88,7 @@ public class InicioSesion extends AppCompatActivity {
 
                                 Intent intent = new Intent(InicioSesion.this, Splits.class);
                                 startActivity(intent);
+                                finish();
                             } else if (response.body() == null){
                                 Toast.makeText(InicioSesion.this, "Usuario no registrado", Toast.LENGTH_SHORT).show();
                             } else {

@@ -1,13 +1,10 @@
 package com.example.splitup.objetos;
 
-import java.util.ArrayList;
-
 public class ObjetoPago {
     private int id;
     private double importe;
     private String titulo;
     private String pagadoPor;
-    private ArrayList<String> participantes;
     private int splitId;
 
     // Getters y Setters
@@ -41,14 +38,6 @@ public class ObjetoPago {
 
     public void setPagadoPor(String pagadoPor) {
         this.pagadoPor = pagadoPor;
-    }
-
-    public ArrayList<String> getParticipantes() {
-        return participantes;
-    }
-
-    public void setParticipantes(ArrayList<String> participantes) {
-        this.participantes = participantes;
     }
 
     public int getSplitId() {

@@ -13,11 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.splitup.objetos.ObjetoUsuario;
 import com.example.splitup.repositorios.RepositorioUsuario;
@@ -32,7 +28,7 @@ public class Perfil extends AppCompatActivity {
     EditText editTextNombrePerfil;
     EditText editTextContrasenyaPerfil;
     EditText editTextConfirmarContrasenyaPerfil;
-    Button buttonIniciarSesion;
+    Button buttonActualizarUsuario;
     Button buttonBorrarUsuario;
     TextView logo;
 
@@ -61,7 +57,7 @@ public class Perfil extends AppCompatActivity {
             }
         });
 
-        buttonIniciarSesion.setOnClickListener(new View.OnClickListener() {
+        buttonActualizarUsuario.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!editTextContrasenyaPerfil.getText().toString().isEmpty()) {
@@ -136,7 +132,7 @@ public class Perfil extends AppCompatActivity {
         editTextNombrePerfil = findViewById(R.id.editTextNombrePerfil);
         editTextContrasenyaPerfil = findViewById(R.id.editTextContrasenyaPerfil);
         editTextConfirmarContrasenyaPerfil = findViewById(R.id.editTextConfirmarContrasenyaPerfil);
-        buttonIniciarSesion = findViewById(R.id.buttonIniciarSesion);
+        buttonActualizarUsuario = findViewById(R.id.buttonIniciarSesion);
         logo = findViewById(R.id.Logo);
         buttonBorrarUsuario = findViewById(R.id.buttonBorrarUsuario);
 

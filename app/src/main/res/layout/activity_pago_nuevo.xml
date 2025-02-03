@@ -83,7 +83,7 @@
         android:layout_marginStart="20dp"/>
 
     <Spinner
-        android:id="@+id/spinnerMiembrosPago"
+        android:id="@+id/spinnerPagadoPor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
@@ -91,22 +91,22 @@
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Dividir"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="20dp"/>
+<!--    <TextView-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Dividir"-->
+<!--        android:textColor="@color/white"-->
+<!--        android:textSize="20sp"-->
+<!--        android:layout_marginTop="16dp"-->
+<!--        android:layout_marginStart="20dp"/>-->
 
-    <ListView
-        android:id="@+id/listaDivir"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_weight="1"/>
+<!--    <ListView-->
+<!--        android:id="@+id/listaDivir"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_marginStart="20dp"-->
+<!--        android:layout_marginEnd="20dp"-->
+<!--        android:layout_weight="1"/>-->
 
     <Button
         android:id="@+id/buttonCrearPago"
@@ -119,5 +119,18 @@
         android:backgroundTint="@color/boton"
         android:text="Crear Pago"
         android:textColor="@color/white"/>
+
+    <Button
+        android:id="@+id/buttonActualizarPago"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:textSize="20sp"
+        android:backgroundTint="@color/boton"
+        android:text="Actualizar pago"
+        android:textColor="@color/white"
+        android:visibility="gone"/>
 
 </LinearLayout>

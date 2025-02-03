@@ -1,6 +1,7 @@
 package com.example.splitup;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Spannable;
@@ -16,13 +17,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.splitup.objetos.ObjetoSplit;
+import com.example.splitup.repositorios.RepositorioSplit;
+
 import java.util.ArrayList;
 import java.util.Objects;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SplitNuevo extends AppCompatActivity {
 
@@ -100,6 +109,32 @@ public class SplitNuevo extends AppCompatActivity {
         buttonCrearSplit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                ObjetoSplit split = new ObjetoSplit();
+                SharedPreferences preferences = getSharedPreferences("InicioSesion", MODE_PRIVATE);
+                String correo = preferences.getString("correo", "");
+                split.setNombre(edtxtNombreParticipante.getText().toString());
+                split.setParticipantes(participantes.toArray(new String[0]));
+                split.setCreadoCorreo(correo);
+
+                RepositorioSplit repositorioSplit = new RepositorioSplit();
+                repositorioSplit.crearSplit(split, new Callback<ObjetoSplit>() {
+                    @Override
+                    public void onResponse(Call<ObjetoSplit> call, Response<ObjetoSplit> response) {
+                        if (response.isSuccessful()) {
+                            ObjetoSplit splitCreado = response.body();
+                            Toast.makeText(SplitNuevo.this, "Split creado con éxito: " + splitCreado.getNombre(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(SplitNuevo.this, "Error al crear el split " + response.code(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ObjetoSplit> call, Throwable t) {
+                        Toast.makeText(SplitNuevo.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
                 Intent intent = new Intent(SplitNuevo.this, Splits.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);

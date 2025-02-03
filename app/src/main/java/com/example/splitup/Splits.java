@@ -56,6 +56,42 @@ public class Splits extends AppCompatActivity {
     }
 
     @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        int posicion = info.position;
+
+        AdaptadorSplits adaptador = (AdaptadorSplits) miLista.getAdapter();
+
+        DatosSplits datos = adaptador.getItem(posicion);
+
+        int id = item.getItemId();
+
+        if (id == R.id.borrar) {
+            RepositorioSplit repositorioSplit = new RepositorioSplit();
+            repositorioSplit.eliminarSplit(datos.getId(), new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        rehacerLista();
+                        Toast.makeText(Splits.this, "Split eliminado", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(Splits.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    Toast.makeText(Splits.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else if (id == R.id.editar){
+
+        }
+
+        return super.onContextItemSelected(item);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
@@ -86,6 +122,16 @@ public class Splits extends AppCompatActivity {
     }
 
     @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+
+        menu.setHeaderTitle(miLista.getAdapter().getItem(info.position).toString());
+        inflater.inflate(R.menu.menu_eliminar_editar, menu);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         SharedPreferences preferences = getSharedPreferences("InicioSesion", MODE_PRIVATE);
@@ -93,32 +139,30 @@ public class Splits extends AppCompatActivity {
         invalidateOptionsMenu();
 
         if (sesionIniciada) {
-            rehacerListado();
+            rehacerLista();
         }
     }
 
-    private void rehacerListado() {
+    private void rehacerLista() {
         SharedPreferences preferences = getSharedPreferences("InicioSesion", MODE_PRIVATE);
         RepositorioSplit repositorioSplit = new RepositorioSplit();
-        repositorioSplit.obtenerSplitsPorUsuario(preferences.getString("correo", ""), new Callback<List<ObjetoSplit>>() {
+        String correo = preferences.getString("correo", "");
+        repositorioSplit.obtenerSplitsPorUsuario(correo , new Callback<List<ObjetoSplit>>() {
             @Override
             public void onResponse(Call<List<ObjetoSplit>> call, Response<List<ObjetoSplit>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<ObjetoSplit> splits = response.body();
-                    Toast.makeText(Splits.this, "1", Toast.LENGTH_SHORT).show();
 
                     ArrayList<DatosSplits> datosSplits = new ArrayList<>();
                     for (ObjetoSplit split : splits) {
                         DatosSplits datosSplit = new DatosSplits(split.getNombre(), split.getId());
                         datosSplits.add(datosSplit);
-                        Toast.makeText(Splits.this, "2", Toast.LENGTH_SHORT).show();
                     }
 
                     AdaptadorSplits adaptador = new AdaptadorSplits(Splits.this, datosSplits);
                     miLista.setAdapter(adaptador);
                     miLista.setVisibility(View.VISIBLE);
                     layoutNoHaySplits.setVisibility(View.GONE);
-                    Toast.makeText(Splits.this, "3", Toast.LENGTH_SHORT).show();
                 } else if (response.body() != null){
                     Toast.makeText(Splits.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
@@ -129,43 +173,6 @@ public class Splits extends AppCompatActivity {
                 Toast.makeText(Splits.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-
-        MenuInflater inflater = getMenuInflater();
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-        menu.setHeaderTitle(miLista.getAdapter().getItem(info.position).toString());
-        inflater.inflate(R.menu.menu_eliminar_editar, menu);
-    }
-
-    @Override
-    public boolean onContextItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.borrar) {
-            RepositorioSplit repositorioSplit = new RepositorioSplit();
-            repositorioSplit.eliminarSplit(splitSeleccionado, new Callback<Void>() {
-                @Override
-                public void onResponse(Call<Void> call, Response<Void> response) {
-                    if (response.isSuccessful()) {
-                        Toast.makeText(Splits.this, "Split eliminado", Toast.LENGTH_SHORT).show();
-                        rehacerListado();
-                    } else {
-                        Toast.makeText(Splits.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<Void> call, Throwable t) {
-                    Toast.makeText(Splits.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-
-        return super.onContextItemSelected(item);
     }
 
     @Override
@@ -189,7 +196,6 @@ public class Splits extends AppCompatActivity {
 
         setSupportActionBar(miToolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
-        registerForContextMenu(miLista);
 
         miLista.setOnCreateContextMenuListener((menu, v, menuInfo) -> {
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;

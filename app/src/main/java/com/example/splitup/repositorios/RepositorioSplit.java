@@ -1,5 +1,7 @@
 package com.example.splitup.repositorios;
 
+import android.util.Log;
+
 import com.example.splitup.api.ApiClient;
 import com.example.splitup.api.ApiService;
 import com.example.splitup.objetos.ObjetoSplit;
@@ -9,6 +11,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RepositorioSplit {
     private ApiService apiService;

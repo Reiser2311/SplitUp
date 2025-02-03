@@ -2,14 +2,16 @@ package com.example.splitup;
 
 public class DatosPagos {
 
+    private int id;
     private String nombre;
     private String pagadoPor;
-    private String gasto;
+    private double importe;
 
-    public DatosPagos(String nombre, String pagadoPor, String gasto) {
+    public DatosPagos(String nombre, String pagadoPor, double importe, int id) {
         this.nombre = nombre;
         this.pagadoPor = pagadoPor;
-        this.gasto = gasto;
+        this.importe = importe;
+        this.id = id;
     }
 
     public String getNombre() {
@@ -20,7 +22,11 @@ public class DatosPagos {
         return pagadoPor;
     }
 
-    public String getGasto() {
-        return gasto;
+    public double getImporte() {
+        return importe;
+    }
+
+    public int getId() {
+        return id;
     }
 }

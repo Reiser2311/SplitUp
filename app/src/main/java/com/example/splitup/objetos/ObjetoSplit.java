@@ -6,7 +6,7 @@ public class ObjetoSplit {
     private int id;
     private String nombre;
     private String creadorCorreo;
-    private ArrayList<String> participantes;
+    private String[] participantes;
 
     // Getters y Setters
     public int getId() {
@@ -33,11 +33,11 @@ public class ObjetoSplit {
         this.creadorCorreo = creadorCorreo;
     }
 
-    public ArrayList<String> getParticipantes() {
+    public String[] getParticipantes() {
         return participantes;
     }
 
-    public void setParticipantes(ArrayList<String> participantes) {
+    public void setParticipantes(String[] participantes) {
         this.participantes = participantes;
     }
 }

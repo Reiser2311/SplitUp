@@ -3,7 +3,6 @@ package com.example.splitup.repositorios;
 import com.example.splitup.api.ApiClient;
 import com.example.splitup.api.ApiService;
 import com.example.splitup.objetos.ObjetoPago;
-import com.example.splitup.objetos.ObjetoUsuario;
 
 import java.util.List;
 

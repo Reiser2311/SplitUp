@@ -33,8 +33,8 @@ public class AdaptadorPagos extends ArrayAdapter<DatosPagos> {
         TextView gasto = elemento.findViewById(R.id.txtGasto);
 
         nombre.setText(datoPagos.get(position).getNombre());
-        pagadoPor.setText(datoPagos.get(position).getPagadoPor());
-        gasto.setText(datoPagos.get(position).getGasto());
+        pagadoPor.setText("Pagado por: " + datoPagos.get(position).getPagadoPor());
+        gasto.setText(datoPagos.get(position).getImporte() + "€");
 
         return elemento;
     }

@@ -19,7 +19,7 @@ public interface ApiService {
     @GET("usuarios/{correo}")
     Call<ObjetoUsuario> obtenerUsuario(@Path("correo") String correo);
 
-    @GET("/usuarios")
+    @GET("usuarios")
     Call<List<ObjetoUsuario>> obtenerUsuarios();
 
     @PUT("usuarios/{correo}")
@@ -34,10 +34,10 @@ public interface ApiService {
     @GET("splits/{id}")
     Call<ObjetoSplit> obtenerSplit(@Path("id") int id);
 
-    @GET("/splits")
+    @GET("splits")
     Call<List<ObjetoSplit>> obtenerSplits();
 
-    @GET("/splits/usuarios/{correo}")
+    @GET("splits/usuarios/{correo}")
     Call<List<ObjetoSplit>> obtenerSplitsPorUsuario(@Path("correo") String correo);
 
     @PUT("splits/{id}")
@@ -55,7 +55,7 @@ public interface ApiService {
     @GET("pagos/splits/{id}")
     Call<List<ObjetoPago>> obtenerPagosPorSplit(@Path("id") int id);
 
-    @GET("/pagos")
+    @GET("pagos")
     Call<List<ObjetoPago>> obtenerPagos();
 
     @PUT("pagos/{id}")

@@ -9,7 +9,6 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -19,10 +18,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.example.splitup.objetos.ObjetoPago;
-import com.example.splitup.objetos.ObjetoSplit;
+import com.example.splitup.objetos.Pago;
 import com.example.splitup.repositorios.RepositorioPago;
-import com.example.splitup.repositorios.RepositorioSplit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,14 +48,14 @@ public class Pagos extends AppCompatActivity {
         SharedPreferences preferences = getSharedPreferences("SplitActivo", MODE_PRIVATE);
         RepositorioPago repositorioPago = new RepositorioPago();
         int id = preferences.getInt("idSplit", 0);
-        repositorioPago.obtenerPagosPorSplit(id, new Callback<List<ObjetoPago>>() {
+        repositorioPago.obtenerPagosPorSplit(id, new Callback<List<Pago>>() {
             @Override
-            public void onResponse(Call<List<ObjetoPago>> call, Response<List<ObjetoPago>> response) {
+            public void onResponse(Call<List<Pago>> call, Response<List<Pago>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    List<ObjetoPago> pagos = response.body();
+                    List<Pago> pagos = response.body();
 
                     ArrayList<DatosPagos> datosPagos = new ArrayList<>();
-                    for (ObjetoPago pago : pagos) {
+                    for (Pago pago : pagos) {
                         DatosPagos datosPago = new DatosPagos(pago.getTitulo(), pago.getPagadoPor(), pago.getImporte(), pago.getId());
                         datosPagos.add(datosPago);
                     }
@@ -74,7 +71,7 @@ public class Pagos extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<ObjetoPago>> call, Throwable t) {
+            public void onFailure(Call<List<Pago>> call, Throwable t) {
                 Toast.makeText(Pagos.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -112,7 +109,7 @@ public class Pagos extends AppCompatActivity {
 
                 SharedPreferences preferences = getSharedPreferences("PagoActivo", MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();
-//                editor.putInt("idPago", ((DatosSplits) parent.getItemAtPosition(position)).getId());
+                editor.putInt("idPago", ((DatosPagos) parent.getItemAtPosition(position)).getId());
                 editor.apply();
 
                 Intent intent = new Intent(Pagos.this, PagoNuevo.class);

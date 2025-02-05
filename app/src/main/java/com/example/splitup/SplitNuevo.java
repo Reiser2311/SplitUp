@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,8 +24,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.example.splitup.objetos.ObjetoSplit;
+import com.example.splitup.objetos.Split;
+import com.example.splitup.objetos.Usuario;
 import com.example.splitup.repositorios.RepositorioSplit;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -40,7 +43,9 @@ public class SplitNuevo extends AppCompatActivity {
     ListView listViewParticipantes;
     Button buttonAnyadirParticipante;
     Button buttonCrearSplit;
-    EditText edtxtNombreParticipante;
+    EditText edtxtNombre;
+    EditText edtxtParticipante;
+
     ArrayList<String> participantes;
 
     @Override
@@ -76,7 +81,8 @@ public class SplitNuevo extends AppCompatActivity {
         listViewParticipantes = findViewById(R.id.listViewParticipantes);
         buttonAnyadirParticipante = findViewById(R.id.buttonAnyadirParticipante);
         buttonCrearSplit = findViewById(R.id.buttonCrearSplit);
-        edtxtNombreParticipante = findViewById(R.id.edtxtNombreParticipante);
+        edtxtNombre = findViewById(R.id.editTextNombre);
+        edtxtParticipante = findViewById(R.id.edtxtNombreParticipante);
 
         String text = "SplitUp";
         SpannableString spannable = new SpannableString(text);
@@ -94,14 +100,14 @@ public class SplitNuevo extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                String nombreParticipante = edtxtNombreParticipante.getText().toString();
+                String nombreParticipante = edtxtParticipante.getText().toString();
 
                 if (!nombreParticipante.isEmpty()) {
                     listViewParticipantes.setVisibility(View.VISIBLE);
                     participantes.add(nombreParticipante);
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(SplitNuevo.this, android.R.layout.simple_list_item_1, participantes);
                     listViewParticipantes.setAdapter(adapter);
-                    edtxtNombreParticipante.setText("");
+                    edtxtParticipante.setText("");
                 }
             }
         });
@@ -110,34 +116,37 @@ public class SplitNuevo extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                ObjetoSplit split = new ObjetoSplit();
+                Split split = new Split();
+                Usuario usuario = new Usuario();
                 SharedPreferences preferences = getSharedPreferences("InicioSesion", MODE_PRIVATE);
                 String correo = preferences.getString("correo", "");
-                split.setNombre(edtxtNombreParticipante.getText().toString());
+                usuario.setCorreo(correo);
+                split.setTitulo(edtxtNombre.getText().toString());
                 split.setParticipantes(participantes.toArray(new String[0]));
-                split.setCreadoCorreo(correo);
+                split.setUsuario(usuario);
+
+                Log.d("Debug", "Split a enviar: " + new Gson().toJson(split));
 
                 RepositorioSplit repositorioSplit = new RepositorioSplit();
-                repositorioSplit.crearSplit(split, new Callback<ObjetoSplit>() {
+                repositorioSplit.crearSplit(split, new Callback<Split>() {
                     @Override
-                    public void onResponse(Call<ObjetoSplit> call, Response<ObjetoSplit> response) {
+                    public void onResponse(Call<Split> call, Response<Split> response) {
                         if (response.isSuccessful()) {
-                            ObjetoSplit splitCreado = response.body();
-                            Toast.makeText(SplitNuevo.this, "Split creado con éxito: " + splitCreado.getNombre(), Toast.LENGTH_SHORT).show();
+                            Split splitCreado = response.body();
+                            Toast.makeText(SplitNuevo.this, "Split creado con éxito: " + splitCreado.getTitulo(), Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(SplitNuevo.this, Splits.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
                         } else {
                             Toast.makeText(SplitNuevo.this, "Error al crear el split " + response.code(), Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
-                    public void onFailure(Call<ObjetoSplit> call, Throwable t) {
+                    public void onFailure(Call<Split> call, Throwable t) {
                         Toast.makeText(SplitNuevo.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
-
-                Intent intent = new Intent(SplitNuevo.this, Splits.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
             }
         });
     }

@@ -1,6 +1,6 @@
 package com.example.splitup.objetos;
 
-public class ObjetoUsuario {
+public class Usuario {
     private String nombre;
     private String correo;
     private String contrasenya;

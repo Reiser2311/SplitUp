@@ -25,6 +25,7 @@
     </androidx.appcompat.widget.Toolbar>
 
     <TextView
+        android:id="@+id/txtNuevoPago"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -33,6 +34,18 @@
         android:textColor="@color/white"
         android:textSize="30sp"
         android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/txtEditarPago"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="24dp"
+        android:text="Editar Pago"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:visibility="gone"/>
 
     <TextView
         android:layout_width="wrap_content"

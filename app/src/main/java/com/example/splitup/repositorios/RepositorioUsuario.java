@@ -2,7 +2,7 @@ package com.example.splitup.repositorios;
 
 import com.example.splitup.api.ApiClient;
 import com.example.splitup.api.ApiService;
-import com.example.splitup.objetos.ObjetoUsuario;
+import com.example.splitup.objetos.Usuario;
 
 import java.util.List;
 
@@ -16,23 +16,23 @@ public class RepositorioUsuario {
         this.apiService = ApiClient.getRetrofitClient().create(ApiService.class);
     }
 
-    public void crearUsuario(ObjetoUsuario usuarioObjeto, Callback<ObjetoUsuario> callback) {
-        Call<ObjetoUsuario> call = apiService.crearUsuario(usuarioObjeto);
+    public void crearUsuario(Usuario usuarioObjeto, Callback<Usuario> callback) {
+        Call<Usuario> call = apiService.crearUsuario(usuarioObjeto);
         call.enqueue(callback);
     }
 
-    public void obtenerUsuario(String correo, Callback<ObjetoUsuario> callback) {
-        Call<ObjetoUsuario> call = apiService.obtenerUsuario(correo);
+    public void obtenerUsuario(String correo, Callback<Usuario> callback) {
+        Call<Usuario> call = apiService.obtenerUsuario(correo);
         call.enqueue(callback);
     }
 
-    public void obtenerTodosUsuarios(Callback<List<ObjetoUsuario>> callback) {
-        Call<List<ObjetoUsuario>> call = apiService.obtenerUsuarios();
+    public void obtenerTodosUsuarios(Callback<List<Usuario>> callback) {
+        Call<List<Usuario>> call = apiService.obtenerUsuarios();
         call.enqueue(callback);
     }
 
-    public void actualizarUsuario(String correo, ObjetoUsuario usuario, Callback<ObjetoUsuario> callback) {
-        Call<ObjetoUsuario> call = apiService.actualizarUsuario(correo, usuario);
+    public void actualizarUsuario(String correo, Usuario usuario, Callback<Usuario> callback) {
+        Call<Usuario> call = apiService.actualizarUsuario(correo, usuario);
         call.enqueue(callback);
     }
 

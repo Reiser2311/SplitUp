@@ -2,7 +2,7 @@ package com.example.splitup.repositorios;
 
 import com.example.splitup.api.ApiClient;
 import com.example.splitup.api.ApiService;
-import com.example.splitup.objetos.ObjetoPago;
+import com.example.splitup.objetos.Pago;
 
 import java.util.List;
 
@@ -16,28 +16,28 @@ public class RepositorioPago {
         this.apiService = ApiClient.getRetrofitClient().create(ApiService.class);
     }
 
-    public void crearPago(ObjetoPago pagoObjeto, Callback<ObjetoPago> callback) {
-        Call<ObjetoPago> call = apiService.crearPago(pagoObjeto);
+    public void crearPago(Pago pagoObjeto, Callback<Pago> callback) {
+        Call<Pago> call = apiService.crearPago(pagoObjeto);
         call.enqueue(callback);
     }
 
-    public void obtenerPago(int id, Callback<ObjetoPago> callback) {
-        Call<ObjetoPago> call = apiService.obtenerPago(id);
+    public void obtenerPago(int id, Callback<Pago> callback) {
+        Call<Pago> call = apiService.obtenerPago(id);
         call.enqueue(callback);
     }
 
-    public void obtenerTodosPagos(Callback<List<ObjetoPago>> callback) {
-        Call<List<ObjetoPago>> call = apiService.obtenerPagos();
+    public void obtenerTodosPagos(Callback<List<Pago>> callback) {
+        Call<List<Pago>> call = apiService.obtenerPagos();
         call.enqueue(callback);
     }
 
-    public void obtenerPagosPorSplit(int id, Callback<List<ObjetoPago>> callback) {
-        Call<List<ObjetoPago>> call = apiService.obtenerPagosPorSplit(id);
+    public void obtenerPagosPorSplit(int id, Callback<List<Pago>> callback) {
+        Call<List<Pago>> call = apiService.obtenerPagosPorSplit(id);
         call.enqueue(callback);
     }
 
-    public void actualizarPago(int id, ObjetoPago pago, Callback<ObjetoPago> callback) {
-        Call<ObjetoPago> call = apiService.actualizarPago(id, pago);
+    public void actualizarPago(int id, Pago pago, Callback<Pago> callback) {
+        Call<Pago> call = apiService.actualizarPago(id, pago);
         call.enqueue(callback);
     }
 

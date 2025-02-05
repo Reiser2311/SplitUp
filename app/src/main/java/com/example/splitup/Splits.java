@@ -23,7 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.example.splitup.objetos.ObjetoSplit;
+import com.example.splitup.objetos.Split;
 import com.example.splitup.repositorios.RepositorioSplit;
 
 import java.util.ArrayList;
@@ -147,15 +147,15 @@ public class Splits extends AppCompatActivity {
         SharedPreferences preferences = getSharedPreferences("InicioSesion", MODE_PRIVATE);
         RepositorioSplit repositorioSplit = new RepositorioSplit();
         String correo = preferences.getString("correo", "");
-        repositorioSplit.obtenerSplitsPorUsuario(correo , new Callback<List<ObjetoSplit>>() {
+        repositorioSplit.obtenerSplitsPorUsuario(correo , new Callback<List<Split>>() {
             @Override
-            public void onResponse(Call<List<ObjetoSplit>> call, Response<List<ObjetoSplit>> response) {
+            public void onResponse(Call<List<Split>> call, Response<List<Split>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    List<ObjetoSplit> splits = response.body();
+                    List<Split> splits = response.body();
 
                     ArrayList<DatosSplits> datosSplits = new ArrayList<>();
-                    for (ObjetoSplit split : splits) {
-                        DatosSplits datosSplit = new DatosSplits(split.getNombre(), split.getId());
+                    for (Split split : splits) {
+                        DatosSplits datosSplit = new DatosSplits(split.getTitulo(), split.getId());
                         datosSplits.add(datosSplit);
                     }
 
@@ -169,7 +169,7 @@ public class Splits extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<ObjetoSplit>> call, Throwable t) {
+            public void onFailure(Call<List<Split>> call, Throwable t) {
                 Toast.makeText(Splits.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

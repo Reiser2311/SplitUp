@@ -1,7 +1,6 @@
 package com.example.splitup;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Spannable;
@@ -16,7 +15,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.example.splitup.objetos.ObjetoUsuario;
+import com.example.splitup.objetos.Usuario;
 import com.example.splitup.repositorios.RepositorioUsuario;
 
 import java.util.Objects;
@@ -75,7 +74,7 @@ public class Registro extends AppCompatActivity {
                 }
 
                 if (!correo.isEmpty() && !contrasenya.isEmpty() && esCorreoValido) {
-                    ObjetoUsuario usuario = new ObjetoUsuario();
+                    Usuario usuario = new Usuario();
                     usuario.setNombre(editTextNombre.getText().toString());
                     usuario.setCorreo(editTextCorreo.getText().toString());
                     usuario.setContrasenya(editTextContrasenya.getText().toString());
@@ -83,19 +82,19 @@ public class Registro extends AppCompatActivity {
                     RepositorioUsuario repositorioUsuario = new RepositorioUsuario();
 
                     //Comprobacion de si el usario existe
-                    repositorioUsuario.obtenerUsuario(correo, new Callback<ObjetoUsuario>() {
+                    repositorioUsuario.obtenerUsuario(correo, new Callback<Usuario>() {
                         @Override
-                        public void onResponse(Call<ObjetoUsuario> call, Response<ObjetoUsuario> response) {
+                        public void onResponse(Call<Usuario> call, Response<Usuario> response) {
                             if (response.isSuccessful()) {
                                 //en caso de que existe avisa al usuario
                                 Toast.makeText(Registro.this, "El usuario ya existe", Toast.LENGTH_SHORT).show();
                             } else {
                                 //en caso de que no exista lo crea
-                                repositorioUsuario.crearUsuario(usuario, new Callback<ObjetoUsuario>() {
+                                repositorioUsuario.crearUsuario(usuario, new Callback<Usuario>() {
                                     @Override
-                                    public void onResponse(Call<ObjetoUsuario> call, Response<ObjetoUsuario> response) {
+                                    public void onResponse(Call<Usuario> call, Response<Usuario> response) {
                                         if (response.isSuccessful()) {
-                                            ObjetoUsuario usuarioCreado = response.body();
+                                            Usuario usuarioCreado = response.body();
                                             Toast.makeText(Registro.this, "Usuario creado: " + usuarioCreado.getNombre(), Toast.LENGTH_SHORT).show();
                                         } else {
                                             Toast.makeText(Registro.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
@@ -103,7 +102,7 @@ public class Registro extends AppCompatActivity {
                                     }
 
                                     @Override
-                                    public void onFailure(Call<ObjetoUsuario> call, Throwable t) {
+                                    public void onFailure(Call<Usuario> call, Throwable t) {
                                         Toast.makeText(Registro.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                                     }
 
@@ -113,7 +112,7 @@ public class Registro extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onFailure(Call<ObjetoUsuario> call, Throwable t) {
+                        public void onFailure(Call<Usuario> call, Throwable t) {
                             Toast.makeText(Registro.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                         }
 

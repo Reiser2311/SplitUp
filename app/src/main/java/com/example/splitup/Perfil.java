@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.splitup.objetos.ObjetoUsuario;
+import com.example.splitup.objetos.Usuario;
 import com.example.splitup.repositorios.RepositorioUsuario;
 
 import retrofit2.Call;
@@ -41,18 +41,18 @@ public class Perfil extends AppCompatActivity {
 
         RepositorioUsuario repositorioUsuario = new RepositorioUsuario();
 
-        repositorioUsuario.obtenerUsuario(correo, new Callback<ObjetoUsuario>() {
+        repositorioUsuario.obtenerUsuario(correo, new Callback<Usuario>() {
             @Override
-            public void onResponse(Call<ObjetoUsuario> call, Response<ObjetoUsuario> response) {
+            public void onResponse(Call<Usuario> call, Response<Usuario> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    ObjetoUsuario usuario = response.body();
+                    Usuario usuario = response.body();
                     txtCorreoPerfil.setText(usuario.getCorreo());
                     editTextNombrePerfil.setText(usuario.getNombre());
                 }
             }
 
             @Override
-            public void onFailure(Call<ObjetoUsuario> call, Throwable t) {
+            public void onFailure(Call<Usuario> call, Throwable t) {
                 Toast.makeText(Perfil.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -62,16 +62,16 @@ public class Perfil extends AppCompatActivity {
             public void onClick(View v) {
                 if (!editTextContrasenyaPerfil.getText().toString().isEmpty()) {
                     if (editTextContrasenyaPerfil.getText().toString().equals(editTextConfirmarContrasenyaPerfil.getText().toString())) {
-                        ObjetoUsuario usuario = new ObjetoUsuario();
+                        Usuario usuario = new Usuario();
                         usuario.setNombre(editTextNombrePerfil.getText().toString());
                         usuario.setContrasenya(editTextContrasenyaPerfil.getText().toString());
                         usuario.setCorreo(correo);
 
-                        repositorioUsuario.actualizarUsuario(correo, usuario, new Callback<ObjetoUsuario>() {
+                        repositorioUsuario.actualizarUsuario(correo, usuario, new Callback<Usuario>() {
                             @Override
-                            public void onResponse(Call<ObjetoUsuario> call, Response<ObjetoUsuario> response) {
+                            public void onResponse(Call<Usuario> call, Response<Usuario> response) {
                                 if (response.isSuccessful() && response.body() != null) {
-                                    ObjetoUsuario usuarioCreado = response.body();
+                                    Usuario usuarioCreado = response.body();
                                     Toast.makeText(Perfil.this, "Perfil actualizado correctamente " + usuarioCreado.getNombre(), Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(Perfil.this, Splits.class);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -83,7 +83,7 @@ public class Perfil extends AppCompatActivity {
                             }
 
                             @Override
-                            public void onFailure(Call<ObjetoUsuario> call, Throwable t) {
+                            public void onFailure(Call<Usuario> call, Throwable t) {
                                 Toast.makeText(Perfil.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });

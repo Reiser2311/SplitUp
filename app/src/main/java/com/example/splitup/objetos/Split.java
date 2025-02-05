@@ -1,11 +1,9 @@
 package com.example.splitup.objetos;
 
-import java.util.ArrayList;
-
-public class ObjetoSplit {
+public class Split {
     private int id;
-    private String nombre;
-    private String creadorCorreo;
+    private String titulo;
+    private Usuario usuario;
     private String[] participantes;
 
     // Getters y Setters
@@ -17,20 +15,20 @@ public class ObjetoSplit {
         this.id = id;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getTitulo() {
+        return titulo;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
     }
 
-    public String getCreadorCorreo() {
-        return creadorCorreo;
+    public Usuario getUsuario() {
+        return usuario;
     }
 
-    public void setCreadoCorreo(String creadorCorreo) {
-        this.creadorCorreo = creadorCorreo;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
     public String[] getParticipantes() {

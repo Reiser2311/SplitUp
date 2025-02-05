@@ -16,7 +16,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.example.splitup.objetos.ObjetoUsuario;
+import com.example.splitup.objetos.Usuario;
 import com.example.splitup.repositorios.RepositorioUsuario;
 
 import java.util.Objects;
@@ -74,11 +74,11 @@ public class InicioSesion extends AppCompatActivity {
                 if (!correo.isEmpty() && !contrasenya.isEmpty() && esCorreoValido) {
                     RepositorioUsuario repositorioUsuario = new RepositorioUsuario();
 
-                    repositorioUsuario.obtenerUsuario(correo, new Callback<ObjetoUsuario>() {
+                    repositorioUsuario.obtenerUsuario(correo, new Callback<Usuario>() {
                         @Override
-                        public void onResponse(Call<ObjetoUsuario> call, Response<ObjetoUsuario> response) {
+                        public void onResponse(Call<Usuario> call, Response<Usuario> response) {
                             if (response.isSuccessful() && response.body() != null) {
-                                ObjetoUsuario usuario = response.body();
+                                Usuario usuario = response.body();
                                 Toast.makeText(InicioSesion.this, "Bienvenido, " + usuario.getNombre(), Toast.LENGTH_SHORT).show();
                                 SharedPreferences preferences = getSharedPreferences("InicioSesion", MODE_PRIVATE);
                                 SharedPreferences.Editor editor = preferences.edit();
@@ -98,7 +98,7 @@ public class InicioSesion extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onFailure(Call<ObjetoUsuario> call, Throwable t) {
+                        public void onFailure(Call<Usuario> call, Throwable t) {
                             Toast.makeText(InicioSesion.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                         }
 

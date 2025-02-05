@@ -1,11 +1,11 @@
 package com.example.splitup.objetos;
 
-public class ObjetoPago {
+public class Pago {
     private int id;
     private double importe;
     private String titulo;
     private String pagadoPor;
-    private int splitId;
+    private Split split;
 
     // Getters y Setters
     public int getId() {
@@ -40,11 +40,11 @@ public class ObjetoPago {
         this.pagadoPor = pagadoPor;
     }
 
-    public int getSplitId() {
-        return splitId;
+    public Split getSplit() {
+        return split;
     }
 
-    public void setSplitId(int splitId) {
-        this.splitId = splitId;
+    public void setSplit(Split split) {
+        this.split = split;
     }
 }

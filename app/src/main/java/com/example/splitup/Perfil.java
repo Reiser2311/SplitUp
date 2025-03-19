@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,6 +18,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.splitup.objetos.Usuario;
 import com.example.splitup.repositorios.RepositorioUsuario;
+
+import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -67,26 +70,30 @@ public class Perfil extends AppCompatActivity {
                         usuario.setContrasenya(editTextContrasenyaPerfil.getText().toString());
                         usuario.setCorreo(correo);
 
-                        repositorioUsuario.actualizarUsuario(correo, usuario, new Callback<Usuario>() {
+                        repositorioUsuario.actualizarUsuario(correo, editTextNombrePerfil.getText().toString(), editTextContrasenyaPerfil.getText().toString(), new Callback<Void>() {
                             @Override
-                            public void onResponse(Call<Usuario> call, Response<Usuario> response) {
-                                if (response.isSuccessful() && response.body() != null) {
-                                    Usuario usuarioCreado = response.body();
-                                    Toast.makeText(Perfil.this, "Perfil actualizado correctamente " + usuarioCreado.getNombre(), Toast.LENGTH_SHORT).show();
+                            public void onResponse(Call<Void> call, Response<Void> response) {
+                                if (response.isSuccessful()) {
+                                    Toast.makeText(Perfil.this, "Perfil actualizado correctamente", Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(Perfil.this, Splits.class);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(intent);
                                 } else {
                                     Toast.makeText(Perfil.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
-
+                                    try {
+                                        Log.e("Respuesta", "Codigo: " + response.code() + " - Error: " + response.errorBody().string());
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
                                 }
                             }
 
                             @Override
-                            public void onFailure(Call<Usuario> call, Throwable t) {
+                            public void onFailure(Call<Void> call, Throwable t) {
                                 Toast.makeText(Perfil.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
+
 
                     } else {
                         editTextConfirmarContrasenyaPerfil.setError("Las contraseñas no coinciden");

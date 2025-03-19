@@ -24,6 +24,7 @@ import com.example.splitup.objetos.Split;
 import com.example.splitup.repositorios.RepositorioPago;
 import com.example.splitup.repositorios.RepositorioSplit;
 
+import java.util.List;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -41,7 +42,7 @@ public class PagoNuevo extends AppCompatActivity {
     Spinner pagadoPor;
     TextView txtNuevoPago;
     TextView txtEditarPago;
-    String[] participantes;
+    List<String> participantes;
     int id;
 
     @Override
@@ -110,23 +111,25 @@ public class PagoNuevo extends AppCompatActivity {
         SharedPreferences preferences = getSharedPreferences("SplitActivo", MODE_PRIVATE);
         id = preferences.getInt("idSplit", 0);
 
-        RepositorioSplit repositorioSplit = new RepositorioSplit();
-        repositorioSplit.obtenerSplit(id, new Callback<Split>() {
-            @Override
-            public void onResponse(Call<Split> call, Response<Split> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    Split split = response.body();
-                    participantes = split.getParticipantes();
-                } else {
-                    Toast.makeText(PagoNuevo.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+        if (id != 0) {
+            RepositorioSplit repositorioSplit = new RepositorioSplit();
+            repositorioSplit.obtenerSplit(id, new Callback<Split>() {
+                @Override
+                public void onResponse(Call<Split> call, Response<Split> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        Split split = response.body();
+                        participantes = split.getParticipantes();
+                    } else {
+                        Toast.makeText(PagoNuevo.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<Split> call, Throwable t) {
-                Toast.makeText(PagoNuevo.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+                @Override
+                public void onFailure(Call<Split> call, Throwable t) {
+                    Toast.makeText(PagoNuevo.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
 
         ArrayAdapter<String> adapater = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, participantes);
         pagadoPor.setAdapter(adapater);

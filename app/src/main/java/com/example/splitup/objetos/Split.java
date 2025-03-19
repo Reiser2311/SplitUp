@@ -1,10 +1,12 @@
 package com.example.splitup.objetos;
 
+import java.util.List;
+
 public class Split {
     private int id;
     private String titulo;
     private Usuario usuario;
-    private String[] participantes;
+    private List<String> participantes;
 
     // Getters y Setters
     public int getId() {
@@ -31,11 +33,11 @@ public class Split {
         this.usuario = usuario;
     }
 
-    public String[] getParticipantes() {
+    public List<String> getParticipantes() {
         return participantes;
     }
 
-    public void setParticipantes(String[] participantes) {
+    public void setParticipantes(List<String> participantes) {
         this.participantes = participantes;
     }
 }

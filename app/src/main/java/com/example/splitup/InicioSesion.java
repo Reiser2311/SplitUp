@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -100,6 +101,7 @@ public class InicioSesion extends AppCompatActivity {
                         @Override
                         public void onFailure(Call<Usuario> call, Throwable t) {
                             Toast.makeText(InicioSesion.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                            Log.d("Red", t.getMessage());
                         }
 
                     });

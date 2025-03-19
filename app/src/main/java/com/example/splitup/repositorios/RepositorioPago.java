@@ -36,8 +36,8 @@ public class RepositorioPago {
         call.enqueue(callback);
     }
 
-    public void actualizarPago(int id, Pago pago, Callback<Pago> callback) {
-        Call<Pago> call = apiService.actualizarPago(id, pago);
+    public void actualizarPago(int id, String titulo, Double importe, String pagadoPor, Callback<Void> callback) {
+        Call<Void> call = apiService.actualizarPago(id, titulo, importe, pagadoPor);
         call.enqueue(callback);
     }
 

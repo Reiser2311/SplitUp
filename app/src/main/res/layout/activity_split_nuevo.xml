@@ -25,6 +25,7 @@
     </androidx.appcompat.widget.Toolbar>
 
     <TextView
+        android:id="@+id/txtNuevoSplit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -33,6 +34,18 @@
         android:textColor="@color/white"
         android:textSize="30sp"
         android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/txtEditarSplit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="24dp"
+        android:text="Editar Split"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:visibility="gone"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -81,6 +94,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_weight="1"
+            android:textColor="@color/white"
             android:inputType="text"/>
 
         <Button
@@ -106,5 +120,18 @@
         android:backgroundTint="@color/boton"
         android:text="Crear Split"
         android:textColor="@color/white"/>
+
+    <Button
+        android:id="@+id/buttonActualzarSplit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="10dp"
+        android:textSize="20sp"
+        android:backgroundTint="@color/boton"
+        android:text="Actualizar Split"
+        android:textColor="@color/white"
+        android:visibility="gone"/>
 
 </LinearLayout>

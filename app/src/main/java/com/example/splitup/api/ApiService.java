@@ -11,6 +11,7 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface ApiService {
     @POST("usuarios")
@@ -23,7 +24,7 @@ public interface ApiService {
     Call<List<Usuario>> obtenerUsuarios();
 
     @PUT("usuarios/{correo}")
-    Call<Usuario> actualizarUsuario(@Path("correo") String correo, @Body Usuario usuarioObjeto);
+    Call<Void> actualizarUsuario(@Path("correo") String correo, @Query("nombre") String nombre, @Query("contrasenya") String constrasenya);
 
     @DELETE("usuarios/{correo}")
     Call<Void> eliminarUsuario(@Path("correo") String correo);
@@ -41,7 +42,7 @@ public interface ApiService {
     Call<List<Split>> obtenerSplitsPorUsuario(@Path("correo") String correo);
 
     @PUT("splits/{id}")
-    Call<Split> actualizarSplit(@Path("id") int id, @Body Split splitObjeto);
+    Call<Void> actualizarSplit(@Path("id") int id, @Query("titulo") String titulo, @Query("participantes") List<String> participantes);
 
     @DELETE("splits/{id}")
     Call<Void> eliminarSplit(@Path("id") int id);
@@ -59,7 +60,7 @@ public interface ApiService {
     Call<List<Pago>> obtenerPagos();
 
     @PUT("pagos/{id}")
-    Call<Pago> actualizarPago(@Path("id") int id, @Body Pago pagoObjeto);
+    Call<Void> actualizarPago(@Path("id") int id, @Query("titulo") String titulo, @Query("importe") Double importe, @Query("pagadoPor") String pagadoPor);
 
     @DELETE("pagos/{id}")
     Call<Void> eliminarPago(@Path("id") int id);

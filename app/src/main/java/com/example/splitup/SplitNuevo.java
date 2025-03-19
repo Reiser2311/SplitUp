@@ -24,12 +24,16 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.splitup.objetos.Pago;
 import com.example.splitup.objetos.Split;
 import com.example.splitup.objetos.Usuario;
+import com.example.splitup.repositorios.RepositorioPago;
 import com.example.splitup.repositorios.RepositorioSplit;
 import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -43,10 +47,17 @@ public class SplitNuevo extends AppCompatActivity {
     ListView listViewParticipantes;
     Button buttonAnyadirParticipante;
     Button buttonCrearSplit;
+    Button buttonActualizarSplit;
     EditText edtxtNombre;
     EditText edtxtParticipante;
+    TextView txtNuevoSplit;
+    TextView txtEditarSplit;
 
     ArrayList<String> participantes;
+
+    ArrayAdapter<String> adapter;
+
+    int idSplitActivo;
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
@@ -62,11 +73,13 @@ public class SplitNuevo extends AppCompatActivity {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
         participantes.remove(info.position);
+
         if (participantes.isEmpty()) {
             listViewParticipantes.setVisibility(View.GONE);
-        } else {
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(SplitNuevo.this, android.R.layout.simple_list_item_1, participantes);
+            adapter = new ArrayAdapter<>(SplitNuevo.this, R.layout.vista_lista_participantes, R.id.texto_item, participantes);
             listViewParticipantes.setAdapter(adapter);
+        } else {
+            adapter.notifyDataSetChanged();
         }
         return super.onContextItemSelected(item);
     }
@@ -83,6 +96,14 @@ public class SplitNuevo extends AppCompatActivity {
         buttonCrearSplit = findViewById(R.id.buttonCrearSplit);
         edtxtNombre = findViewById(R.id.editTextNombre);
         edtxtParticipante = findViewById(R.id.edtxtNombreParticipante);
+        txtNuevoSplit = findViewById(R.id.txtNuevoSplit);
+        txtEditarSplit = findViewById(R.id.txtEditarSplit);
+        buttonActualizarSplit = findViewById(R.id.buttonActualzarSplit);
+
+        participantes = new ArrayList<>();
+
+        adapter = new ArrayAdapter<>(SplitNuevo.this, R.layout.vista_lista_participantes, R.id.texto_item, participantes);
+        listViewParticipantes.setAdapter(adapter);
 
         String text = "SplitUp";
         SpannableString spannable = new SpannableString(text);
@@ -90,7 +111,7 @@ public class SplitNuevo extends AppCompatActivity {
         spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#4E00CC")), 5, 6, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         logo.setText(spannable);
 
-        participantes = new ArrayList<>();
+
         registerForContextMenu(listViewParticipantes);
 
         setSupportActionBar(miToolbar);
@@ -104,9 +125,17 @@ public class SplitNuevo extends AppCompatActivity {
 
                 if (!nombreParticipante.isEmpty()) {
                     listViewParticipantes.setVisibility(View.VISIBLE);
-                    participantes.add(nombreParticipante);
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(SplitNuevo.this, android.R.layout.simple_list_item_1, participantes);
-                    listViewParticipantes.setAdapter(adapter);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            participantes.add(nombreParticipante);
+                            adapter.notifyDataSetChanged();
+                        }
+                    });
+
+
+
                     edtxtParticipante.setText("");
                 }
             }
@@ -122,7 +151,7 @@ public class SplitNuevo extends AppCompatActivity {
                 String correo = preferences.getString("correo", "");
                 usuario.setCorreo(correo);
                 split.setTitulo(edtxtNombre.getText().toString());
-                split.setParticipantes(participantes.toArray(new String[0]));
+                split.setParticipantes(participantes);
                 split.setUsuario(usuario);
 
                 Log.d("Debug", "Split a enviar: " + new Gson().toJson(split));
@@ -149,6 +178,75 @@ public class SplitNuevo extends AppCompatActivity {
                 });
             }
         });
+
+        buttonActualizarSplit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RepositorioSplit repositorioSplit = new RepositorioSplit();
+
+                repositorioSplit.actualizarSplit(idSplitActivo, edtxtNombre.getText().toString(), participantes, new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        if (response.isSuccessful()) {
+                            Toast.makeText(SplitNuevo.this, "Split actualizado correctamente", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(SplitNuevo.this, Splits.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(SplitNuevo.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                            try {
+                                Log.e("Respuesta", "Codigo: " + response.code() + " - Error: " + response.errorBody().string());
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        Toast.makeText(SplitNuevo.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        SharedPreferences preferences = getSharedPreferences("SplitActivo", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        idSplitActivo = preferences.getInt("idSplit", 0);
+        editor.remove("idSplit");
+        editor.apply();
+        if (idSplitActivo != 0) {
+            buttonCrearSplit.setVisibility(View.GONE);
+            buttonActualizarSplit.setVisibility(View.VISIBLE);
+            txtNuevoSplit.setVisibility(View.GONE);
+            txtEditarSplit.setVisibility(View.VISIBLE);
+
+            RepositorioSplit repositorioSplit = new RepositorioSplit();
+            repositorioSplit.obtenerSplit(idSplitActivo, new Callback<Split>() {
+                @Override
+                public void onResponse(Call<Split> call, Response<Split> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        Split split = response.body();
+                        edtxtNombre.setText(split.getTitulo());
+                        participantes = (ArrayList<String>) split.getParticipantes();
+                        adapter.notifyDataSetChanged();
+                        listViewParticipantes.setVisibility(View.VISIBLE);
+                    } else {
+                        Toast.makeText(SplitNuevo.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Split> call, Throwable t) {
+                    Toast.makeText(SplitNuevo.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        super.onResume();
     }
 }
 

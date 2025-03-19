@@ -34,16 +34,20 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import androidx.core.content.ContextCompat;
+
+
 public class Splits extends AppCompatActivity {
 
     TextView logo;
     Toolbar miToolbar;
-    ListView miLista;
+    ListView listaSplits;
     ArrayList<DatosSplits> lista;
     Button nuevoSplit;
     Boolean sesionIniciada;
     RelativeLayout layoutNoHaySplits;
-    private int splitSeleccionado;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -60,7 +64,7 @@ public class Splits extends AppCompatActivity {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         int posicion = info.position;
 
-        AdaptadorSplits adaptador = (AdaptadorSplits) miLista.getAdapter();
+        AdaptadorSplits adaptador = (AdaptadorSplits) listaSplits.getAdapter();
 
         DatosSplits datos = adaptador.getItem(posicion);
 
@@ -74,6 +78,7 @@ public class Splits extends AppCompatActivity {
                     if (response.isSuccessful()) {
                         rehacerLista();
                         Toast.makeText(Splits.this, "Split eliminado", Toast.LENGTH_SHORT).show();
+                        rehacerLista();
                     } else {
                         Toast.makeText(Splits.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
                     }
@@ -85,7 +90,13 @@ public class Splits extends AppCompatActivity {
                 }
             });
         } else if (id == R.id.editar){
+            SharedPreferences preferences = getSharedPreferences("SplitActivo", MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putInt("idSplit", datos.getId());
+            editor.apply();
 
+            Intent intent = new Intent(Splits.this, SplitNuevo.class);
+            startActivity(intent);
         }
 
         return super.onContextItemSelected(item);
@@ -110,8 +121,8 @@ public class Splits extends AppCompatActivity {
             invalidateOptionsMenu();
             lista.clear();
             AdaptadorSplits adaptador = new AdaptadorSplits(this, lista);
-            miLista.setAdapter(adaptador);
-            miLista.setVisibility(View.GONE);
+            listaSplits.setAdapter(adaptador);
+            listaSplits.setVisibility(View.GONE);
             layoutNoHaySplits.setVisibility(View.VISIBLE);
         } else if (id == R.id.Perfil) {
             Intent intent = new Intent(this, Perfil.class);
@@ -127,7 +138,7 @@ public class Splits extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 
-        menu.setHeaderTitle(miLista.getAdapter().getItem(info.position).toString());
+        menu.setHeaderTitle(((DatosSplits) listaSplits.getAdapter().getItem(info.position)).getNombre());
         inflater.inflate(R.menu.menu_eliminar_editar, menu);
     }
 
@@ -160,8 +171,8 @@ public class Splits extends AppCompatActivity {
                     }
 
                     AdaptadorSplits adaptador = new AdaptadorSplits(Splits.this, datosSplits);
-                    miLista.setAdapter(adaptador);
-                    miLista.setVisibility(View.VISIBLE);
+                    listaSplits.setAdapter(adaptador);
+                    listaSplits.setVisibility(View.VISIBLE);
                     layoutNoHaySplits.setVisibility(View.GONE);
                 } else if (response.body() != null){
                     Toast.makeText(Splits.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
@@ -175,6 +186,13 @@ public class Splits extends AppCompatActivity {
         });
     }
 
+    private void cambiarColorOverflow() {
+        Drawable overflowIcon = miToolbar.getOverflowIcon();
+        if (overflowIcon != null) {
+            overflowIcon.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_ATOP);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -182,7 +200,7 @@ public class Splits extends AppCompatActivity {
 
         logo = findViewById(R.id.Logo);
         miToolbar= findViewById(R.id.miToolbar);
-        miLista = findViewById(R.id.listViewSplits);
+        listaSplits = findViewById(R.id.listViewSplits);
         lista = new ArrayList<>();
         nuevoSplit = findViewById(R.id.botonNuevosSplit);
         sesionIniciada = false;
@@ -195,19 +213,16 @@ public class Splits extends AppCompatActivity {
         logo.setText(spannable);
 
         setSupportActionBar(miToolbar);
+        cambiarColorOverflow();
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
-
-        miLista.setOnCreateContextMenuListener((menu, v, menuInfo) -> {
-            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-            splitSeleccionado = lista.get(info.position).getId();
-        });
+        registerForContextMenu(listaSplits);
 
         nuevoSplit.setOnClickListener(v -> {
             Intent intent = new Intent(Splits.this, SplitNuevo.class);
             startActivity(intent);
         });
 
-        miLista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listaSplits.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 SharedPreferences preferences = getSharedPreferences("SplitActivo", MODE_PRIVATE);

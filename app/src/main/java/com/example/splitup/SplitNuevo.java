@@ -167,7 +167,7 @@ public class SplitNuevo extends AppCompatActivity {
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
                         } else {
-                            Toast.makeText(SplitNuevo.this, "Error al crear el split " + response.code(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SplitNuevo.this, "Error al crear el split: " + response.code(), Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -231,7 +231,8 @@ public class SplitNuevo extends AppCompatActivity {
                     if (response.isSuccessful() && response.body() != null) {
                         Split split = response.body();
                         edtxtNombre.setText(split.getTitulo());
-                        participantes = (ArrayList<String>) split.getParticipantes();
+                        participantes.clear();
+                        participantes.addAll(split.getParticipantes());
                         adapter.notifyDataSetChanged();
                         listViewParticipantes.setVisibility(View.VISIBLE);
                     } else {

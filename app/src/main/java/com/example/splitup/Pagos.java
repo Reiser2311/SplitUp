@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -15,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -33,10 +37,11 @@ public class Pagos extends AppCompatActivity {
 
     TextView logo;
     Toolbar miToolbar;
-    ListView miLista;
+    ListView listaPagos;
     ArrayList<String> lista;
     Button nuevoPago;
     RelativeLayout layoutNoHayPagos;
+    Boolean ultimoItem = false;
 
     @Override
     protected void onResume() {
@@ -48,6 +53,10 @@ public class Pagos extends AppCompatActivity {
         SharedPreferences preferences = getSharedPreferences("SplitActivo", MODE_PRIVATE);
         RepositorioPago repositorioPago = new RepositorioPago();
         int id = preferences.getInt("idSplit", 0);
+        if (ultimoItem) {
+            listaPagos.setVisibility(View.GONE);
+            layoutNoHayPagos.setVisibility(View.VISIBLE);
+        }
         repositorioPago.obtenerPagosPorSplit(id, new Callback<List<Pago>>() {
             @Override
             public void onResponse(Call<List<Pago>> call, Response<List<Pago>> response) {
@@ -61,8 +70,8 @@ public class Pagos extends AppCompatActivity {
                     }
 
                     AdaptadorPagos adaptador = new AdaptadorPagos(Pagos.this, datosPagos);
-                    miLista.setAdapter(adaptador);
-                    miLista.setVisibility(View.VISIBLE);
+                    listaPagos.setAdapter(adaptador);
+                    listaPagos.setVisibility(View.VISIBLE);
                     layoutNoHayPagos.setVisibility(View.GONE);
                 } else if (response.body() != null) {
                     Toast.makeText(Pagos.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
@@ -78,13 +87,59 @@ public class Pagos extends AppCompatActivity {
     }
 
     @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+
+        menu.setHeaderTitle(((DatosPagos) listaPagos.getAdapter().getItem(info.position)).getNombre());
+        inflater.inflate(R.menu.menu_eliminar, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        int posicion = info.position;
+
+        AdaptadorPagos adaptadorPagos = (AdaptadorPagos) listaPagos.getAdapter();
+
+        DatosPagos datos = adaptadorPagos.getItem(posicion);
+
+        int id = item.getItemId();
+
+        if (id == R.id.borrar) {
+            RepositorioPago repositorioPago = new RepositorioPago();
+            repositorioPago.eliminarPago(datos.getId(), new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        if (listaPagos.getAdapter().getCount() == 1) {
+                            ultimoItem = true;
+                        }
+                        rehacerLista();
+                        Toast.makeText(Pagos.this, "Pago eliminado", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(Pagos.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    Toast.makeText(Pagos.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+        return super.onContextItemSelected(item);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pagos);
 
         logo = findViewById(R.id.Logo);
         miToolbar= findViewById(R.id.miToolbar);
-        miLista = findViewById(R.id.listViewPagos);
+        listaPagos = findViewById(R.id.listViewPagos);
         lista = new ArrayList<>();
         nuevoPago = findViewById(R.id.botonNuevosPagos);
         layoutNoHayPagos = findViewById(R.id.layoutNoHayPagos);
@@ -97,13 +152,14 @@ public class Pagos extends AppCompatActivity {
 
         setSupportActionBar(miToolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+        registerForContextMenu(listaPagos);
 
         nuevoPago.setOnClickListener(v -> {
             Intent intent = new Intent(Pagos.this, PagoNuevo.class);
             startActivity(intent);
         });
 
-        miLista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listaPagos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 

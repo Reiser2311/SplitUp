@@ -48,6 +48,7 @@ public class Splits extends AppCompatActivity {
     Button nuevoSplit;
     Boolean sesionIniciada;
     RelativeLayout layoutNoHaySplits;
+    Boolean ultimoItem = false;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -76,9 +77,11 @@ public class Splits extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     if (response.isSuccessful()) {
+                        if (listaSplits.getAdapter().getCount() == 1) {
+                            ultimoItem = true;
+                        }
                         rehacerLista();
                         Toast.makeText(Splits.this, "Split eliminado", Toast.LENGTH_SHORT).show();
-                        rehacerLista();
                     } else {
                         Toast.makeText(Splits.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
                     }
@@ -158,6 +161,10 @@ public class Splits extends AppCompatActivity {
         SharedPreferences preferences = getSharedPreferences("InicioSesion", MODE_PRIVATE);
         RepositorioSplit repositorioSplit = new RepositorioSplit();
         String correo = preferences.getString("correo", "");
+        if (ultimoItem) {
+            listaSplits.setVisibility(View.GONE);
+            layoutNoHaySplits.setVisibility(View.VISIBLE);
+        }
         repositorioSplit.obtenerSplitsPorUsuario(correo , new Callback<List<Split>>() {
             @Override
             public void onResponse(Call<List<Split>> call, Response<List<Split>> response) {
@@ -218,8 +225,12 @@ public class Splits extends AppCompatActivity {
         registerForContextMenu(listaSplits);
 
         nuevoSplit.setOnClickListener(v -> {
-            Intent intent = new Intent(Splits.this, SplitNuevo.class);
-            startActivity(intent);
+            if (sesionIniciada) {
+                Intent intent = new Intent(Splits.this, SplitNuevo.class);
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Inicia sesion primero antes de crear un Split", Toast.LENGTH_SHORT).show();
+            }
         });
 
         listaSplits.setOnItemClickListener(new AdapterView.OnItemClickListener() {

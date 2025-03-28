@@ -145,37 +145,45 @@ public class SplitNuevo extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Split split = new Split();
-                Usuario usuario = new Usuario();
-                SharedPreferences preferences = getSharedPreferences("InicioSesion", MODE_PRIVATE);
-                String correo = preferences.getString("correo", "");
-                usuario.setCorreo(correo);
-                split.setTitulo(edtxtNombre.getText().toString());
-                split.setParticipantes(participantes);
-                split.setUsuario(usuario);
+                if (!participantes.isEmpty() && !edtxtNombre.getText().toString().isEmpty()) {
+                    Split split = new Split();
+                    Usuario usuario = new Usuario();
+                    SharedPreferences preferences = getSharedPreferences("InicioSesion", MODE_PRIVATE);
+                    String correo = preferences.getString("correo", "");
+                    usuario.setCorreo(correo);
+                    split.setTitulo(edtxtNombre.getText().toString());
+                    split.setParticipantes(participantes);
+                    split.setUsuario(usuario);
 
-                Log.d("Debug", "Split a enviar: " + new Gson().toJson(split));
+                    Log.d("Debug", "Split a enviar: " + new Gson().toJson(split));
 
-                RepositorioSplit repositorioSplit = new RepositorioSplit();
-                repositorioSplit.crearSplit(split, new Callback<Split>() {
-                    @Override
-                    public void onResponse(Call<Split> call, Response<Split> response) {
-                        if (response.isSuccessful()) {
-                            Split splitCreado = response.body();
-                            Toast.makeText(SplitNuevo.this, "Split creado con éxito: " + splitCreado.getTitulo(), Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(SplitNuevo.this, Splits.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
-                        } else {
-                            Toast.makeText(SplitNuevo.this, "Error al crear el split: " + response.code(), Toast.LENGTH_SHORT).show();
+                    RepositorioSplit repositorioSplit = new RepositorioSplit();
+                    repositorioSplit.crearSplit(split, new Callback<Split>() {
+                        @Override
+                        public void onResponse(Call<Split> call, Response<Split> response) {
+                            if (response.isSuccessful()) {
+                                Split splitCreado = response.body();
+                                Toast.makeText(SplitNuevo.this, "Split creado con éxito: " + splitCreado.getTitulo(), Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(SplitNuevo.this, Splits.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                            } else {
+                                Toast.makeText(SplitNuevo.this, "Error al crear el split: " + response.code(), Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<Split> call, Throwable t) {
-                        Toast.makeText(SplitNuevo.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                        @Override
+                        public void onFailure(Call<Split> call, Throwable t) {
+                            Toast.makeText(SplitNuevo.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else if (participantes.isEmpty()) {
+                    edtxtParticipante.setError("Los participantes no pueden estar vacios");
+                } else {
+                    edtxtNombre.setError("El nombre no puede estar vacio");
+                }
+
+
             }
         });
 

@@ -88,38 +88,46 @@ public class PagoNuevo extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Pago pago = new Pago();
-                Split split = new Split();
-                SharedPreferences preferences = getSharedPreferences("SplitActivo", MODE_PRIVATE);
-                int id = preferences.getInt("idSplit", 0);
-                split.setId(id);
-                pago.setImporte(Double.parseDouble(edtxtImportePago.getText().toString()));
-                pago.setSplit(split);
-                pago.setPagadoPor(pagadoPor.getSelectedItem().toString());
-                pago.setTitulo(edtxtNombrePago.getText().toString());
+                if (!edtxtNombrePago.getText().toString().isEmpty() && !edtxtImportePago.getText().toString().isEmpty()) {
+                    Pago pago = new Pago();
+                    Split split = new Split();
+                    SharedPreferences preferences = getSharedPreferences("SplitActivo", MODE_PRIVATE);
+                    int id = preferences.getInt("idSplit", 0);
+                    split.setId(id);
+                    pago.setImporte(Double.parseDouble(edtxtImportePago.getText().toString()));
+                    pago.setSplit(split);
+                    pago.setPagadoPor(pagadoPor.getSelectedItem().toString());
+                    pago.setTitulo(edtxtNombrePago.getText().toString());
 
-                Log.d("Debug", "Pago a enviar: " + new Gson().toJson(pago));
+                    Log.d("Debug", "Pago a enviar: " + new Gson().toJson(pago));
 
-                RepositorioPago repositorioPago = new RepositorioPago();
-                repositorioPago.crearPago(pago, new Callback<Pago>() {
-                    @Override
-                    public void onResponse(Call<Pago> call, Response<Pago> response) {
-                        if (response.isSuccessful()) {
-                            Pago pagoCreado = response.body();
-                            Toast.makeText(PagoNuevo.this, "Pago creado con exito: " + pagoCreado.getTitulo(), Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(PagoNuevo.this, Pagos.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
-                        } else {
-                            Toast.makeText(PagoNuevo.this, "Error al crear el pago: " + response.code(), Toast.LENGTH_SHORT).show();
+                    RepositorioPago repositorioPago = new RepositorioPago();
+                    repositorioPago.crearPago(pago, new Callback<Pago>() {
+                        @Override
+                        public void onResponse(Call<Pago> call, Response<Pago> response) {
+                            if (response.isSuccessful()) {
+                                Pago pagoCreado = response.body();
+                                Toast.makeText(PagoNuevo.this, "Pago creado con exito: " + pagoCreado.getTitulo(), Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(PagoNuevo.this, Pagos.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                            } else {
+                                Toast.makeText(PagoNuevo.this, "Error al crear el pago: " + response.code(), Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<Pago> call, Throwable t) {
-                        Toast.makeText(PagoNuevo.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                        @Override
+                        public void onFailure(Call<Pago> call, Throwable t) {
+                            Toast.makeText(PagoNuevo.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else if (edtxtNombrePago.getText().toString().isEmpty()) {
+                    edtxtNombrePago.setError("El nombre no puede estar vacio");
+                } else {
+                    edtxtImportePago.setError("El importe no puede estar vacio");
+                }
+
+
             }
         });
 

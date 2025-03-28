@@ -66,6 +66,15 @@
         android:layout_weight="1"
         android:visibility="gone"/>
 
+    <ListView
+        android:id="@+id/listViewTransacciones"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_weight="1"
+        android:visibility="gone"/>
+
     <Button
         android:id="@+id/botonNuevosPagos"
         android:layout_width="70dp"

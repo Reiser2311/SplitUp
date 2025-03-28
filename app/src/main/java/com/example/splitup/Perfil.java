@@ -65,7 +65,7 @@ public class Perfil extends AppCompatActivity {
         buttonActualizarUsuario.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!editTextContrasenyaPerfil.getText().toString().isEmpty()) {
+                if (!editTextContrasenyaPerfil.getText().toString().isEmpty() && !editTextNombrePerfil.getText().toString().isEmpty()) {
                     if (editTextContrasenyaPerfil.getText().toString().equals(editTextConfirmarContrasenyaPerfil.getText().toString())) {
                         Usuario usuario = new Usuario();
                         usuario.setNombre(editTextNombrePerfil.getText().toString());
@@ -100,8 +100,10 @@ public class Perfil extends AppCompatActivity {
                     } else {
                         editTextConfirmarContrasenyaPerfil.setError("Las contraseñas no coinciden");
                     }
-                } else {
+                } else if (editTextContrasenyaPerfil.getText().toString().isEmpty()) {
                     editTextContrasenyaPerfil.setError("La contraseña no puede estar vacía");
+                } else {
+                    editTextNombrePerfil.setError("El nombre no puede estar vacio");
                 }
             }
         });

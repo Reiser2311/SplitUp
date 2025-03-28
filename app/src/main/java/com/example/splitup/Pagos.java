@@ -1,5 +1,6 @@
 package com.example.splitup;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -108,26 +110,46 @@ public class Pagos extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.borrar) {
-            RepositorioPago repositorioPago = new RepositorioPago();
-            repositorioPago.eliminarPago(datos.getId(), new Callback<Void>() {
-                @Override
-                public void onResponse(Call<Void> call, Response<Void> response) {
-                    if (response.isSuccessful()) {
-                        if (listaPagos.getAdapter().getCount() == 1) {
-                            ultimoItem = true;
-                        }
-                        rehacerLista();
-                        Toast.makeText(Pagos.this, "Pago eliminado", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(Pagos.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
-                    }
-                }
+            AlertDialog.Builder builder = new AlertDialog.Builder(Pagos.this);
+            builder.setTitle("Borrar pago");
+            builder.setMessage("¿Estás seguro de que quiere eliminar este pago?");
 
+            builder.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
                 @Override
-                public void onFailure(Call<Void> call, Throwable t) {
-                    Toast.makeText(Pagos.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                public void onClick(DialogInterface dialog, int which) {
+                    RepositorioPago repositorioPago = new RepositorioPago();
+                    repositorioPago.eliminarPago(datos.getId(), new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            if (response.isSuccessful()) {
+                                if (listaPagos.getAdapter().getCount() == 1) {
+                                    ultimoItem = true;
+                                }
+                                rehacerLista();
+                                Toast.makeText(Pagos.this, "Pago eliminado", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(Pagos.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                            Toast.makeText(Pagos.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             });
+
+            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
         }
         return super.onContextItemSelected(item);
     }

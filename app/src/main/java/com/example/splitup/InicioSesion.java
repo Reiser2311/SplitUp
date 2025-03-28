@@ -80,18 +80,23 @@ public class InicioSesion extends AppCompatActivity {
                         public void onResponse(Call<Usuario> call, Response<Usuario> response) {
                             if (response.isSuccessful() && response.body() != null) {
                                 Usuario usuario = response.body();
-                                Toast.makeText(InicioSesion.this, "Bienvenido, " + usuario.getNombre(), Toast.LENGTH_SHORT).show();
-                                SharedPreferences preferences = getSharedPreferences("InicioSesion", MODE_PRIVATE);
-                                SharedPreferences.Editor editor = preferences.edit();
-                                editor.putBoolean("sesionIniciada", true);
-                                editor.putString("correo", correo);
-                                editor.apply();
+                                if (usuario.getContrasenya().equals(contrasenya)) {
+                                    Toast.makeText(InicioSesion.this, "Bienvenido, " + usuario.getNombre(), Toast.LENGTH_SHORT).show();
+                                    SharedPreferences preferences = getSharedPreferences("InicioSesion", MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = preferences.edit();
+                                    editor.putBoolean("sesionIniciada", true);
+                                    editor.putString("correo", correo);
+                                    editor.apply();
+                                    Intent intent = new Intent(InicioSesion.this, Splits.class);
+                                    startActivity(intent);
+                                    finish();
+                                } else {
+                                    Toast.makeText(InicioSesion.this, "Contraseña incorrecta", Toast.LENGTH_SHORT).show();
+                                }
 
-                                Intent intent = new Intent(InicioSesion.this, Splits.class);
-                                startActivity(intent);
-                                finish();
+
                             } else if (response.body() == null){
-                                Toast.makeText(InicioSesion.this, "Usuario no registrado", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(InicioSesion.this, "Usuario no encotrado", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(InicioSesion.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
                             }

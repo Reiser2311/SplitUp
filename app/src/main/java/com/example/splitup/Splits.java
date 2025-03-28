@@ -1,5 +1,6 @@
 package com.example.splitup;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -72,26 +74,46 @@ public class Splits extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.borrar) {
-            RepositorioSplit repositorioSplit = new RepositorioSplit();
-            repositorioSplit.eliminarSplit(datos.getId(), new Callback<Void>() {
-                @Override
-                public void onResponse(Call<Void> call, Response<Void> response) {
-                    if (response.isSuccessful()) {
-                        if (listaSplits.getAdapter().getCount() == 1) {
-                            ultimoItem = true;
-                        }
-                        rehacerLista();
-                        Toast.makeText(Splits.this, "Split eliminado", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(Splits.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
-                    }
-                }
+            AlertDialog.Builder builder = new AlertDialog.Builder(Splits.this);
+            builder.setTitle("Borrar split");
+            builder.setMessage("¿Estás seguro de que quiere borrar este split?");
 
+            builder.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
                 @Override
-                public void onFailure(Call<Void> call, Throwable t) {
-                    Toast.makeText(Splits.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                public void onClick(DialogInterface dialog, int which) {
+                    RepositorioSplit repositorioSplit = new RepositorioSplit();
+                    repositorioSplit.eliminarSplit(datos.getId(), new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            if (response.isSuccessful()) {
+                                if (listaSplits.getAdapter().getCount() == 1) {
+                                    ultimoItem = true;
+                                }
+                                rehacerLista();
+                                Toast.makeText(Splits.this, "Split eliminado", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(Splits.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                            Toast.makeText(Splits.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             });
+
+            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
         } else if (id == R.id.editar){
             SharedPreferences preferences = getSharedPreferences("SplitActivo", MODE_PRIVATE);
             SharedPreferences.Editor editor = preferences.edit();

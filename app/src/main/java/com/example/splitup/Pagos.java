@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -23,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import com.example.splitup.objetos.Pago;
 import com.example.splitup.repositorios.RepositorioPago;
@@ -39,11 +41,15 @@ public class Pagos extends AppCompatActivity {
 
     TextView logo;
     Toolbar miToolbar;
-    ListView listaPagos;
+    ListView listViewPagos;
     ArrayList<String> lista;
     Button nuevoPago;
     RelativeLayout layoutNoHayPagos;
-    Boolean ultimoItem = false;
+    boolean ultimoItem = false;
+    ListView listViewTransacciones;
+    LinearLayout layoutSiHayPagos;
+    Button btnPagos;
+    Button btnTransacciones;
 
     @Override
     protected void onResume() {
@@ -56,7 +62,7 @@ public class Pagos extends AppCompatActivity {
         RepositorioPago repositorioPago = new RepositorioPago();
         int id = preferences.getInt("idSplit", 0);
         if (ultimoItem) {
-            listaPagos.setVisibility(View.GONE);
+            layoutSiHayPagos.setVisibility(View.GONE);
             layoutNoHayPagos.setVisibility(View.VISIBLE);
         }
         repositorioPago.obtenerPagosPorSplit(id, new Callback<List<Pago>>() {
@@ -72,8 +78,8 @@ public class Pagos extends AppCompatActivity {
                     }
 
                     AdaptadorPagos adaptador = new AdaptadorPagos(Pagos.this, datosPagos);
-                    listaPagos.setAdapter(adaptador);
-                    listaPagos.setVisibility(View.VISIBLE);
+                    listViewPagos.setAdapter(adaptador);
+                    layoutSiHayPagos.setVisibility(View.VISIBLE);
                     layoutNoHayPagos.setVisibility(View.GONE);
                 } else if (response.body() != null) {
                     Toast.makeText(Pagos.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
@@ -94,7 +100,7 @@ public class Pagos extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 
-        menu.setHeaderTitle(((DatosPagos) listaPagos.getAdapter().getItem(info.position)).getNombre());
+        menu.setHeaderTitle(((DatosPagos) listViewPagos.getAdapter().getItem(info.position)).getNombre());
         inflater.inflate(R.menu.menu_eliminar, menu);
     }
 
@@ -103,7 +109,7 @@ public class Pagos extends AppCompatActivity {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         int posicion = info.position;
 
-        AdaptadorPagos adaptadorPagos = (AdaptadorPagos) listaPagos.getAdapter();
+        AdaptadorPagos adaptadorPagos = (AdaptadorPagos) listViewPagos.getAdapter();
 
         DatosPagos datos = adaptadorPagos.getItem(posicion);
 
@@ -122,7 +128,7 @@ public class Pagos extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<Void> call, Response<Void> response) {
                             if (response.isSuccessful()) {
-                                if (listaPagos.getAdapter().getCount() == 1) {
+                                if (listViewPagos.getAdapter().getCount() == 1) {
                                     ultimoItem = true;
                                 }
                                 rehacerLista();
@@ -161,10 +167,14 @@ public class Pagos extends AppCompatActivity {
 
         logo = findViewById(R.id.Logo);
         miToolbar= findViewById(R.id.miToolbar);
-        listaPagos = findViewById(R.id.listViewPagos);
+        listViewPagos = findViewById(R.id.listViewPagos);
         lista = new ArrayList<>();
         nuevoPago = findViewById(R.id.botonNuevosPagos);
         layoutNoHayPagos = findViewById(R.id.layoutNoHayPagos);
+        listViewTransacciones = findViewById(R.id.listViewTransacciones);
+        layoutSiHayPagos = findViewById(R.id.layoutSiHayPagos);
+        btnPagos = findViewById(R.id.btnPagos);
+        btnTransacciones = findViewById(R.id.btnTransacciones);
 
         String text = "SplitUp";
         SpannableString spannable = new SpannableString(text);
@@ -174,14 +184,14 @@ public class Pagos extends AppCompatActivity {
 
         setSupportActionBar(miToolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
-        registerForContextMenu(listaPagos);
+        registerForContextMenu(listViewPagos);
 
         nuevoPago.setOnClickListener(v -> {
             Intent intent = new Intent(Pagos.this, PagoNuevo.class);
             startActivity(intent);
         });
 
-        listaPagos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listViewPagos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
@@ -192,6 +202,26 @@ public class Pagos extends AppCompatActivity {
 
                 Intent intent = new Intent(Pagos.this, PagoNuevo.class);
                 startActivity(intent);
+            }
+        });
+
+        btnPagos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listViewTransacciones.setVisibility(View.GONE);
+                listViewPagos.setVisibility(View.VISIBLE);
+                btnPagos.setBackgroundTintList(ContextCompat.getColorStateList(Pagos.this, R.color.hint));
+                btnTransacciones.setBackgroundTintList(ContextCompat.getColorStateList(Pagos.this, R.color.boton));
+            }
+        });
+
+        btnTransacciones.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listViewPagos.setVisibility(View.GONE);
+                listViewTransacciones.setVisibility(View.VISIBLE);
+                btnTransacciones.setBackgroundTintList(ContextCompat.getColorStateList(Pagos.this, R.color.hint));
+                btnPagos.setBackgroundTintList(ContextCompat.getColorStateList(Pagos.this, R.color.boton));
             }
         });
 

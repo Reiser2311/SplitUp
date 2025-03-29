@@ -57,23 +57,60 @@
 
     </RelativeLayout>
 
-    <ListView
-        android:id="@+id/listViewPagos"
+    <LinearLayout
+        android:id="@+id/layoutSiHayPagos"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:visibility="gone"/>
+        android:orientation="vertical"
+        android:visibility="gone">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
 
-    <ListView
-        android:id="@+id/listViewTransacciones"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_weight="1"
-        android:visibility="gone"/>
+            <Button
+                android:id="@+id/btnPagos"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/hint"
+                android:text="Pagos"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:layout_marginEnd="8dp"/>
+
+            <Button
+                android:id="@+id/btnTransacciones"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/boton"
+                android:text="Transacciones"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"/>
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/listViewPagos"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_weight="1"/>
+
+        <ListView
+            android:id="@+id/listViewTransacciones"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_weight="1"
+            android:visibility="gone"/>
+    </LinearLayout>
 
     <Button
         android:id="@+id/botonNuevosPagos"

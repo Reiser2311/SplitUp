@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -27,9 +28,14 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
 import com.example.splitup.objetos.Pago;
+import com.example.splitup.objetos.Split;
 import com.example.splitup.repositorios.RepositorioPago;
+import com.example.splitup.repositorios.RepositorioSplit;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -42,19 +48,58 @@ public class Pagos extends AppCompatActivity {
     TextView logo;
     Toolbar miToolbar;
     ListView listViewPagos;
-    ArrayList<String> lista;
     Button nuevoPago;
     RelativeLayout layoutNoHayPagos;
     boolean ultimoItem = false;
-    ListView listViewTransacciones;
+    ListView listViewSaldos;
     LinearLayout layoutSiHayPagos;
     Button btnPagos;
-    Button btnTransacciones;
+    Button btnSaldos;
+    LinearLayout layoutSaldos;
+    ArrayList<DatosPagos> datosPagos = new ArrayList<>();
+    ArrayList<DatosSaldos> datosSaldos = new ArrayList<>();
+    AdaptadorPagos adaptadorPagos;
+    AdaptadorSaldos adaptadorSaldos;
+    List<String> participantes = new ArrayList<>();
+    int idSplitActivo;
 
     @Override
     protected void onResume() {
         super.onResume();
+
+        Intent intent = getIntent();
+        String origen = intent.getStringExtra("origen");
+
+        if ("Splits".equals(origen)) {
+            obtenerParticipantes();
+            intent.removeExtra("origen");
+        }
+
         rehacerLista();
+    }
+
+    private void obtenerParticipantes() {
+        SharedPreferences preferences = getSharedPreferences("SplitActivo", MODE_PRIVATE);
+        RepositorioSplit repositorioSplit = new RepositorioSplit();
+        int id = preferences.getInt("idSplit", 0);
+
+        repositorioSplit.obtenerSplit(id, new Callback<Split>() {
+            @Override
+            public void onResponse(Call<Split> call, Response<Split> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Split split = response.body();
+                    participantes.clear();
+                    participantes.addAll(split.getParticipantes());
+                } else {
+                    Toast.makeText(Pagos.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Split> call, Throwable t) {
+                Toast.makeText(Pagos.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void rehacerLista() {
@@ -70,21 +115,11 @@ public class Pagos extends AppCompatActivity {
             public void onResponse(Call<List<Pago>> call, Response<List<Pago>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<Pago> pagos = response.body();
-
-                    ArrayList<DatosPagos> datosPagos = new ArrayList<>();
-                    for (Pago pago : pagos) {
-                        DatosPagos datosPago = new DatosPagos(pago.getTitulo(), pago.getPagadoPor(), pago.getImporte(), pago.getId());
-                        datosPagos.add(datosPago);
-                    }
-
-                    AdaptadorPagos adaptador = new AdaptadorPagos(Pagos.this, datosPagos);
-                    listViewPagos.setAdapter(adaptador);
-                    layoutSiHayPagos.setVisibility(View.VISIBLE);
-                    layoutNoHayPagos.setVisibility(View.GONE);
-                } else if (response.body() != null) {
+                    actualizarListaPagos(pagos);
+                    calcularSaldos(pagos);
+                } else {
                     Toast.makeText(Pagos.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
-
             }
 
             @Override
@@ -92,6 +127,49 @@ public class Pagos extends AppCompatActivity {
                 Toast.makeText(Pagos.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void actualizarListaPagos(List<Pago> pagos) {
+        datosPagos.clear();
+        for (Pago pago : pagos) {
+            DatosPagos datosPago = new DatosPagos(pago.getTitulo(), pago.getPagadoPor(), pago.getImporte(), pago.getId());
+            datosPagos.add(datosPago);
+        }
+        adaptadorPagos.notifyDataSetChanged();
+        layoutSiHayPagos.setVisibility(View.VISIBLE);
+        layoutNoHayPagos.setVisibility(View.GONE);
+    }
+
+    private void calcularSaldos(List<Pago> pagos) {
+
+        HashMap<String, Double> pagosRealizados = new HashMap<>();
+        double totalGasto = 0.0;
+
+        for (String participante : participantes) {
+            pagosRealizados.put(participante, 0.0);
+        }
+
+        for (Pago pago : pagos) {
+            String pagador = pago.getPagadoPor();
+            double cantidad = pago.getImporte();
+            pagosRealizados.put(pagador, pagosRealizados.getOrDefault(pagador, 0.0) + cantidad);
+            totalGasto += cantidad;
+        }
+
+        double deudaPorPersona = participantes.isEmpty() ? 0.00 : totalGasto / participantes.size();
+
+        datosSaldos.clear();
+        for (String participante : participantes) {
+            double saldoFinal = pagosRealizados.get(participante) - deudaPorPersona;
+            saldoFinal = new BigDecimal(saldoFinal).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+            datosSaldos.add(new DatosSaldos(participante, saldoFinal));
+        }
+
+        if (datosSaldos.isEmpty()) {
+            Log.e("ERROR_SALDOS", "¡Error! La lista de saldos está vacía después de calcular.");
+        }
+
+        adaptadorSaldos.notifyDataSetChanged();
     }
 
     @Override
@@ -168,13 +246,17 @@ public class Pagos extends AppCompatActivity {
         logo = findViewById(R.id.Logo);
         miToolbar= findViewById(R.id.miToolbar);
         listViewPagos = findViewById(R.id.listViewPagos);
-        lista = new ArrayList<>();
         nuevoPago = findViewById(R.id.botonNuevosPagos);
         layoutNoHayPagos = findViewById(R.id.layoutNoHayPagos);
-        listViewTransacciones = findViewById(R.id.listViewTransacciones);
+        listViewSaldos = findViewById(R.id.listViewSaldos);
         layoutSiHayPagos = findViewById(R.id.layoutSiHayPagos);
         btnPagos = findViewById(R.id.btnPagos);
-        btnTransacciones = findViewById(R.id.btnTransacciones);
+        btnSaldos = findViewById(R.id.btnSaldos);
+        layoutSaldos = findViewById(R.id.layoutSaldos);
+        adaptadorPagos = new AdaptadorPagos(Pagos.this, datosPagos);
+        listViewPagos.setAdapter(adaptadorPagos);
+        adaptadorSaldos = new AdaptadorSaldos(Pagos.this, datosSaldos);
+        listViewSaldos.setAdapter(adaptadorSaldos);
 
         String text = "SplitUp";
         SpannableString spannable = new SpannableString(text);
@@ -208,19 +290,19 @@ public class Pagos extends AppCompatActivity {
         btnPagos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listViewTransacciones.setVisibility(View.GONE);
+                layoutSaldos.setVisibility(View.GONE);
                 listViewPagos.setVisibility(View.VISIBLE);
                 btnPagos.setBackgroundTintList(ContextCompat.getColorStateList(Pagos.this, R.color.hint));
-                btnTransacciones.setBackgroundTintList(ContextCompat.getColorStateList(Pagos.this, R.color.boton));
+                btnSaldos.setBackgroundTintList(ContextCompat.getColorStateList(Pagos.this, R.color.boton));
             }
         });
 
-        btnTransacciones.setOnClickListener(new View.OnClickListener() {
+        btnSaldos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 listViewPagos.setVisibility(View.GONE);
-                listViewTransacciones.setVisibility(View.VISIBLE);
-                btnTransacciones.setBackgroundTintList(ContextCompat.getColorStateList(Pagos.this, R.color.hint));
+                layoutSaldos.setVisibility(View.VISIBLE);
+                btnSaldos.setBackgroundTintList(ContextCompat.getColorStateList(Pagos.this, R.color.hint));
                 btnPagos.setBackgroundTintList(ContextCompat.getColorStateList(Pagos.this, R.color.boton));
             }
         });

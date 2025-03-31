@@ -4,4 +4,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="boton">#FF4E00CC</color>
     <color name="hint">#FF838487</color>
+    <color name="saldo_negativo">#C70000</color>
+    <color name="saldo_positivo">#00C700</color>
 </resources>

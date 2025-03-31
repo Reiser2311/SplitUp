@@ -197,9 +197,7 @@ public class SplitNuevo extends AppCompatActivity {
                     public void onResponse(Call<Void> call, Response<Void> response) {
                         if (response.isSuccessful()) {
                             Toast.makeText(SplitNuevo.this, "Split actualizado correctamente", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(SplitNuevo.this, Splits.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
+                            finish();
                         } else {
                             Toast.makeText(SplitNuevo.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
                             try {

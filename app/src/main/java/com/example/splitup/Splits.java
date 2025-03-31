@@ -51,6 +51,8 @@ public class Splits extends AppCompatActivity {
     Boolean sesionIniciada;
     RelativeLayout layoutNoHaySplits;
     Boolean ultimoItem = false;
+    ArrayList<DatosSplits> datosSplits = new ArrayList<>();
+    AdaptadorSplits adaptador;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -192,15 +194,12 @@ public class Splits extends AppCompatActivity {
             public void onResponse(Call<List<Split>> call, Response<List<Split>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<Split> splits = response.body();
-
-                    ArrayList<DatosSplits> datosSplits = new ArrayList<>();
+                    datosSplits.clear();
                     for (Split split : splits) {
                         DatosSplits datosSplit = new DatosSplits(split.getTitulo(), split.getId());
                         datosSplits.add(datosSplit);
                     }
-
-                    AdaptadorSplits adaptador = new AdaptadorSplits(Splits.this, datosSplits);
-                    listaSplits.setAdapter(adaptador);
+                    adaptador.notifyDataSetChanged();
                     listaSplits.setVisibility(View.VISIBLE);
                     layoutNoHaySplits.setVisibility(View.GONE);
                 } else if (response.body() != null){
@@ -234,6 +233,8 @@ public class Splits extends AppCompatActivity {
         nuevoSplit = findViewById(R.id.botonNuevosSplit);
         sesionIniciada = false;
         layoutNoHaySplits = findViewById(R.id.layoutNoHaySplits);
+        adaptador = new AdaptadorSplits(Splits.this, datosSplits);
+        listaSplits.setAdapter(adaptador);
 
         String text = "SplitUp";
         SpannableString spannable = new SpannableString(text);
@@ -264,6 +265,7 @@ public class Splits extends AppCompatActivity {
                 editor.apply();
 
                 Intent intent = new Intent(Splits.this, Pagos.class);
+                intent.putExtra("origen", "Splits");
                 startActivity(intent);
             }
         });

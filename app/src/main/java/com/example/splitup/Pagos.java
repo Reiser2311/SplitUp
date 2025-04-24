@@ -31,8 +31,11 @@ import com.example.splitup.objetos.Pago;
 import com.example.splitup.objetos.Split;
 import com.example.splitup.repositorios.RepositorioPago;
 import com.example.splitup.repositorios.RepositorioSplit;
+import com.google.gson.Gson;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -55,6 +58,7 @@ public class Pagos extends AppCompatActivity {
     LinearLayout layoutSiHayPagos;
     Button btnPagos;
     Button btnSaldos;
+    Button btnTransacciones;
     LinearLayout layoutSaldos;
     ArrayList<DatosPagos> datosPagos = new ArrayList<>();
     ArrayList<DatosSaldos> datosSaldos = new ArrayList<>();
@@ -161,7 +165,7 @@ public class Pagos extends AppCompatActivity {
         datosSaldos.clear();
         for (String participante : participantes) {
             double saldoFinal = pagosRealizados.get(participante) - deudaPorPersona;
-            saldoFinal = new BigDecimal(saldoFinal).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+            saldoFinal = new BigDecimal(saldoFinal).setScale(2, RoundingMode.HALF_UP).doubleValue();
             datosSaldos.add(new DatosSaldos(participante, saldoFinal));
         }
 
@@ -198,44 +202,45 @@ public class Pagos extends AppCompatActivity {
             builder.setTitle("Borrar pago");
             builder.setMessage("¿Estás seguro de que quiere eliminar este pago?");
 
-            builder.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    RepositorioPago repositorioPago = new RepositorioPago();
-                    repositorioPago.eliminarPago(datos.getId(), new Callback<Void>() {
-                        @Override
-                        public void onResponse(Call<Void> call, Response<Void> response) {
-                            if (response.isSuccessful()) {
-                                if (listViewPagos.getAdapter().getCount() == 1) {
-                                    ultimoItem = true;
-                                }
-                                rehacerLista();
-                                Toast.makeText(Pagos.this, "Pago eliminado", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(Pagos.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+            builder.setPositiveButton("Sí", (dialog, which) -> {
+                RepositorioPago repositorioPago = new RepositorioPago();
+                repositorioPago.eliminarPago(datos.getId(), new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        if (response.isSuccessful()) {
+                            if (listViewPagos.getAdapter().getCount() == 1) {
+                                ultimoItem = true;
                             }
+                            rehacerLista();
+                            Toast.makeText(Pagos.this, "Pago eliminado", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(Pagos.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
                         }
+                    }
 
-                        @Override
-                        public void onFailure(Call<Void> call, Throwable t) {
-                            Toast.makeText(Pagos.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        Toast.makeText(Pagos.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
             });
 
-            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
+            builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
 
             AlertDialog dialog = builder.create();
             dialog.show();
 
         }
         return super.onContextItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SharedPreferences preferences = getSharedPreferences("SplitActivo", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.remove("idSplit");
+        editor.apply();
     }
 
     @Override
@@ -257,11 +262,12 @@ public class Pagos extends AppCompatActivity {
         listViewPagos.setAdapter(adaptadorPagos);
         adaptadorSaldos = new AdaptadorSaldos(Pagos.this, datosSaldos);
         listViewSaldos.setAdapter(adaptadorSaldos);
+        btnTransacciones = findViewById(R.id.btnTransacciones);
 
         String text = "SplitUp";
         SpannableString spannable = new SpannableString(text);
-        spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#4E00CC")), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#4E00CC")), 5, 6, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#601FCD")), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#601FCD")), 5, 6, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         logo.setText(spannable);
 
         setSupportActionBar(miToolbar);
@@ -304,6 +310,20 @@ public class Pagos extends AppCompatActivity {
                 layoutSaldos.setVisibility(View.VISIBLE);
                 btnSaldos.setBackgroundTintList(ContextCompat.getColorStateList(Pagos.this, R.color.hint));
                 btnPagos.setBackgroundTintList(ContextCompat.getColorStateList(Pagos.this, R.color.boton));
+            }
+        });
+
+        btnTransacciones.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Gson gson = new Gson();
+                String json = gson.toJson(datosSaldos);
+                Intent intent = new Intent(Pagos.this, Transacciones.class);
+                SharedPreferences preferences = getSharedPreferences("Saldos", MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString("saldos", json);
+                editor.apply();
+                startActivity(intent);
             }
         });
 

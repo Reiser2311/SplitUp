@@ -2,8 +2,9 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="boton">#FF4E00CC</color>
+    <color name="boton">#601FCD</color>
     <color name="hint">#FF838487</color>
-    <color name="saldo_negativo">#C70000</color>
-    <color name="saldo_positivo">#00C700</color>
+    <color name="saldo_negativo">#C01414</color>
+    <color name="saldo_positivo">#1BE81B</color>
+    <color name="fondo">#161616</color>
 </resources>

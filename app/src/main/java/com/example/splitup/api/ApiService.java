@@ -64,4 +64,21 @@ public interface ApiService {
 
     @DELETE("pagos/{id}")
     Call<Void> eliminarPago(@Path("id") int id);
+
+    @GET("participantes/{id}")
+    Call<Participante> obtenerParticipante(@Path("id") int id);
+
+    @GET("participantes")
+    Call<List<Participante>> obtenerParticipantes();
+
+    @POST("participantes")
+    Call<Participante> crearParticipante(@Body Participante participanteObjeto);
+
+    @PUT("participantes/{id}")
+    Call<Void> actualizarParticipante(@Path("id") int id, @Query("nombre") String nombre, @Query("correo") String correo);
+
+    @DELETE("participantes/{id}")
+    Call<Void> eliminarParticipante(@Path("id") int id);
+
+
 }

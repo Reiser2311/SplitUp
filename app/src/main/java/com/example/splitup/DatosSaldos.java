@@ -1,6 +1,6 @@
 package com.example.splitup;
 
-public class DatosSaldos {
+public class DatosSaldos  {
     private String nombre;
     private double saldo;
 
@@ -13,12 +13,12 @@ public class DatosSaldos {
         return nombre;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
     public double getSaldo() {
         return saldo;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     public void setSaldo(double saldo) {

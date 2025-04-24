@@ -77,8 +77,8 @@ public class PagoNuevo extends AppCompatActivity {
 
         String text = "SplitUp";
         SpannableString spannable = new SpannableString(text);
-        spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#4E00CC")), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#4E00CC")), 5, 6, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#601FCD")), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#601FCD")), 5, 6, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         logo.setText(spannable);
 
         setSupportActionBar(miToolbar);
@@ -108,9 +108,7 @@ public class PagoNuevo extends AppCompatActivity {
                             if (response.isSuccessful()) {
                                 Pago pagoCreado = response.body();
                                 Toast.makeText(PagoNuevo.this, "Pago creado con exito: " + pagoCreado.getTitulo(), Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(PagoNuevo.this, Pagos.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(intent);
+                                finish();
                             } else {
                                 Toast.makeText(PagoNuevo.this, "Error al crear el pago: " + response.code(), Toast.LENGTH_SHORT).show();
                             }

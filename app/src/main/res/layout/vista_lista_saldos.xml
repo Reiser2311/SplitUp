@@ -2,8 +2,9 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:background="@drawable/fondo_item">
 
     <TextView
         android:id="@+id/txtNombreSaldo"
@@ -12,8 +13,9 @@
         android:textStyle="bold"
         android:textSize="25sp"
         android:textColor="@color/white"
-        android:text="wefwef"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="8dp"/>
 
     <TextView
         android:id="@+id/txtGastoSaldo"

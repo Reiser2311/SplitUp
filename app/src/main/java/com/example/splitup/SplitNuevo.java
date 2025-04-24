@@ -107,8 +107,8 @@ public class SplitNuevo extends AppCompatActivity {
 
         String text = "SplitUp";
         SpannableString spannable = new SpannableString(text);
-        spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#4E00CC")), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#4E00CC")), 5, 6, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#601FCD")), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#601FCD")), 5, 6, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         logo.setText(spannable);
 
 
@@ -164,9 +164,7 @@ public class SplitNuevo extends AppCompatActivity {
                             if (response.isSuccessful()) {
                                 Split splitCreado = response.body();
                                 Toast.makeText(SplitNuevo.this, "Split creado con éxito: " + splitCreado.getTitulo(), Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(SplitNuevo.this, Splits.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(intent);
+                                finish();
                             } else {
                                 Toast.makeText(SplitNuevo.this, "Error al crear el split: " + response.code(), Toast.LENGTH_SHORT).show();
                             }

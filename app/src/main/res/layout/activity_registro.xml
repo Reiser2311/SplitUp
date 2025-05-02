@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@color/fondo">
 
     <androidx.appcompat.widget.Toolbar
-            android:id="@+id/miToolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:elevation="4dp"
-            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-            android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:id="@+id/miToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         android:layout_marginBottom="24dp">
 
         <TextView
@@ -37,53 +37,126 @@
         android:textSize="30sp"
         android:textStyle="bold"/>
 
-    <EditText
-        android:id="@+id/edtxtNombreRegistro"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
-        android:layout_marginEnd="40dp"
-        android:hint="Nombre"
-        android:inputType="textPersonName"
-        android:textColor="@color/white"
-        android:textColorHint="@color/hint" />
-
-    <EditText
-        android:id="@+id/edtxtCorreoRegistro"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:textColorHint="@color/hint"
-        android:textColor="@color/white"
-        android:inputType="textEmailAddress"
-        android:hint="Correo electrónico"
-        android:layout_marginStart="40dp"
-        android:layout_marginEnd="40dp"/>
+        android:layout_marginEnd="40dp">
 
-    <EditText
-        android:id="@+id/edtxtContrasenyaRegistro"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtxtNombreRegistro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nombre"
+            android:inputType="textPersonName"
+            android:textColor="@color/white"
+            android:textColorHint="@color/hint"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+<!--    <EditText-->
+<!--        android:id="@+id/edtxtNombreRegistro"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="40dp"-->
+<!--        android:layout_marginEnd="40dp"-->
+<!--        android:hint="Nombre"-->
+<!--        android:inputType="textPersonName"-->
+<!--        android:textColor="@color/white"-->
+<!--        android:textColorHint="@color/hint" />-->
+
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:textColorHint="@color/hint"
-        android:layout_marginTop="16dp"
-        android:inputType="textPassword"
-        android:hint="Contraseña"
         android:layout_marginStart="40dp"
-        android:layout_marginEnd="40dp"/>
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="40dp">
 
-    <EditText
-        android:id="@+id/edtxtConfirmarContrasenyaRegistro"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtxtCorreoRegistro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Correo electrónico"
+            android:inputType="textEmailAddress"
+            android:textColor="@color/white"
+            android:textColorHint="@color/hint"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+<!--    <EditText-->
+<!--        android:id="@+id/edtxtCorreoRegistro"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="40dp"-->
+<!--        android:layout_marginTop="16dp"-->
+<!--        android:layout_marginEnd="40dp"-->
+<!--        android:hint="Correo electrónico"-->
+<!--        android:inputType="textEmailAddress"-->
+<!--        android:textColor="@color/white"-->
+<!--        android:textColorHint="@color/hint" />-->
+
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:autofillHints="erteg"
-        android:textColor="@color/white"
-        android:textColorHint="@color/hint"
-        android:inputType="textPassword"
-        android:hint="Confirmar contraseña"
-        android:layout_marginTop="16dp"
+        app:endIconMode="password_toggle"
         android:layout_marginStart="40dp"
-        android:layout_marginEnd="40dp"/>
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="40dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtxtContrasenyaRegistro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:hint="Contraseña"
+            android:textColor="@color/white"
+            android:textColorHint="@color/hint"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+<!--    <EditText-->
+<!--        android:id="@+id/edtxtContrasenyaRegistro"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:textColor="@color/white"-->
+<!--        android:textColorHint="@color/hint"-->
+<!--        android:layout_marginTop="16dp"-->
+<!--        android:inputType="textPassword"-->
+<!--        android:hint="Contraseña"-->
+<!--        android:layout_marginStart="40dp"-->
+<!--        android:layout_marginEnd="40dp"/>-->
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:endIconMode="password_toggle"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="40dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtxtConfirmarContrasenyaRegistro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:hint="Confirmar contraseña"
+            android:textColor="@color/white"
+            android:textColorHint="@color/hint"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+<!--    <EditText-->
+<!--        android:id="@+id/edtxtConfirmarContrasenyaRegistro"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:textColor="@color/white"-->
+<!--        android:textColorHint="@color/hint"-->
+<!--        android:inputType="textPassword"-->
+<!--        android:hint="Confirmar contraseña"-->
+<!--        android:layout_marginTop="16dp"-->
+<!--        android:layout_marginStart="40dp"-->
+<!--        android:layout_marginEnd="40dp"/>-->
 
     <Button
         android:id="@+id/buttonRegistro"

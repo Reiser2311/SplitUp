@@ -20,9 +20,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.splitup.objetos.Pago;
+import com.example.splitup.objetos.Participante;
 import com.example.splitup.objetos.Split;
 import com.example.splitup.repositorios.RepositorioPago;
+import com.example.splitup.repositorios.RepositorioParticipante;
 import com.example.splitup.repositorios.RepositorioSplit;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -40,15 +43,15 @@ public class PagoNuevo extends AppCompatActivity {
     Toolbar miToolbar;
     Button buttonCrearPago;
     Button buttonActualizarPago;
-    EditText edtxtNombrePago;
-    EditText edtxtImportePago;
+    TextInputEditText edtxtNombrePago;
+    TextInputEditText edtxtImportePago;
     Spinner pagadoPor;
     TextView txtNuevoPago;
     TextView txtEditarPago;
 
-    ArrayList<String> participantes;
+    ArrayList<DatosParticipantes> participantes;
 
-    ArrayAdapter<String> adapter;
+    AdaptadorParticipantes adaptadorParticipantes;
 
     int idPagoActivo;
 
@@ -71,9 +74,6 @@ public class PagoNuevo extends AppCompatActivity {
 
         participantes = new ArrayList<>();
 
-        adapter = new ArrayAdapter<>(PagoNuevo.this, R.layout.vista_lista_participantes, participantes);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        pagadoPor.setAdapter(adapter);
 
         String text = "SplitUp";
         SpannableString spannable = new SpannableString(text);
@@ -83,6 +83,9 @@ public class PagoNuevo extends AppCompatActivity {
 
         setSupportActionBar(miToolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+
+        adaptadorParticipantes = new AdaptadorParticipantes(PagoNuevo.this, participantes);
+        pagadoPor.setAdapter(adaptadorParticipantes);
 
         buttonCrearPago.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,7 +102,7 @@ public class PagoNuevo extends AppCompatActivity {
                     pago.setPagadoPor(pagadoPor.getSelectedItem().toString());
                     pago.setTitulo(edtxtNombrePago.getText().toString());
 
-                    Log.d("Debug", "Pago a enviar: " + new Gson().toJson(pago));
+//                    Log.d("Debug", "Pago a enviar: " + new Gson().toJson(pago));
 
                     RepositorioPago repositorioPago = new RepositorioPago();
                     repositorioPago.crearPago(pago, new Callback<Pago>() {
@@ -176,9 +179,6 @@ public class PagoNuevo extends AppCompatActivity {
             public void onResponse(Call<Split> call, Response<Split> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Split split = response.body();
-                    participantes.clear();
-                    participantes.addAll(split.getParticipantes());
-                    adapter.notifyDataSetChanged();
                 } else {
                     Toast.makeText(PagoNuevo.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
@@ -189,6 +189,8 @@ public class PagoNuevo extends AppCompatActivity {
                 Toast.makeText(PagoNuevo.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+
+        RepositorioParticipante repositorioParticipante = new RepositorioParticipante();
 
         if (idPagoActivo != 0) {
             buttonCrearPago.setVisibility(View.GONE);

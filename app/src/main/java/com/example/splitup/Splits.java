@@ -176,12 +176,12 @@ public class Splits extends AppCompatActivity {
     private void rehacerLista() {
         SharedPreferences preferences = getSharedPreferences("InicioSesion", MODE_PRIVATE);
         RepositorioSplit repositorioSplit = new RepositorioSplit();
-        String correo = preferences.getString("correo", "");
+        int id = preferences.getInt("id", 0);
         if (ultimoItem) {
             listaSplits.setVisibility(View.GONE);
             layoutNoHaySplits.setVisibility(View.VISIBLE);
         }
-        repositorioSplit.obtenerSplitsPorUsuario(correo , new Callback<List<Split>>() {
+        repositorioSplit.obtenerSplitsPorUsuario(id , new Callback<List<Split>>() {
             @Override
             public void onResponse(Call<List<Split>> call, Response<List<Split>> response) {
                 if (response.isSuccessful() && response.body() != null) {

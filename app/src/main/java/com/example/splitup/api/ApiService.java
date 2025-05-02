@@ -38,8 +38,8 @@ public interface ApiService {
     @GET("splits")
     Call<List<Split>> obtenerSplits();
 
-    @GET("splits/usuarios/{correo}")
-    Call<List<Split>> obtenerSplitsPorUsuario(@Path("correo") String correo);
+    @GET("splits/usuarios/{id}")
+    Call<List<Split>> obtenerSplitsPorUsuario(@Path("id") int id);
 
     @PUT("splits/{id}")
     Call<Void> actualizarSplit(@Path("id") int id, @Query("titulo") String titulo, @Query("participantes") List<String> participantes);

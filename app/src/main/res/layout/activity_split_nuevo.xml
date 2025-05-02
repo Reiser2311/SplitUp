@@ -48,25 +48,42 @@
         android:textStyle="bold"
         android:visibility="gone"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Titulo"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="20dp"/>
+<!--    <TextView-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Titulo"-->
+<!--        android:textColor="@color/white"-->
+<!--        android:textSize="20sp"-->
+<!--        android:layout_marginTop="16dp"-->
+<!--        android:layout_marginStart="20dp"/>-->
 
-    <EditText
-        android:id="@+id/editTextNombre"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:textColorHint="@color/hint"
-        android:hint="Por ejemplo, compra supermercado"
-        android:inputType="textPersonName"
         android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"/>
+        android:layout_marginEnd="20dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextNombre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Titulo"
+            android:inputType="textPersonName"
+            android:textColor="@color/white"
+            android:textColorHint="@color/hint"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+<!--    <EditText-->
+<!--        android:id="@+id/editTextNombre"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:textColor="@color/white"-->
+<!--        android:textColorHint="@color/hint"-->
+<!--        android:hint="Por ejemplo, compra supermercado"-->
+<!--        android:inputType="textPersonName"-->
+<!--        android:layout_marginStart="20dp"-->
+<!--        android:layout_marginEnd="20dp"/>-->
 
     <TextView
         android:layout_width="wrap_content"
@@ -89,14 +106,31 @@
         android:orientation="horizontal"
         android:gravity="center">
 
-        <EditText
-            android:id="@+id/edtxtNombreParticipante"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_weight="1"
-            android:textColor="@color/white"
-            android:inputType="text"/>
+            android:layout_weight="1">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edtxtNombreParticipante"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nuevo participante"
+                android:inputType="textPersonName"
+                android:textColor="@color/white"
+                android:textColorHint="@color/hint"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+<!--        <EditText-->
+<!--            android:id="@+id/edtxtNombreParticipante"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="20dp"-->
+<!--            android:layout_weight="1"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:inputType="text"/>-->
 
         <Button
             android:id="@+id/buttonAnyadirParticipante"

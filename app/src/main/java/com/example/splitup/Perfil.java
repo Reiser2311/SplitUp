@@ -11,7 +11,6 @@ import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.splitup.objetos.Usuario;
 import com.example.splitup.repositorios.RepositorioUsuario;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.IOException;
 
@@ -29,10 +29,10 @@ import retrofit2.Response;
 
 public class Perfil extends AppCompatActivity {
 
-    TextView txtCorreoPerfil;
-    EditText editTextNombrePerfil;
-    EditText editTextContrasenyaPerfil;
-    EditText editTextConfirmarContrasenyaPerfil;
+    TextInputEditText editTextCorreoPerfil;
+    TextInputEditText editTextNombrePerfil;
+    TextInputEditText editTextContrasenyaPerfil;
+    TextInputEditText editTextConfirmarContrasenyaPerfil;
     Button buttonActualizarUsuario;
     Button buttonBorrarUsuario;
     TextView logo;
@@ -51,7 +51,7 @@ public class Perfil extends AppCompatActivity {
             public void onResponse(Call<Usuario> call, Response<Usuario> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Usuario usuario = response.body();
-                    txtCorreoPerfil.setText(usuario.getCorreo());
+                    editTextCorreoPerfil.setText(usuario.getCorreo());
                     editTextNombrePerfil.setText(usuario.getNombre());
                 }
             }
@@ -119,7 +119,7 @@ public class Perfil extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         RepositorioUsuario repositorioUsuario = new RepositorioUsuario();
-                        repositorioUsuario.eliminarUsuario(txtCorreoPerfil.getText().toString(), new Callback<Void>() {
+                        repositorioUsuario.eliminarUsuario(editTextCorreoPerfil.getText().toString(), new Callback<Void>() {
                             @Override
                             public void onResponse(Call<Void> call, Response<Void> response) {
                                 if (response.isSuccessful()) {
@@ -162,7 +162,7 @@ public class Perfil extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfil);
 
-        txtCorreoPerfil = findViewById(R.id.txtCorreoPerfil);
+        editTextCorreoPerfil = findViewById(R.id.edtxtCorreoPerfil);
         editTextNombrePerfil = findViewById(R.id.editTextNombrePerfil);
         editTextContrasenyaPerfil = findViewById(R.id.editTextContrasenyaPerfil);
         editTextConfirmarContrasenyaPerfil = findViewById(R.id.editTextConfirmarContrasenyaPerfil);

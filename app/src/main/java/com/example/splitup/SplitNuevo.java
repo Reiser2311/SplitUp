@@ -29,6 +29,7 @@ import com.example.splitup.objetos.Split;
 import com.example.splitup.objetos.Usuario;
 import com.example.splitup.repositorios.RepositorioPago;
 import com.example.splitup.repositorios.RepositorioSplit;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -48,8 +49,8 @@ public class SplitNuevo extends AppCompatActivity {
     Button buttonAnyadirParticipante;
     Button buttonCrearSplit;
     Button buttonActualizarSplit;
-    EditText edtxtNombre;
-    EditText edtxtParticipante;
+    TextInputEditText edtxtNombre;
+    TextInputEditText edtxtParticipante;
     TextView txtNuevoSplit;
     TextView txtEditarSplit;
 
@@ -152,7 +153,6 @@ public class SplitNuevo extends AppCompatActivity {
                     String correo = preferences.getString("correo", "");
                     usuario.setCorreo(correo);
                     split.setTitulo(edtxtNombre.getText().toString());
-                    split.setParticipantes(participantes);
                     split.setUsuario(usuario);
 
                     Log.d("Debug", "Split a enviar: " + new Gson().toJson(split));
@@ -235,9 +235,6 @@ public class SplitNuevo extends AppCompatActivity {
                     if (response.isSuccessful() && response.body() != null) {
                         Split split = response.body();
                         edtxtNombre.setText(split.getTitulo());
-                        participantes.clear();
-                        participantes.addAll(split.getParticipantes());
-                        adapter.notifyDataSetChanged();
                         listViewParticipantes.setVisibility(View.VISIBLE);
                     } else {
                         Toast.makeText(SplitNuevo.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();

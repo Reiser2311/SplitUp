@@ -19,6 +19,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.example.splitup.objetos.Usuario;
 import com.example.splitup.repositorios.RepositorioUsuario;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Objects;
 
@@ -31,8 +32,8 @@ public class InicioSesion extends AppCompatActivity {
     TextView logo;
     Toolbar miToolbar;
     Button botonInicioSesion;
-    EditText editTextCorreo;
-    EditText editTextContrasenya;
+    TextInputEditText editTextCorreo;
+    TextInputEditText editTextContrasenya;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +86,7 @@ public class InicioSesion extends AppCompatActivity {
                                     SharedPreferences preferences = getSharedPreferences("InicioSesion", MODE_PRIVATE);
                                     SharedPreferences.Editor editor = preferences.edit();
                                     editor.putBoolean("sesionIniciada", true);
-                                    editor.putString("correo", correo);
+                                    editor.putInt("id", usuario.getId());
                                     editor.apply();
                                     Intent intent = new Intent(InicioSesion.this, Splits.class);
                                     startActivity(intent);

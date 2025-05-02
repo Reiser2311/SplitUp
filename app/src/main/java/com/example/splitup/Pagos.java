@@ -92,8 +92,8 @@ public class Pagos extends AppCompatActivity {
             public void onResponse(Call<Split> call, Response<Split> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Split split = response.body();
-                    participantes.clear();
-                    participantes.addAll(split.getParticipantes());
+//                    participantes.clear();
+//                    participantes.addAll(split.getParticipantes());
                 } else {
                     Toast.makeText(Pagos.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
                 }

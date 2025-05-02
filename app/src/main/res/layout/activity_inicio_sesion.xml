@@ -36,28 +36,66 @@
         android:textSize="30sp"
         android:textStyle="bold"/>
 
-    <EditText
-        android:id="@+id/editTextSesionCorreo"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:inputType="textEmailAddress"
-        android:hint="Correo electrónico"
-        android:textColorHint="@color/hint"
         android:layout_marginStart="40dp"
-        android:layout_marginEnd="40dp"/>
-
-    <EditText
-        android:id="@+id/editTextSesionContrasenya"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:inputType="textPassword"
-        android:hint="Contraseña"
-        android:textColorHint="@color/hint"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="40dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextSesionCorreo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Correo electrónico"
+            android:inputType="textEmailAddress"
+            android:textColor="@color/white"
+            android:textColorHint="@color/hint"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!--    <EditText-->
+    <!--        android:id="@+id/editTextSesionCorreo"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:textColor="@color/white"-->
+    <!--        android:inputType="textEmailAddress"-->
+    <!--        android:hint="Correo electrónico"-->
+    <!--        android:textColorHint="@color/hint"-->
+    <!--        android:layout_marginStart="40dp"-->
+    <!--        android:layout_marginEnd="40dp"/>-->
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:endIconMode="password_toggle"
         android:layout_marginStart="40dp"
-        android:layout_marginEnd="40dp"/>
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="40dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextSesionContrasenya"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:hint="Contraseña"
+            android:textColor="@color/white"
+            android:textColorHint="@color/hint"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!--    <EditText-->
+    <!--        android:id="@+id/editTextSesionContrasenya"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:textColor="@color/white"-->
+    <!--        android:inputType="textPassword"-->
+    <!--        android:hint="Contraseña"-->
+    <!--        android:textColorHint="@color/hint"-->
+    <!--        android:layout_marginTop="16dp"-->
+    <!--        android:layout_marginStart="40dp"-->
+    <!--        android:layout_marginEnd="40dp"/>-->
+
 
     <Button
         android:id="@+id/buttonIniciarSesion"

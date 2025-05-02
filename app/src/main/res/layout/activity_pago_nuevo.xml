@@ -47,45 +47,80 @@
         android:textStyle="bold"
         android:visibility="gone"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Titulo"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="20dp"/>
+    <!--    <TextView-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:text="Titulo"-->
+    <!--        android:textColor="@color/white"-->
+    <!--        android:textSize="20sp"-->
+    <!--        android:layout_marginTop="16dp"-->
+    <!--        android:layout_marginStart="20dp"/>-->
 
-    <EditText
-        android:id="@+id/editTextNombrePago"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:textColorHint="#838487"
-        android:hint="Por ejemplo, compra supermercado"
-        android:inputType="textPersonName"
         android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"/>
+        android:layout_marginEnd="20dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Importe"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="20dp"/>
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextNombrePago"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Titulo"
+            android:inputType="textPersonName"
+            android:textColor="@color/white"
+            android:textColorHint="@color/hint"/>
 
-    <EditText
-        android:id="@+id/edtxtImportePago"
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!--    <EditText-->
+    <!--        android:id="@+id/editTextNombrePago"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:textColor="@color/white"-->
+    <!--        android:textColorHint="#838487"-->
+    <!--        android:hint="Por ejemplo, compra supermercado"-->
+    <!--        android:inputType="textPersonName"-->
+    <!--        android:layout_marginStart="20dp"-->
+    <!--        android:layout_marginEnd="20dp"/>-->
+
+    <!--    <TextView-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:text="Importe"-->
+    <!--        android:textColor="@color/white"-->
+    <!--        android:textSize="20sp"-->
+    <!--        android:layout_marginTop="16dp"-->
+    <!--        android:layout_marginStart="20dp"/>-->
+
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:inputType="numberDecimal"
-        android:hint="0.00"
-        android:textColorHint="#838487"
-        android:textColor="@color/white"/>
+        android:layout_marginTop="16dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtxtImportePago"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Importe"
+            android:inputType="numberDecimal"
+            android:textColor="@color/white"
+            android:textColorHint="@color/hint"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!--    <EditText-->
+    <!--        android:id="@+id/edtxtImportePago"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginStart="20dp"-->
+    <!--        android:layout_marginEnd="20dp"-->
+    <!--        android:inputType="numberDecimal"-->
+    <!--        android:hint="0.00"-->
+    <!--        android:textColorHint="#838487"-->
+    <!--        android:textColor="@color/white"/>-->
 
     <TextView
         android:layout_width="wrap_content"

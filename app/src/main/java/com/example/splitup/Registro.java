@@ -17,6 +17,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.example.splitup.objetos.Usuario;
 import com.example.splitup.repositorios.RepositorioUsuario;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Objects;
 
@@ -27,10 +28,10 @@ import retrofit2.Response;
 public class Registro extends AppCompatActivity {
     TextView logo;
     Toolbar miToolbar;
-    EditText editTextNombre;
-    EditText editTextCorreo;
-    EditText editTextContrasenya;
-    EditText editTextConfirmar;
+    TextInputEditText editTextNombre;
+    TextInputEditText editTextCorreo;
+    TextInputEditText editTextContrasenya;
+    TextInputEditText editTextConfirmar;
     Button botonRegistro;
 
 

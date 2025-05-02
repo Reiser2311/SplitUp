@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.splitup.objetos.Usuario;
 import com.example.splitup.repositorios.RepositorioUsuario;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.IOException;
 
@@ -30,9 +31,9 @@ import retrofit2.Response;
 public class Perfil extends AppCompatActivity {
 
     TextView txtCorreoPerfil;
-    EditText editTextNombrePerfil;
-    EditText editTextContrasenyaPerfil;
-    EditText editTextConfirmarContrasenyaPerfil;
+    TextInputEditText editTextNombrePerfil;
+    TextInputEditText editTextContrasenyaPerfil;
+    TextInputEditText editTextConfirmarContrasenyaPerfil;
     Button buttonActualizarUsuario;
     Button buttonBorrarUsuario;
     TextView logo;

@@ -23,6 +23,7 @@ import com.example.splitup.objetos.Pago;
 import com.example.splitup.objetos.Split;
 import com.example.splitup.repositorios.RepositorioPago;
 import com.example.splitup.repositorios.RepositorioSplit;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -40,8 +41,8 @@ public class PagoNuevo extends AppCompatActivity {
     Toolbar miToolbar;
     Button buttonCrearPago;
     Button buttonActualizarPago;
-    EditText edtxtNombrePago;
-    EditText edtxtImportePago;
+    TextInputEditText edtxtNombrePago;
+    TextInputEditText edtxtImportePago;
     Spinner pagadoPor;
     TextView txtNuevoPago;
     TextView txtEditarPago;

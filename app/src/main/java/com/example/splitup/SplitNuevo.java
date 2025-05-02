@@ -29,6 +29,7 @@ import com.example.splitup.objetos.Split;
 import com.example.splitup.objetos.Usuario;
 import com.example.splitup.repositorios.RepositorioPago;
 import com.example.splitup.repositorios.RepositorioSplit;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -48,8 +49,8 @@ public class SplitNuevo extends AppCompatActivity {
     Button buttonAnyadirParticipante;
     Button buttonCrearSplit;
     Button buttonActualizarSplit;
-    EditText edtxtNombre;
-    EditText edtxtParticipante;
+    TextInputEditText edtxtNombre;
+    TextInputEditText edtxtParticipante;
     TextView txtNuevoSplit;
     TextView txtEditarSplit;
 

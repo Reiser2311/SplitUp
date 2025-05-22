@@ -38,8 +38,8 @@ public interface ApiService {
     @GET("splits")
     Call<List<Split>> obtenerSplits();
 
-    @GET("splits/usuarios/{id}")
-    Call<List<Split>> obtenerSplitsPorUsuario(@Path("id") int id);
+    @GET("usuariosplit/splits/{usuarioId}")
+    Call<List<Split>> obtenerSplitsPorUsuario(@Path("usuarioId") int usuarioId);
 
     @PUT("splits/{id}")
     Call<Void> actualizarSplit(@Path("id") int id, @Query("titulo") String titulo, @Query("participantes") List<String> participantes);
@@ -80,5 +80,12 @@ public interface ApiService {
     @DELETE("participantes/{id}")
     Call<Void> eliminarParticipante(@Path("id") int id);
 
+    @GET("usuariosplit/splits/{idUsuario}")
+    Call<List<Integer>> obtenerSplitsDeUsuario(@Path("idUsuario") int idUsuario);
 
+    @DELETE("usuariosplit/{usuarioId}/{splitId}")
+    Call<Void> eliminarUsuarioDeSplit(@Path("usuarioId") int usuarioId, @Path("splitId") int splitId);
+
+    @POST("usuariosplit")
+    Call<UsuarioSplit> crearRelacionUsuarioSplit(@Body UsuarioSplit usuarioSplit);
 }

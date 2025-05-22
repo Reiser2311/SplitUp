@@ -24,11 +24,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.splitup.api.ApiClient;
+import com.example.splitup.api.ApiService;
 import com.example.splitup.objetos.Pago;
 import com.example.splitup.objetos.Split;
 import com.example.splitup.objetos.Usuario;
+import com.example.splitup.objetos.UsuarioSplit;
 import com.example.splitup.repositorios.RepositorioPago;
 import com.example.splitup.repositorios.RepositorioSplit;
+import com.example.splitup.repositorios.RepositorioUsuarioSplit;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
 
@@ -150,8 +154,8 @@ public class SplitNuevo extends AppCompatActivity {
                     Split split = new Split();
                     Usuario usuario = new Usuario();
                     SharedPreferences preferences = getSharedPreferences("InicioSesion", MODE_PRIVATE);
-                    String correo = preferences.getString("correo", "");
-                    usuario.setCorreo(correo);
+                    int idUsuario = preferences.getInt("id", 0);
+                    usuario.setId(idUsuario);
                     split.setTitulo(edtxtNombre.getText().toString());
                     split.setUsuario(usuario);
 
@@ -163,8 +167,26 @@ public class SplitNuevo extends AppCompatActivity {
                         public void onResponse(Call<Split> call, Response<Split> response) {
                             if (response.isSuccessful()) {
                                 Split splitCreado = response.body();
-                                Toast.makeText(SplitNuevo.this, "Split creado con éxito: " + splitCreado.getTitulo(), Toast.LENGTH_SHORT).show();
-                                finish();
+                                UsuarioSplit relacion = new UsuarioSplit(idUsuario, splitCreado.getId());
+
+                                RepositorioUsuarioSplit repositorioUsuarioSplit = new RepositorioUsuarioSplit();
+                                repositorioUsuarioSplit.crearRelacion(relacion, new Callback<UsuarioSplit>() {
+                                    @Override
+                                    public void onResponse(Call<UsuarioSplit> call, Response<UsuarioSplit> response) {
+                                        if (response.isSuccessful()) {
+                                            Toast.makeText(SplitNuevo.this, "Split creado con éxito: " + splitCreado.getTitulo(), Toast.LENGTH_SHORT).show();
+                                            finish();
+                                        } else {
+                                            Toast.makeText(SplitNuevo.this, "Error al vincular usuario al split", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<UsuarioSplit> call, Throwable t) {
+                                        Toast.makeText(SplitNuevo.this, "Error de red al vincular usuario", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
                             } else {
                                 Toast.makeText(SplitNuevo.this, "Error al crear el split: " + response.code(), Toast.LENGTH_SHORT).show();
                             }

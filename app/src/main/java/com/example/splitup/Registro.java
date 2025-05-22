@@ -61,6 +61,7 @@ public class Registro extends AppCompatActivity {
             public void onClick(View v) {
                 String correo = editTextCorreo.getText().toString();
                 String contrasenya = editTextContrasenya.getText().toString();
+                String confirmarContrasenya = editTextConfirmar.getText().toString();
 
                 String[] dominiosValidos = {
                         "@gmail.com", "@hotmail.com", "@outlook.com", "@yahoo.com", "@live.com", "@icloud.com", "@gmx.com", "@mail.com", "@protonmail.com", "@zoho.com"
@@ -74,7 +75,7 @@ public class Registro extends AppCompatActivity {
                     }
                 }
 
-                if (!correo.isEmpty() && !contrasenya.isEmpty() && esCorreoValido) {
+                if (!correo.isEmpty() && !contrasenya.isEmpty() && esCorreoValido && contrasenya.equals(confirmarContrasenya)) {
                     Usuario usuario = new Usuario();
                     usuario.setNombre(editTextNombre.getText().toString());
                     usuario.setCorreo(editTextCorreo.getText().toString());
@@ -127,6 +128,8 @@ public class Registro extends AppCompatActivity {
                     editTextCorreo.setError("El correo electrónico no puede estar vacío");
                 } else if (contrasenya.isEmpty()) {
                     editTextContrasenya.setError("La contraseña no puede estar vacía");
+                } else if (!contrasenya.equals(confirmarContrasenya)) {
+                    editTextConfirmar.setError("Las contraseñas no coinciden");
                 } else {
                     editTextCorreo.setError("El correo electrónico no es válido");
                 }

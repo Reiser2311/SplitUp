@@ -88,4 +88,17 @@ public interface ApiService {
 
     @POST("usuariosplit")
     Call<UsuarioSplit> crearRelacionUsuarioSplit(@Body UsuarioSplit usuarioSplit);
+
+    @GET("usuario_participante/usuario/{usuarioId}")
+    Call<List<Integer>> obtenerParticipantesDeUsuario(@Path("usuarioId") int usuarioId);
+
+    @GET("usuario_participante/participante/{participanteId}")
+    Call<Integer> obtenerUsuarioDeParticipante(@Path("participanteId") int participanteId);
+
+    @POST("usuarioparticipante")
+    Call<UsuarioParticipante> crearRelacionUsuarioParticipante(@Body UsuarioParticipante relacion);
+
+
+
+
 }

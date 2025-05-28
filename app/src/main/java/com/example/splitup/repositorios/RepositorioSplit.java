@@ -36,8 +36,8 @@ public class RepositorioSplit {
         call.enqueue(callback);
     }
 
-    public void actualizarSplit(int id, String titulo, List<String> participantes, Callback<Void> callback) {
-        Call<Void> call = apiService.actualizarSplit(id, titulo, participantes);
+    public void actualizarSplit(int id, String titulo, Callback<Void> callback) {
+        Call<Void> call = apiService.actualizarSplit(id, titulo);
         call.enqueue(callback);
     }
 

@@ -10,7 +10,6 @@ import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -76,7 +75,7 @@ public class InicioSesion extends AppCompatActivity {
                 if (!correo.isEmpty() && !contrasenya.isEmpty() && esCorreoValido) {
                     RepositorioUsuario repositorioUsuario = new RepositorioUsuario();
 
-                    repositorioUsuario.obtenerUsuario(correo, new Callback<Usuario>() {
+                    repositorioUsuario.obtenerUsuarioPorCorreo(correo, new Callback<Usuario>() {
                         @Override
                         public void onResponse(Call<Usuario> call, Response<Usuario> response) {
                             if (response.isSuccessful() && response.body() != null) {

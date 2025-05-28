@@ -174,27 +174,32 @@ public class SplitNuevo extends AppCompatActivity {
                                     @Override
                                     public void onResponse(Call<UsuarioSplit> call, Response<UsuarioSplit> response) {
                                         if (response.isSuccessful()) {
-                                            Toast.makeText(SplitNuevo.this, "Split creado con éxito: " + splitCreado.getTitulo(), Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(SplitNuevo.this, "Split creado con éxito: " +
+                                                    splitCreado.getTitulo(), Toast.LENGTH_SHORT).show();
                                             finish();
                                         } else {
-                                            Toast.makeText(SplitNuevo.this, "Error al vincular usuario al split", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(SplitNuevo.this, "Error al vincular usuario al split",
+                                                    Toast.LENGTH_SHORT).show();
                                         }
                                     }
 
                                     @Override
                                     public void onFailure(Call<UsuarioSplit> call, Throwable t) {
-                                        Toast.makeText(SplitNuevo.this, "Error de red al vincular usuario", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(SplitNuevo.this, "Error de red al vincular usuario",
+                                                Toast.LENGTH_SHORT).show();
                                     }
                                 });
 
                             } else {
-                                Toast.makeText(SplitNuevo.this, "Error al crear el split: " + response.code(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(SplitNuevo.this, "Error al crear el split: " + response.code(),
+                                        Toast.LENGTH_SHORT).show();
                             }
                         }
 
                         @Override
                         public void onFailure(Call<Split> call, Throwable t) {
-                            Toast.makeText(SplitNuevo.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SplitNuevo.this, "Error de red: " + t.getMessage(),
+                                    Toast.LENGTH_SHORT).show();
                         }
                     });
                 } else if (participantes.isEmpty()) {
@@ -212,7 +217,7 @@ public class SplitNuevo extends AppCompatActivity {
             public void onClick(View v) {
                 RepositorioSplit repositorioSplit = new RepositorioSplit();
 
-                repositorioSplit.actualizarSplit(idSplitActivo, edtxtNombre.getText().toString(), participantes, new Callback<Void>() {
+                repositorioSplit.actualizarSplit(idSplitActivo, edtxtNombre.getText().toString(), new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
                         if (response.isSuccessful()) {

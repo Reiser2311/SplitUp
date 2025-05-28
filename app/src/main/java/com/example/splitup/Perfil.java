@@ -42,11 +42,11 @@ public class Perfil extends AppCompatActivity {
         super.onResume();
 
         SharedPreferences preferences = getSharedPreferences("InicioSesion", MODE_PRIVATE);
-        String correo = preferences.getString("correo", "");
+        int id = preferences.getInt("id", 0);
 
         RepositorioUsuario repositorioUsuario = new RepositorioUsuario();
 
-        repositorioUsuario.obtenerUsuario(correo, new Callback<Usuario>() {
+        repositorioUsuario.obtenerUsuarioPorId(id, new Callback<Usuario>() {
             @Override
             public void onResponse(Call<Usuario> call, Response<Usuario> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -65,14 +65,20 @@ public class Perfil extends AppCompatActivity {
         buttonActualizarUsuario.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!editTextContrasenyaPerfil.getText().toString().isEmpty() && !editTextNombrePerfil.getText().toString().isEmpty()) {
+                if (!editTextContrasenyaPerfil.getText().toString().isEmpty() &&
+                        !editTextNombrePerfil.getText().toString().isEmpty() &&
+                        !editTextCorreoPerfil.getText().toString().isEmpty()) {
                     if (editTextContrasenyaPerfil.getText().toString().equals(editTextConfirmarContrasenyaPerfil.getText().toString())) {
                         Usuario usuario = new Usuario();
                         usuario.setNombre(editTextNombrePerfil.getText().toString());
                         usuario.setContrasenya(editTextContrasenyaPerfil.getText().toString());
-                        usuario.setCorreo(correo);
+                        usuario.setCorreo(editTextCorreoPerfil.getText().toString());
 
-                        repositorioUsuario.actualizarUsuario(correo, editTextNombrePerfil.getText().toString(), editTextContrasenyaPerfil.getText().toString(), new Callback<Void>() {
+                        repositorioUsuario.actualizarUsuario(id,
+                                editTextCorreoPerfil.getText().toString(),
+                                editTextNombrePerfil.getText().toString(),
+                                editTextContrasenyaPerfil.getText().toString(),
+                                new Callback<Void>() {
                             @Override
                             public void onResponse(Call<Void> call, Response<Void> response) {
                                 if (response.isSuccessful()) {
@@ -81,9 +87,11 @@ public class Perfil extends AppCompatActivity {
                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(intent);
                                 } else {
-                                    Toast.makeText(Perfil.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(Perfil.this, "Error: " +
+                                            response.code(), Toast.LENGTH_SHORT).show();
                                     try {
-                                        Log.e("Respuesta", "Codigo: " + response.code() + " - Error: " + response.errorBody().string());
+                                        Log.e("Respuesta", "Codigo: " + response.code() +
+                                                " - Error: " + response.errorBody().string());
                                     } catch (IOException e) {
                                         throw new RuntimeException(e);
                                     }
@@ -92,7 +100,8 @@ public class Perfil extends AppCompatActivity {
 
                             @Override
                             public void onFailure(Call<Void> call, Throwable t) {
-                                Toast.makeText(Perfil.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(Perfil.this, "Error de red: " +
+                                        t.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
 
@@ -119,7 +128,7 @@ public class Perfil extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         RepositorioUsuario repositorioUsuario = new RepositorioUsuario();
-                        repositorioUsuario.eliminarUsuario(editTextCorreoPerfil.getText().toString(), new Callback<Void>() {
+                        repositorioUsuario.eliminarUsuario(id, new Callback<Void>() {
                             @Override
                             public void onResponse(Call<Void> call, Response<Void> response) {
                                 if (response.isSuccessful()) {

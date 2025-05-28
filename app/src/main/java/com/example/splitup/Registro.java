@@ -8,7 +8,6 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,7 +64,8 @@ public class Registro extends AppCompatActivity {
                 String confirmacion = editTextConfirmar.getText().toString();
 
                 String[] dominiosValidos = {
-                        "@gmail.com", "@hotmail.com", "@outlook.com", "@yahoo.com", "@live.com", "@icloud.com", "@gmx.com", "@mail.com", "@protonmail.com", "@zoho.com"
+                        "@gmail.com", "@hotmail.com", "@outlook.com", "@yahoo.com", "@live.com",
+                        "@icloud.com", "@gmx.com", "@mail.com", "@protonmail.com", "@zoho.com"
                 };
 
                 boolean esCorreoValido = false;
@@ -76,7 +76,8 @@ public class Registro extends AppCompatActivity {
                     }
                 }
 
-                if (!correo.isEmpty() && !contrasenya.isEmpty() && esCorreoValido && !confirmacion.isEmpty() && contrasenya.equals(confirmacion)) {
+                if (!correo.isEmpty() && !contrasenya.isEmpty() && esCorreoValido &&
+                        !confirmacion.isEmpty() && contrasenya.equals(confirmacion)) {
                     Usuario usuario = new Usuario();
                     usuario.setNombre(editTextNombre.getText().toString());
                     usuario.setCorreo(editTextCorreo.getText().toString());
@@ -85,7 +86,7 @@ public class Registro extends AppCompatActivity {
                     RepositorioUsuario repositorioUsuario = new RepositorioUsuario();
 
                     //Comprobacion de si el usario existe
-                    repositorioUsuario.obtenerUsuario(correo, new Callback<Usuario>() {
+                    repositorioUsuario.obtenerUsuarioPorCorreo(correo, new Callback<Usuario>() {
                         @Override
                         public void onResponse(Call<Usuario> call, Response<Usuario> response) {
                             if (response.isSuccessful()) {
@@ -98,15 +99,18 @@ public class Registro extends AppCompatActivity {
                                     public void onResponse(Call<Usuario> call, Response<Usuario> response) {
                                         if (response.isSuccessful()) {
                                             Usuario usuarioCreado = response.body();
-                                            Toast.makeText(Registro.this, "Usuario creado: " + usuarioCreado.getNombre(), Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(Registro.this, "Usuario creado: " +
+                                                    usuarioCreado.getNombre(), Toast.LENGTH_SHORT).show();
                                         } else {
-                                            Toast.makeText(Registro.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(Registro.this, "Error: " +
+                                                    response.code(), Toast.LENGTH_SHORT).show();
                                         }
                                     }
 
                                     @Override
                                     public void onFailure(Call<Usuario> call, Throwable t) {
-                                        Toast.makeText(Registro.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(Registro.this, "Error de red: " +
+                                                t.getMessage(), Toast.LENGTH_SHORT).show();
                                     }
 
                                 });
@@ -116,7 +120,8 @@ public class Registro extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<Usuario> call, Throwable t) {
-                            Toast.makeText(Registro.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Registro.this, "Error de red: " +
+                                    t.getMessage(), Toast.LENGTH_SHORT).show();
                         }
 
                     });

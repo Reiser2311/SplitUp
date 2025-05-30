@@ -1,6 +1,5 @@
 package com.example.splitup;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -194,7 +193,7 @@ public class Splits extends AppCompatActivity {
                     adaptador.notifyDataSetChanged();
                     listaSplits.setVisibility(View.VISIBLE);
                     layoutNoHaySplits.setVisibility(View.GONE);
-                } else if (response.body() != null){
+                } else {
                     Toast.makeText(Splits.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }

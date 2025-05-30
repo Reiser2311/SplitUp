@@ -4,6 +4,7 @@ public class Participante {
     private int id;
     private String nombre;
     private String correo;
+    private Split split;
 
     public String getCorreo() {
         return correo;
@@ -27,5 +28,13 @@ public class Participante {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public Split getSplit() {
+        return split;
+    }
+
+    public void setSplit(Split split) {
+        this.split = split;
     }
 }

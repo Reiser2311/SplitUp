@@ -74,6 +74,9 @@ public interface ApiService {
     @GET("participantes")
     Call<List<Participante>> obtenerParticipantes();
 
+    @GET("participantes/splits/{id}")
+    Call<List<Participante>> obtenerParticipantePorSplit(@Path("id") int id);
+
     @POST("participantes")
     Call<Participante> crearParticipante(@Body Participante participanteObjeto);
 

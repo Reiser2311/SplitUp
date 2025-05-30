@@ -27,6 +27,11 @@ public class RepositorioParticipante {
         call.enqueue(callback);
     }
 
+    public void obtenerParticipantePorSplit(int id, Callback<List<Participante>> callback) {
+        Call<List<Participante>> call = apiService.obtenerParticipantePorSplit(id);
+        call.enqueue(callback);
+    }
+
     public void obtenerTodosParticipantes(Callback<List<Participante>> callback) {
         Call<List<Participante>> call = apiService.obtenerParticipantes();
         call.enqueue(callback);

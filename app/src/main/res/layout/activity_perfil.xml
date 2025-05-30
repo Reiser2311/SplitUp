@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@color/fondo">
 
@@ -36,6 +36,19 @@
         android:textColor="@color/white"
         android:textSize="30sp"
         android:textStyle="bold"/>
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/imagenPerfil"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/imagen_de_perfil_predeterminada"
+        android:scaleType="centerCrop"
+        android:layout_gravity="center"
+        android:clickable="true"
+        android:focusable="true"
+        android:contentDescription="Foto de perfil"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        app:shapeAppearanceOverlay="@style/CircularImageView"/>
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"

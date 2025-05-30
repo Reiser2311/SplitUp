@@ -37,6 +37,49 @@
         android:textSize="30sp"
         android:textStyle="bold"/>
 
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/imagenPerfilRegistro"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/imagen_de_perfil_predeterminada"
+        android:scaleType="centerCrop"
+        android:layout_gravity="center"
+        android:clickable="true"
+        android:focusable="true"
+        android:contentDescription="Foto de perfil"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        app:shapeAppearanceOverlay="@style/CircularImageView"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="40dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtxtCorreoRegistro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Correo electrónico"
+            android:inputType="textEmailAddress"
+            android:textColor="@color/white"
+            android:textColorHint="@color/hint"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!--    <EditText-->
+    <!--        android:id="@+id/edtxtCorreoRegistro"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginStart="40dp"-->
+    <!--        android:layout_marginTop="16dp"-->
+    <!--        android:layout_marginEnd="40dp"-->
+    <!--        android:hint="Correo electrónico"-->
+    <!--        android:inputType="textEmailAddress"-->
+    <!--        android:textColor="@color/white"-->
+    <!--        android:textColorHint="@color/hint" />-->
+
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -63,36 +106,6 @@
 <!--        android:layout_marginEnd="40dp"-->
 <!--        android:hint="Nombre"-->
 <!--        android:inputType="textPersonName"-->
-<!--        android:textColor="@color/white"-->
-<!--        android:textColorHint="@color/hint" />-->
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="40dp">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/edtxtCorreoRegistro"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Correo electrónico"
-            android:inputType="textEmailAddress"
-            android:textColor="@color/white"
-            android:textColorHint="@color/hint"/>
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-<!--    <EditText-->
-<!--        android:id="@+id/edtxtCorreoRegistro"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginStart="40dp"-->
-<!--        android:layout_marginTop="16dp"-->
-<!--        android:layout_marginEnd="40dp"-->
-<!--        android:hint="Correo electrónico"-->
-<!--        android:inputType="textEmailAddress"-->
 <!--        android:textColor="@color/white"-->
 <!--        android:textColorHint="@color/hint" />-->
 

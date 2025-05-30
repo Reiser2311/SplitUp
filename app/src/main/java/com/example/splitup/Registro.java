@@ -1,16 +1,21 @@
 package com.example.splitup;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -33,7 +38,8 @@ public class Registro extends AppCompatActivity {
     TextInputEditText editTextConfirmar;
     Button botonRegistro;
 
-
+    ActivityResultLauncher<Intent> imagePickerLauncher;
+    ImageView imagenPerfil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +52,7 @@ public class Registro extends AppCompatActivity {
         editTextContrasenya = findViewById(R.id.edtxtContrasenyaRegistro);
         editTextConfirmar = findViewById(R.id.edtxtConfirmarContrasenyaRegistro);
         botonRegistro = findViewById(R.id.buttonRegistro);
+        imagenPerfil = findViewById(R.id.imagenPerfilRegistro);
 
         String text = "SplitUp";
         SpannableString spannable = new SpannableString(text);
@@ -55,6 +62,21 @@ public class Registro extends AppCompatActivity {
 
         setSupportActionBar(miToolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+
+        imagePickerLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(), result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        Uri uriImagenSeleccionada = result.getData().getData();
+                        imagenPerfil.setImageURI(uriImagenSeleccionada);
+                    }
+                }
+        );
+
+        imagenPerfil.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setType("image/*");
+            imagePickerLauncher.launch(intent);
+        });
 
         botonRegistro.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,6 +104,7 @@ public class Registro extends AppCompatActivity {
                     usuario.setNombre(editTextNombre.getText().toString());
                     usuario.setCorreo(editTextCorreo.getText().toString());
                     usuario.setContrasenya(editTextContrasenya.getText().toString());
+                    usuario.setFotoPerfil(Conversor.imageViewToBase64(imagenPerfil));
 
                     RepositorioUsuario repositorioUsuario = new RepositorioUsuario();
 

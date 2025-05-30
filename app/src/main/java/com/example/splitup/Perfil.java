@@ -1,9 +1,11 @@
 package com.example.splitup;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -11,9 +13,12 @@ import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -37,6 +42,9 @@ public class Perfil extends AppCompatActivity {
     Button buttonBorrarUsuario;
     TextView logo;
 
+    ActivityResultLauncher<Intent> imagePickerLauncher;
+    ImageView imagenPerfil;
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -53,6 +61,7 @@ public class Perfil extends AppCompatActivity {
                     Usuario usuario = response.body();
                     editTextCorreoPerfil.setText(usuario.getCorreo());
                     editTextNombrePerfil.setText(usuario.getNombre());
+                    Conversor.cargarImagenDesdeBase64(usuario.getFotoPerfil(), imagenPerfil);
                 }
             }
 
@@ -73,6 +82,7 @@ public class Perfil extends AppCompatActivity {
                         usuario.setNombre(editTextNombrePerfil.getText().toString());
                         usuario.setContrasenya(editTextContrasenyaPerfil.getText().toString());
                         usuario.setCorreo(editTextCorreoPerfil.getText().toString());
+                        usuario.setFotoPerfil(Conversor.imageViewToBase64(imagenPerfil));
 
                         repositorioUsuario.actualizarUsuario(id,
                                 editTextCorreoPerfil.getText().toString(),
@@ -178,6 +188,22 @@ public class Perfil extends AppCompatActivity {
         buttonActualizarUsuario = findViewById(R.id.buttonIniciarSesion);
         logo = findViewById(R.id.Logo);
         buttonBorrarUsuario = findViewById(R.id.buttonBorrarUsuario);
+        imagenPerfil = findViewById(R.id.imagenPerfil);
+
+        imagePickerLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(), result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        Uri uriImagenSeleccionada = result.getData().getData();
+                        imagenPerfil.setImageURI(uriImagenSeleccionada);
+                    }
+                }
+        );
+
+        imagenPerfil.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setType("image/*");
+            imagePickerLauncher.launch(intent);
+        });
 
         String text = "SplitUp";
         SpannableString spannable = new SpannableString(text);

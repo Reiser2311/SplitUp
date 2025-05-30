@@ -5,6 +5,7 @@ public class Usuario {
     private String nombre;
     private String correo;
     private String contrasenya;
+    private String fotoPerfil;
 
     public int getId() {
         return id;
@@ -36,5 +37,13 @@ public class Usuario {
 
     public void setContrasenya(String contrasenya) {
         this.contrasenya = contrasenya;
+    }
+
+    public String getFotoPerfil() {
+        return fotoPerfil;
+    }
+
+    public void setFotoPerfil(String fotoPerfil) {
+        this.fotoPerfil = fotoPerfil;
     }
 }

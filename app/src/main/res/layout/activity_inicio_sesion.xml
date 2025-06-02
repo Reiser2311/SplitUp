@@ -38,6 +38,7 @@
         android:textStyle="bold"/>
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layoutCorreoInicioSesion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
@@ -67,6 +68,7 @@
 <!--        android:layout_marginEnd="40dp"/>-->
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layoutContrasenyaInicioSesion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:endIconMode="password_toggle"
@@ -78,10 +80,10 @@
             android:id="@+id/editTextSesionContrasenya"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
             android:hint="Contraseña"
+            android:inputType="textPassword"
             android:textColor="@color/white"
-            android:textColorHint="@color/hint"/>
+            android:textColorHint="@color/hint" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

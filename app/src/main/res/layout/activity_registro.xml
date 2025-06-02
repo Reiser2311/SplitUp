@@ -51,6 +51,7 @@
         app:shapeAppearanceOverlay="@style/CircularImageView"/>
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layoutCorreoRegistro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
@@ -81,6 +82,7 @@
     <!--        android:textColorHint="@color/hint" />-->
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layoutNombreRegistro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
@@ -110,6 +112,7 @@
 <!--        android:textColorHint="@color/hint" />-->
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layoutContrasenyaRegistro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:endIconMode="password_toggle"
@@ -141,6 +144,7 @@
 <!--        android:layout_marginEnd="40dp"/>-->
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layoutConfirmarContrasenyaRegistro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:endIconMode="password_toggle"

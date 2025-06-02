@@ -19,6 +19,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.example.splitup.objetos.Usuario;
 import com.example.splitup.repositorios.RepositorioUsuario;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.Objects;
 
@@ -33,6 +34,8 @@ public class InicioSesion extends AppCompatActivity {
     Button botonInicioSesion;
     TextInputEditText editTextCorreo;
     TextInputEditText editTextContrasenya;
+    TextInputLayout layoutCorreo;
+    TextInputLayout layoutContrasenya;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +47,8 @@ public class InicioSesion extends AppCompatActivity {
         botonInicioSesion = findViewById(R.id.buttonIniciarSesion);
         editTextCorreo = findViewById(R.id.editTextSesionCorreo);
         editTextContrasenya = findViewById(R.id.editTextSesionContrasenya);
+        layoutCorreo = findViewById(R.id.layoutCorreoInicioSesion);
+        layoutContrasenya = findViewById(R.id.layoutContrasenyaInicioSesion);
 
         String text = "SplitUp";
         SpannableString spannable = new SpannableString(text);
@@ -115,10 +120,26 @@ public class InicioSesion extends AppCompatActivity {
                 } else if (correo.isEmpty()) {
                     editTextCorreo.setError("El correo electrónico no puede estar vacío");
                 } else if (contrasenya.isEmpty()) {
+                    layoutContrasenya.setEndIconMode(TextInputLayout.END_ICON_NONE);
                     editTextContrasenya.setError("La contraseña no puede estar vacía");
                 } else if (!esCorreoValido) {
                     editTextCorreo.setError("El correo electrónico no es válido");
                 }
+            }
+        });
+
+        editTextCorreo.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                editTextCorreo.setError(null);
+            }
+        });
+
+        editTextContrasenya.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                editTextContrasenya.setError(null);
+                layoutContrasenya.setEndIconMode(TextInputLayout.END_ICON_PASSWORD_TOGGLE);
             }
         });
     }

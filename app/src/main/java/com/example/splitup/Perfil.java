@@ -25,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.splitup.objetos.Usuario;
 import com.example.splitup.repositorios.RepositorioUsuario;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.IOException;
 
@@ -41,6 +42,10 @@ public class Perfil extends AppCompatActivity {
     Button buttonActualizarUsuario;
     Button buttonBorrarUsuario;
     TextView logo;
+    TextInputLayout layoutCorreoPerfil;
+    TextInputLayout layoutNombrePerfil;
+    TextInputLayout layoutContrasenyaPerfil;
+    TextInputLayout layoutConfirmarContrasenyaPerfil;
 
     ActivityResultLauncher<Intent> imagePickerLauncher;
     ImageView imagenPerfil;
@@ -76,8 +81,8 @@ public class Perfil extends AppCompatActivity {
             public void onClick(View v) {
                 if (!editTextContrasenyaPerfil.getText().toString().isEmpty() &&
                         !editTextNombrePerfil.getText().toString().isEmpty() &&
-                        !editTextCorreoPerfil.getText().toString().isEmpty()) {
-                    if (editTextContrasenyaPerfil.getText().toString().equals(editTextConfirmarContrasenyaPerfil.getText().toString())) {
+                        !editTextCorreoPerfil.getText().toString().isEmpty() &&
+                        editTextContrasenyaPerfil.getText().toString().equals(editTextConfirmarContrasenyaPerfil.getText().toString())) {
                         Usuario usuario = new Usuario();
                         usuario.setNombre(editTextNombrePerfil.getText().toString());
                         usuario.setContrasenya(editTextContrasenyaPerfil.getText().toString());
@@ -116,14 +121,47 @@ public class Perfil extends AppCompatActivity {
                         });
 
 
-                    } else {
-                        editTextConfirmarContrasenyaPerfil.setError("Las contraseñas no coinciden");
-                    }
+                } else if (!editTextContrasenyaPerfil.getText().toString().equals(editTextConfirmarContrasenyaPerfil.getText().toString())) {
+                    layoutConfirmarContrasenyaPerfil.setEndIconMode(TextInputLayout.END_ICON_NONE);
+                    editTextConfirmarContrasenyaPerfil.setError("Las contraseñas no coinciden");
                 } else if (editTextContrasenyaPerfil.getText().toString().isEmpty()) {
+                    layoutContrasenyaPerfil.setEndIconMode(TextInputLayout.END_ICON_NONE);
                     editTextContrasenyaPerfil.setError("La contraseña no puede estar vacía");
-                } else {
+                } else if (editTextNombrePerfil.getText().toString().isEmpty()) {
                     editTextNombrePerfil.setError("El nombre no puede estar vacio");
+                } else {
+                    editTextCorreoPerfil.setError("El correo no puede estar vacio");
                 }
+            }
+        });
+
+        editTextCorreoPerfil.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                editTextCorreoPerfil.setError(null);
+            }
+        });
+
+        editTextNombrePerfil.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                editTextNombrePerfil.setError(null);
+            }
+        });
+
+        editTextContrasenyaPerfil.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                editTextContrasenyaPerfil.setError(null);
+                layoutContrasenyaPerfil.setEndIconMode(TextInputLayout.END_ICON_PASSWORD_TOGGLE);
+            }
+        });
+
+        editTextConfirmarContrasenyaPerfil.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                editTextConfirmarContrasenyaPerfil.setError(null);
+                layoutConfirmarContrasenyaPerfil.setEndIconMode(TextInputLayout.END_ICON_PASSWORD_TOGGLE);
             }
         });
 
@@ -189,6 +227,10 @@ public class Perfil extends AppCompatActivity {
         logo = findViewById(R.id.Logo);
         buttonBorrarUsuario = findViewById(R.id.buttonBorrarUsuario);
         imagenPerfil = findViewById(R.id.imagenPerfil);
+        layoutCorreoPerfil = findViewById(R.id.layoutCorreoPerfil);
+        layoutNombrePerfil = findViewById(R.id.layoutNombrePerfil);
+        layoutContrasenyaPerfil = findViewById(R.id.layoutContrasenyaPerfil);
+        layoutConfirmarContrasenyaPerfil = findViewById(R.id.layoutConfirmarContrasenyaPerfil);
 
         imagePickerLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -210,6 +252,8 @@ public class Perfil extends AppCompatActivity {
         spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#601FCD")), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#601FCD")), 5, 6, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         logo.setText(spannable);
+
+
 
     }
 }

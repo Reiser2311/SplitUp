@@ -22,6 +22,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.example.splitup.objetos.Usuario;
 import com.example.splitup.repositorios.RepositorioUsuario;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.Objects;
 
@@ -37,6 +38,10 @@ public class Registro extends AppCompatActivity {
     TextInputEditText editTextContrasenya;
     TextInputEditText editTextConfirmar;
     Button botonRegistro;
+    TextInputLayout layoutContrasenya;
+    TextInputLayout layoutConfirmarContrasenya;
+    TextInputLayout layoutCorreo;
+    TextInputLayout layoutNombre;
 
     ActivityResultLauncher<Intent> imagePickerLauncher;
     ImageView imagenPerfil;
@@ -53,6 +58,10 @@ public class Registro extends AppCompatActivity {
         editTextConfirmar = findViewById(R.id.edtxtConfirmarContrasenyaRegistro);
         botonRegistro = findViewById(R.id.buttonRegistro);
         imagenPerfil = findViewById(R.id.imagenPerfilRegistro);
+        layoutContrasenya = findViewById(R.id.layoutContrasenyaRegistro);
+        layoutConfirmarContrasenya = findViewById(R.id.layoutConfirmarContrasenyaRegistro);
+        layoutCorreo = findViewById(R.id.layoutCorreoRegistro);
+        layoutNombre = findViewById(R.id.layoutNombreRegistro);
 
         String text = "SplitUp";
         SpannableString spannable = new SpannableString(text);
@@ -156,14 +165,48 @@ public class Registro extends AppCompatActivity {
                 } else if (correo.isEmpty()) {
                     editTextCorreo.setError("El correo electrónico no puede estar vacío");
                 } else if (contrasenya.isEmpty()) {
+                    layoutContrasenya.setEndIconMode(TextInputLayout.END_ICON_NONE);
                     editTextContrasenya.setError("La contraseña no puede estar vacía");
                 } else if (confirmacion.isEmpty()) {
+                    layoutConfirmarContrasenya.setEndIconMode(TextInputLayout.END_ICON_NONE);
                     editTextConfirmar.setError("La confirmación de contraseña no puede estar vacía");
                 } else if (!contrasenya.equals(confirmacion)) {
+                    layoutConfirmarContrasenya.setEndIconMode(TextInputLayout.END_ICON_NONE);
                     editTextConfirmar.setError("Las contraseñas no coinciden");
                 } else {
+                    layoutCorreo.setEndIconMode(TextInputLayout.END_ICON_NONE);
                     editTextCorreo.setError("El correo electrónico no es válido");
                 }
+            }
+        });
+
+        editTextNombre.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                editTextNombre.setError(null);
+            }
+        });
+
+        editTextCorreo.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                editTextCorreo.setError(null);
+            }
+        });
+
+        editTextContrasenya.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                editTextContrasenya.setError(null);
+                layoutContrasenya.setEndIconMode(TextInputLayout.END_ICON_PASSWORD_TOGGLE);
+            }
+        });
+
+        editTextConfirmar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                editTextConfirmar.setError(null);
+                layoutConfirmarContrasenya.setEndIconMode(TextInputLayout.END_ICON_PASSWORD_TOGGLE);
             }
         });
     }

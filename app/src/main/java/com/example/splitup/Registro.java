@@ -108,7 +108,8 @@ public class Registro extends AppCompatActivity {
                 }
 
                 if (!correo.isEmpty() && !contrasenya.isEmpty() && esCorreoValido &&
-                        !confirmacion.isEmpty() && contrasenya.equals(confirmacion)) {
+                        !confirmacion.isEmpty() && contrasenya.equals(confirmacion) &&
+                        esContrasenyaSegura(contrasenya)) {
                     Usuario usuario = new Usuario();
                     usuario.setNombre(editTextNombre.getText().toString());
                     usuario.setCorreo(editTextCorreo.getText().toString());
@@ -173,6 +174,9 @@ public class Registro extends AppCompatActivity {
                 } else if (!contrasenya.equals(confirmacion)) {
                     layoutConfirmarContrasenya.setEndIconMode(TextInputLayout.END_ICON_NONE);
                     editTextConfirmar.setError("Las contraseñas no coinciden");
+                } else if (!esContrasenyaSegura(contrasenya)) {
+                    layoutContrasenya.setEndIconMode(TextInputLayout.END_ICON_NONE);
+                    editTextContrasenya.setError("La contraseña debe contener minimo 8 caracteres, una mayuscula, una minuscula, un numero y un caracter especial");
                 } else {
                     layoutCorreo.setEndIconMode(TextInputLayout.END_ICON_NONE);
                     editTextCorreo.setError("El correo electrónico no es válido");
@@ -209,5 +213,10 @@ public class Registro extends AppCompatActivity {
                 layoutConfirmarContrasenya.setEndIconMode(TextInputLayout.END_ICON_PASSWORD_TOGGLE);
             }
         });
+    }
+
+    public boolean esContrasenyaSegura(String contrasenya) {
+        String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\\\d)(?=.*[@$!%*?&.,;:¡¿#+\\\\-_=(){}\\\\[\\\\]^~<>|/]).{8,}$";
+        return contrasenya.matches(regex);
     }
 }

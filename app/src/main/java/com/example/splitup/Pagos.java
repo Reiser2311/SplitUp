@@ -28,16 +28,14 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
 import com.example.splitup.objetos.Pago;
-import com.example.splitup.objetos.Split;
+import com.example.splitup.objetos.Participante;
 import com.example.splitup.repositorios.RepositorioPago;
-import com.example.splitup.repositorios.RepositorioSplit;
+import com.example.splitup.repositorios.RepositorioParticipante;
 import com.google.gson.Gson;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -65,7 +63,6 @@ public class Pagos extends AppCompatActivity {
     AdaptadorPagos adaptadorPagos;
     AdaptadorSaldos adaptadorSaldos;
     List<String> participantes = new ArrayList<>();
-    int idSplitActivo;
 
     @Override
     protected void onResume() {
@@ -84,23 +81,24 @@ public class Pagos extends AppCompatActivity {
 
     private void obtenerParticipantes() {
         SharedPreferences preferences = getSharedPreferences("SplitActivo", MODE_PRIVATE);
-        RepositorioSplit repositorioSplit = new RepositorioSplit();
         int id = preferences.getInt("idSplit", 0);
+        RepositorioParticipante repositorioParticipante = new RepositorioParticipante();
 
-        repositorioSplit.obtenerSplit(id, new Callback<Split>() {
+        repositorioParticipante.obtenerParticipantePorSplit(id, new Callback<List<Participante>>() {
             @Override
-            public void onResponse(Call<Split> call, Response<Split> response) {
+            public void onResponse(Call<List<Participante>> call, Response<List<Participante>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Split split = response.body();
-//                    participantes.clear();
-//                    participantes.addAll(split.getParticipantes());
+                    List<Participante> participantes = response.body();
+                    for (Participante participante : participantes) {
+                        Pagos.this.participantes.add(participante.getNombre());
+                    }
                 } else {
                     Toast.makeText(Pagos.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<Split> call, Throwable t) {
+            public void onFailure(Call<List<Participante>> call, Throwable t) {
                 Toast.makeText(Pagos.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

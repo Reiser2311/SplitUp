@@ -46,7 +46,7 @@ public class Splits extends AppCompatActivity {
     Toolbar miToolbar;
     ListView listaSplits;
     ArrayList<DatosSplits> lista;
-    Button nuevoSplit;
+    Button botonNuevoSplit;
     Boolean sesionIniciada;
     RelativeLayout layoutNoHaySplits;
     Boolean ultimoItem = false;
@@ -221,7 +221,7 @@ public class Splits extends AppCompatActivity {
         miToolbar= findViewById(R.id.miToolbar);
         listaSplits = findViewById(R.id.listViewSplits);
         lista = new ArrayList<>();
-        nuevoSplit = findViewById(R.id.botonNuevosSplit);
+        botonNuevoSplit = findViewById(R.id.botonNuevoSplit);
         sesionIniciada = false;
         layoutNoHaySplits = findViewById(R.id.layoutNoHaySplits);
         adaptador = new AdaptadorSplits(Splits.this, datosSplits);
@@ -238,7 +238,7 @@ public class Splits extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
         registerForContextMenu(listaSplits);
 
-        nuevoSplit.setOnClickListener(v -> {
+        botonNuevoSplit.setOnClickListener(v -> {
             if (sesionIniciada) {
                 Intent intent = new Intent(Splits.this, SplitNuevo.class);
                 startActivity(intent);

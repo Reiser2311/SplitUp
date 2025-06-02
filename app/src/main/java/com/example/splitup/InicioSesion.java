@@ -122,7 +122,7 @@ public class InicioSesion extends AppCompatActivity {
                 } else if (contrasenya.isEmpty()) {
                     layoutContrasenya.setEndIconMode(TextInputLayout.END_ICON_NONE);
                     editTextContrasenya.setError("La contraseña no puede estar vacía");
-                } else if (!esCorreoValido) {
+                } else {
                     editTextCorreo.setError("El correo electrónico no es válido");
                 }
             }
@@ -131,15 +131,19 @@ public class InicioSesion extends AppCompatActivity {
         editTextCorreo.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                editTextCorreo.setError(null);
+                if (hasFocus) {
+                    editTextCorreo.setError(null);
+                }
             }
         });
 
         editTextContrasenya.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                editTextContrasenya.setError(null);
-                layoutContrasenya.setEndIconMode(TextInputLayout.END_ICON_PASSWORD_TOGGLE);
+                if (hasFocus) {
+                    editTextContrasenya.setError(null);
+                    layoutContrasenya.setEndIconMode(TextInputLayout.END_ICON_PASSWORD_TOGGLE);
+                }
             }
         });
     }

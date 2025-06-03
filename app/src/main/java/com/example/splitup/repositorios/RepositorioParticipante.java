@@ -37,8 +37,8 @@ public class RepositorioParticipante {
         call.enqueue(callback);
     }
 
-    public void actualizarParticipante(int id, String nombre, String correo, Callback<Void> callback) {
-        Call<Void> call = apiService.actualizarParticipante(id, nombre, correo);
+    public void actualizarParticipante(int id, String nombre, Callback<Void> callback) {
+        Call<Void> call = apiService.actualizarParticipante(id, nombre);
         call.enqueue(callback);
     }
 

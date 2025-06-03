@@ -3,16 +3,7 @@ package com.example.splitup.objetos;
 public class Participante {
     private int id;
     private String nombre;
-    private String correo;
     private Split split;
-
-    public String getCorreo() {
-        return correo;
-    }
-
-    public void setCorreo(String correo) {
-        this.correo = correo;
-    }
 
     public int getId() {
         return id;

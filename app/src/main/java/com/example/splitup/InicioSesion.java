@@ -92,8 +92,6 @@ public class InicioSesion extends AppCompatActivity {
                                     editor.putBoolean("sesionIniciada", true);
                                     editor.putInt("id", usuario.getId());
                                     editor.apply();
-                                    Intent intent = new Intent(InicioSesion.this, Splits.class);
-                                    startActivity(intent);
                                     finish();
                                 } else {
                                     Toast.makeText(InicioSesion.this, "Contraseña incorrecta", Toast.LENGTH_SHORT).show();

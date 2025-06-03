@@ -3,20 +3,10 @@ package com.example.splitup;
 public class DatosParticipantes {
     int id;
     String nombre;
-    String correo;
 
-    public DatosParticipantes(String correo, int id, String nombre) {
-        this.correo = correo;
+    public DatosParticipantes(int id, String nombre) {
         this.id = id;
         this.nombre = nombre;
-    }
-
-    public String getCorreo() {
-        return correo;
-    }
-
-    public void setCorreo(String correo) {
-        this.correo = correo;
     }
 
     public int getId() {

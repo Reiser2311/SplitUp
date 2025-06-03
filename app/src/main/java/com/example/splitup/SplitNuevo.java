@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -55,11 +56,12 @@ public class SplitNuevo extends AppCompatActivity {
     TextInputEditText edtxtParticipante;
     TextView txtNuevoSplit;
     TextView txtEditarSplit;
-    Boolean ultimoItem = false;
 
     ArrayList<DatosParticipantes> participantes;
+    ArrayList<String> participantesSinId;
 
     AdaptadorParticipantes adapter;
+    AdaptadorParticipantesSinId adapterSinId;
 
     int idSplitActivo;
 
@@ -77,8 +79,17 @@ public class SplitNuevo extends AppCompatActivity {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         int posicion = info.position;
 
-        AdaptadorParticipantes adaptador = (AdaptadorParticipantes) listViewParticipantes.getAdapter();
-        DatosParticipantes datos = adaptador.getItem(posicion);
+        DatosParticipantes datos;
+        String nombre;
+        if (idSplitActivo != 0) {
+            nombre = null;
+            AdaptadorParticipantes adaptador = (AdaptadorParticipantes) listViewParticipantes.getAdapter();
+            datos = adaptador.getItem(posicion);
+        } else {
+            datos = null;
+            ArrayAdapter arrayAdaptador = (ArrayAdapter) listViewParticipantes.getAdapter();
+            nombre = arrayAdaptador.getItem(posicion).toString();
+        }
 
         int id = item.getItemId();
 
@@ -88,26 +99,28 @@ public class SplitNuevo extends AppCompatActivity {
             builder.setMessage("¿Estás seguro de que quieres borrar este participante?");
 
             builder.setPositiveButton("Sí", (dialog, which) -> {
-                RepositorioParticipante repositorioParticipante = new RepositorioParticipante();
-                repositorioParticipante.eliminarParticipante(datos.getId(), new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
-                        if (response.isSuccessful()) {
-                            if (listViewParticipantes.getAdapter().getCount() == 1) {
-                                ultimoItem = true;
+                if (idSplitActivo != 0) {
+                    RepositorioParticipante repositorioParticipante = new RepositorioParticipante();
+                    repositorioParticipante.eliminarParticipante(datos.getId(), new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            if (response.isSuccessful()) {
+                                rehacerLista();
+                                Log.d("Debug", "Participante eliminado");
+                            } else {
+                                Log.e("Error", "Error al eliminar participante: " + response.code());
                             }
-                            rehacerLista();
-                            Log.d("Debug", "Participante eliminado");
-                        } else {
-                            Log.e("Error", "Error al eliminar participante: " + response.code());
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
-                        Toast.makeText(SplitNuevo.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                            Toast.makeText(SplitNuevo.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    participantesSinId.remove(nombre);
+                    adapterSinId.notifyDataSetChanged();
+                }
 
             });
 
@@ -125,24 +138,35 @@ public class SplitNuevo extends AppCompatActivity {
             builder.setView(input);
 
             builder.setPositiveButton("Editar", (dialog, which) -> {
-                RepositorioParticipante repositorioParticipante = new RepositorioParticipante();
-                repositorioParticipante.actualizarParticipante(datos.getId(), input.getText().toString(), datos.getCorreo(), new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
-                        if (response.isSuccessful()) {
-                            rehacerLista();
-                            Log.d("Debug", "Participante editado");
-                        } else {
-                            Log.e("Error", "Error al editar participante: " + response.code());
+                if (idSplitActivo != 0) {
+                    RepositorioParticipante repositorioParticipante = new RepositorioParticipante();
+                    repositorioParticipante.actualizarParticipante(datos.getId(), input.getText().toString(), new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            if (response.isSuccessful()) {
+                                rehacerLista();
+                                Log.d("Debug", "Participante editado");
+                            } else {
+                                Log.e("Error", "Error al editar participante: " + response.code());
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
-                        Toast.makeText(SplitNuevo.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                            Toast.makeText(SplitNuevo.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    participantesSinId.remove(nombre);
+                    participantesSinId.add(input.getText().toString());
+                    adapterSinId.notifyDataSetChanged();
+                }
             });
+
+            builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss());
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
         }
 
         return super.onContextItemSelected(item);
@@ -165,9 +189,7 @@ public class SplitNuevo extends AppCompatActivity {
         buttonActualizarSplit = findViewById(R.id.buttonActualzarSplit);
 
         participantes = new ArrayList<>();
-
-        adapter = new AdaptadorParticipantes(SplitNuevo.this, participantes);
-        listViewParticipantes.setAdapter(adapter);
+        participantesSinId = new ArrayList<>();
 
         String text = "SplitUp";
         SpannableString spannable = new SpannableString(text);
@@ -189,43 +211,52 @@ public class SplitNuevo extends AppCompatActivity {
 
                 if (!nombreParticipante.isEmpty()) {
 
-                    RepositorioParticipante repositorioParticipante = new RepositorioParticipante();
-                    Split split = new Split();
-                    split.setId(idSplitActivo);
-                    Participante participante = new Participante();
-                    participante.setNombre(nombreParticipante);
-                    participante.setSplit(split);
-                    repositorioParticipante.crearParticipante(participante, new Callback<Participante>() {
-                        @Override
-                        public void onResponse(Call<Participante> call, Response<Participante> response) {
-                            if (response.isSuccessful()) {
-                                Participante participanteCreado = response.body();
+                    if (idSplitActivo != 0) {
+                        RepositorioParticipante repositorioParticipante = new RepositorioParticipante();
+                        Split split = new Split();
+                        split.setId(idSplitActivo);
+                        Participante participante = new Participante();
+                        participante.setNombre(nombreParticipante);
+                        participante.setSplit(split);
+                        repositorioParticipante.crearParticipante(participante, new Callback<Participante>() {
+                            @Override
+                            public void onResponse(Call<Participante> call, Response<Participante> response) {
+                                if (response.isSuccessful()) {
+                                    Participante participanteCreado = response.body();
+//
+//                                    listViewParticipantes.setVisibility(View.VISIBLE);
+//
+//                                    runOnUiThread(new Runnable() {
+//                                        @Override
+//                                        public void run() {
+//                                            DatosParticipantes datosParticipantes =
+//                                                    new DatosParticipantes(participanteCreado.getId(), participanteCreado.getNombre());
+//                                            participantes.add(datosParticipantes);
+//                                            adapter.notifyDataSetChanged();
+//                                        }
+//                                    });
 
-                                listViewParticipantes.setVisibility(View.VISIBLE);
+                                    rehacerLista();
 
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        DatosParticipantes datosParticipantes =
-                                                new DatosParticipantes(participanteCreado.getCorreo(), participanteCreado.getId(), participanteCreado.getNombre());
-                                        participantes.add(datosParticipantes);
-                                        adapter.notifyDataSetChanged();
-                                    }
-                                });
+                                    edtxtParticipante.setText("");
 
-                                edtxtParticipante.setText("");
-
-                                Log.d("Debug", "Participante creado: " + new Gson().toJson(participanteCreado));
-                            } else {
-                                Toast.makeText(SplitNuevo.this, "Error al crear el participante", Toast.LENGTH_SHORT).show();
+                                    Log.d("Debug", "Participante creado: " + new Gson().toJson(participanteCreado));
+                                    rehacerLista();
+                                } else {
+                                    Toast.makeText(SplitNuevo.this, "Error al crear el participante", Toast.LENGTH_SHORT).show();
+                                }
                             }
-                        }
 
-                        @Override
-                        public void onFailure(Call<Participante> call, Throwable t) {
-                            Toast.makeText(SplitNuevo.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                            @Override
+                            public void onFailure(Call<Participante> call, Throwable t) {
+                                Toast.makeText(SplitNuevo.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } else {
+                        participantesSinId.add(nombreParticipante);
+                        adapterSinId.notifyDataSetChanged();
+                        edtxtParticipante.setText("");
+                    }
                 }
             }
         });
@@ -234,7 +265,8 @@ public class SplitNuevo extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (!participantes.isEmpty() && !edtxtNombre.getText().toString().isEmpty()) {
+                if (!((participantes.isEmpty() && idSplitActivo != 0) || (participantesSinId.isEmpty() &&
+                        idSplitActivo == 0)) && !edtxtNombre.getText().toString().isEmpty()) {
                     Split split = new Split();
                     Usuario usuario = new Usuario();
                     SharedPreferences preferences = getSharedPreferences("InicioSesion", MODE_PRIVATE);
@@ -274,6 +306,28 @@ public class SplitNuevo extends AppCompatActivity {
                                     }
                                 });
 
+                                RepositorioParticipante repositorioParticipante = new RepositorioParticipante();
+                                for (String nombreParticipante : participantesSinId) {
+                                    Participante nuevoParticipante = new Participante();
+                                    nuevoParticipante.setNombre(nombreParticipante);
+                                    nuevoParticipante.setSplit(splitCreado);
+                                    repositorioParticipante.crearParticipante(nuevoParticipante, new Callback<Participante>() {
+                                        @Override
+                                        public void onResponse(Call<Participante> call, Response<Participante> response) {
+                                            if (!response.isSuccessful()) {
+                                                Toast.makeText(SplitNuevo.this, "Error al crear el participante: " + response.code(),
+                                                        Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<Participante> call, Throwable t) {
+                                            Toast.makeText(SplitNuevo.this, "Error de red: " + t.getMessage(),
+                                                    Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
+
                             } else {
                                 Toast.makeText(SplitNuevo.this, "Error al crear el split: " + response.code(),
                                         Toast.LENGTH_SHORT).show();
@@ -286,7 +340,7 @@ public class SplitNuevo extends AppCompatActivity {
                                     Toast.LENGTH_SHORT).show();
                         }
                     });
-                } else if (participantes.isEmpty()) {
+                } else if ((participantes.isEmpty() && idSplitActivo != 0) || (participantesSinId.isEmpty() && idSplitActivo == 0)) {
                     edtxtParticipante.setError("Los participantes no pueden estar vacios");
                 } else {
                     edtxtNombre.setError("El nombre no puede estar vacio");
@@ -334,6 +388,8 @@ public class SplitNuevo extends AppCompatActivity {
         editor.remove("idSplit");
         editor.apply();
         if (idSplitActivo != 0) {
+            adapter = new AdaptadorParticipantes(SplitNuevo.this, participantes);
+            listViewParticipantes.setAdapter(adapter);
             buttonCrearSplit.setVisibility(View.GONE);
             buttonActualizarSplit.setVisibility(View.VISIBLE);
             txtNuevoSplit.setVisibility(View.GONE);
@@ -346,7 +402,7 @@ public class SplitNuevo extends AppCompatActivity {
                     if (response.isSuccessful() && response.body() != null) {
                         Split split = response.body();
                         edtxtNombre.setText(split.getTitulo());
-                        listViewParticipantes.setVisibility(View.VISIBLE);
+                        rehacerLista();
                     } else {
                         Toast.makeText(SplitNuevo.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
                     }
@@ -357,23 +413,16 @@ public class SplitNuevo extends AppCompatActivity {
                     Toast.makeText(SplitNuevo.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
-
-            rehacerLista();
+        } else {
+            adapterSinId = new AdaptadorParticipantesSinId(SplitNuevo.this, participantesSinId);
+            listViewParticipantes.setAdapter(adapterSinId);
         }
 
         super.onResume();
     }
 
     private void rehacerLista() {
-        SharedPreferences preferences = getSharedPreferences("SplitActivo", MODE_PRIVATE);
-        idSplitActivo = preferences.getInt("idSplit", 0);
         RepositorioParticipante repositorioParticipante = new RepositorioParticipante();
-
-        if (ultimoItem) {
-            listViewParticipantes.setVisibility(View.GONE);
-            adapter = new AdaptadorParticipantes(SplitNuevo.this, participantes);
-            listViewParticipantes.setAdapter(adapter);
-        }
 
         repositorioParticipante.obtenerParticipantePorSplit(idSplitActivo, new Callback<List<Participante>>() {
             @Override
@@ -382,7 +431,7 @@ public class SplitNuevo extends AppCompatActivity {
                     List<Participante> participantesSplit = response.body();
                     participantes.clear();
                     for (Participante participante : participantesSplit) {
-                        DatosParticipantes datosParticipantes = new DatosParticipantes(participante.getCorreo(), participante.getId(), participante.getNombre());
+                        DatosParticipantes datosParticipantes = new DatosParticipantes(participante.getId(), participante.getNombre());
                         participantes.add(datosParticipantes);
                     }
                     adapter.notifyDataSetChanged();
@@ -397,6 +446,7 @@ public class SplitNuevo extends AppCompatActivity {
                 Toast.makeText(SplitNuevo.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+
 
     }
 }

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -180,6 +181,7 @@ public class Splits extends AppCompatActivity {
             listaSplits.setVisibility(View.GONE);
             layoutNoHaySplits.setVisibility(View.VISIBLE);
         }
+        Log.d("Debug", "Obteniendo splits para el usuario con ID: " + id);
         repositorioSplit.obtenerSplitsPorUsuario(id , new Callback<List<Split>>() {
             @Override
             public void onResponse(Call<List<Split>> call, Response<List<Split>> response) {

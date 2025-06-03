@@ -134,6 +134,7 @@ public class Registro extends AppCompatActivity {
                                             Usuario usuarioCreado = response.body();
                                             Toast.makeText(Registro.this, "Usuario creado: " +
                                                     usuarioCreado.getNombre(), Toast.LENGTH_SHORT).show();
+                                            finish();
                                         } else {
                                             Toast.makeText(Registro.this, "Error: " +
                                                     response.code(), Toast.LENGTH_SHORT).show();
@@ -159,10 +160,6 @@ public class Registro extends AppCompatActivity {
 
                     });
 
-
-                    Intent intent = new Intent(Registro.this, Splits.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
                 } else if (correo.isEmpty()) {
                     editTextCorreo.setError("El correo electrónico no puede estar vacío");
                 } else if (contrasenya.isEmpty()) {
@@ -171,12 +168,12 @@ public class Registro extends AppCompatActivity {
                 } else if (confirmacion.isEmpty()) {
                     layoutConfirmarContrasenya.setEndIconMode(TextInputLayout.END_ICON_NONE);
                     editTextConfirmar.setError("La confirmación de contraseña no puede estar vacía");
-                } else if (!contrasenya.equals(confirmacion)) {
-                    layoutConfirmarContrasenya.setEndIconMode(TextInputLayout.END_ICON_NONE);
-                    editTextConfirmar.setError("Las contraseñas no coinciden");
                 } else if (!esContrasenyaSegura(contrasenya)) {
                     layoutContrasenya.setEndIconMode(TextInputLayout.END_ICON_NONE);
                     editTextContrasenya.setError("La contraseña debe contener minimo 8 caracteres, una mayuscula, una minuscula, un numero y un caracter especial");
+                } else if (!contrasenya.equals(confirmacion)) {
+                    layoutConfirmarContrasenya.setEndIconMode(TextInputLayout.END_ICON_NONE);
+                    editTextConfirmar.setError("Las contraseñas no coinciden");
                 } else {
                     layoutCorreo.setEndIconMode(TextInputLayout.END_ICON_NONE);
                     editTextCorreo.setError("El correo electrónico no es válido");
@@ -216,7 +213,7 @@ public class Registro extends AppCompatActivity {
     }
 
     public boolean esContrasenyaSegura(String contrasenya) {
-        String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\\\d)(?=.*[@$!%*?&.,;:¡¿#+\\\\-_=(){}\\\\[\\\\]^~<>|/]).{8,}$";
+        String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
         return contrasenya.matches(regex);
     }
 }

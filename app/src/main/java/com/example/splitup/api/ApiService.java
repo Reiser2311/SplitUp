@@ -17,7 +17,7 @@ public interface ApiService {
     @POST("usuarios")
     Call<Usuario> crearUsuario(@Body Usuario usuarioObjeto);
 
-    @GET("usuarios/{correo}")
+    @GET("usuarios/correo/{correo}")
     Call<Usuario> obtenerUsuarioPorCorreo(@Path("correo") String correo);
 
     @GET("usuarios/{id}")
@@ -41,7 +41,7 @@ public interface ApiService {
     @GET("splits")
     Call<List<Split>> obtenerSplits();
 
-    @GET("usuariosplit/splits/{usuarioId}")
+    @GET("usuario_split/splits/{usuarioId}")
     Call<List<Split>> obtenerSplitsPorUsuario(@Path("usuarioId") int usuarioId);
 
     @PUT("splits/{id}")
@@ -81,18 +81,15 @@ public interface ApiService {
     Call<Participante> crearParticipante(@Body Participante participanteObjeto);
 
     @PUT("participantes/{id}")
-    Call<Void> actualizarParticipante(@Path("id") int id, @Query("nombre") String nombre, @Query("correo") String correo);
+    Call<Void> actualizarParticipante(@Path("id") int id, @Query("nombre") String nombre);
 
     @DELETE("participantes/{id}")
     Call<Void> eliminarParticipante(@Path("id") int id);
 
-    @GET("usuariosplit/splits/{idUsuario}")
-    Call<List<Integer>> obtenerSplitsDeUsuario(@Path("idUsuario") int idUsuario);
-
-    @DELETE("usuariosplit/{usuarioId}/{splitId}")
+    @DELETE("usuario_split/{usuarioId}/{splitId}")
     Call<Void> eliminarUsuarioDeSplit(@Path("usuarioId") int usuarioId, @Path("splitId") int splitId);
 
-    @POST("usuariosplit")
+    @POST("usuario_split")
     Call<UsuarioSplit> crearRelacionUsuarioSplit(@Body UsuarioSplit usuarioSplit);
 
     @GET("usuario_participante/usuario/{usuarioId}")
@@ -101,7 +98,7 @@ public interface ApiService {
     @GET("usuario_participante/participante/{participanteId}")
     Call<Integer> obtenerUsuarioDeParticipante(@Path("participanteId") int participanteId);
 
-    @POST("usuarioparticipante")
+    @POST("usuario_participante")
     Call<UsuarioParticipante> crearRelacionUsuarioParticipante(@Body UsuarioParticipante relacion);
 
 

@@ -1,6 +1,5 @@
 package com.example.splitup;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -11,7 +10,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +17,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.splitup.adaptadores.AdaptadorParticipantesSpiner;
+import com.example.splitup.datos.DatosParticipantes;
 import com.example.splitup.objetos.Pago;
 import com.example.splitup.objetos.Participante;
 import com.example.splitup.objetos.Split;
@@ -26,7 +26,6 @@ import com.example.splitup.repositorios.RepositorioPago;
 import com.example.splitup.repositorios.RepositorioParticipante;
 import com.example.splitup.repositorios.RepositorioSplit;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,7 +50,7 @@ public class PagoNuevo extends AppCompatActivity {
 
     ArrayList<DatosParticipantes> participantes;
 
-    AdaptadorParticipantes adaptadorParticipantes;
+    AdaptadorParticipantesSpiner adaptadorParticipantes;
 
     int idPagoActivo;
 
@@ -84,7 +83,7 @@ public class PagoNuevo extends AppCompatActivity {
         setSupportActionBar(miToolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
-        adaptadorParticipantes = new AdaptadorParticipantes(PagoNuevo.this, participantes);
+        adaptadorParticipantes = new AdaptadorParticipantesSpiner(PagoNuevo.this, participantes);
         pagadoPor.setAdapter(adaptadorParticipantes);
 
         buttonCrearPago.setOnClickListener(new View.OnClickListener() {
@@ -99,7 +98,7 @@ public class PagoNuevo extends AppCompatActivity {
                     split.setId(id);
                     pago.setImporte(Double.parseDouble(edtxtImportePago.getText().toString()));
                     pago.setSplit(split);
-                    pago.setPagadoPor(pagadoPor.getSelectedItem().toString());
+                    pago.setPagadoPor(((DatosParticipantes) pagadoPor.getSelectedItem()).getId());
                     pago.setTitulo(edtxtNombrePago.getText().toString());
 
 //                    Log.d("Debug", "Pago a enviar: " + new Gson().toJson(pago));
@@ -137,7 +136,7 @@ public class PagoNuevo extends AppCompatActivity {
             public void onClick(View v) {
                 RepositorioPago repositorioPago = new RepositorioPago();
 
-                repositorioPago.actualizarPago(idPagoActivo, edtxtNombrePago.getText().toString(), Double.parseDouble(edtxtImportePago.getText().toString()), pagadoPor.getSelectedItem().toString(), new Callback<Void>() {
+                repositorioPago.actualizarPago(idPagoActivo, edtxtNombrePago.getText().toString(), Double.parseDouble(edtxtImportePago.getText().toString()), ((DatosParticipantes) pagadoPor.getSelectedItem()).getId(), new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
                         if (response.isSuccessful()) {
@@ -168,6 +167,7 @@ public class PagoNuevo extends AppCompatActivity {
         SharedPreferences preferences = getSharedPreferences("PagoActivo", MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         idPagoActivo = preferences.getInt("idPago", 0);
+
         editor.remove("idPago");
         editor.apply();
         preferences = getSharedPreferences("SplitActivo", MODE_PRIVATE);
@@ -191,6 +191,27 @@ public class PagoNuevo extends AppCompatActivity {
         });
 
         RepositorioParticipante repositorioParticipante = new RepositorioParticipante();
+        repositorioParticipante.obtenerParticipantePorSplit(idSplitActivo, new Callback<List<Participante>>() {
+            @Override
+            public void onResponse(Call<List<Participante>> call, Response<List<Participante>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    participantes.clear();
+                    List<Participante> participantes = response.body();
+                    for (Participante participante : participantes) {
+                        DatosParticipantes datosParticipante = new DatosParticipantes(participante.getId(), participante.getNombre());
+                        PagoNuevo.this.participantes.add(datosParticipante);
+                    }
+                    adaptadorParticipantes = new AdaptadorParticipantesSpiner(PagoNuevo.this, PagoNuevo.this.participantes);
+                    pagadoPor.setAdapter(adaptadorParticipantes);
+                    adaptadorParticipantes.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Participante>> call, Throwable t) {
+
+            }
+        });
 
         if (idPagoActivo != 0) {
             buttonCrearPago.setVisibility(View.GONE);
@@ -206,9 +227,25 @@ public class PagoNuevo extends AppCompatActivity {
                         Pago pago = response.body();
                         edtxtNombrePago.setText(pago.getTitulo());
                         edtxtImportePago.setText(Double.toString(pago.getImporte()));
-                        pagadoPor.setSelection(((ArrayAdapter<String>) pagadoPor.getAdapter()).getPosition(pago.getPagadoPor()));
+                        RepositorioParticipante repositorioParticipante = new RepositorioParticipante();
+                        repositorioParticipante.obtenerParticipante(pago.getPagadoPor(), new Callback<Participante>() {
+                            @Override
+                            public void onResponse(Call<Participante> call, Response<Participante> response) {
+                                if (response.isSuccessful() && response.body() != null) {
+                                    Participante participante = response.body();
+                                    pagadoPor.setSelection(((ArrayAdapter<String>) pagadoPor.getAdapter()).getPosition(participante.getNombre()));
+                                } else {
+                                    Toast.makeText(PagoNuevo.this, "Error de participante: " + response.code(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Participante> call, Throwable t) {
+                                Toast.makeText(PagoNuevo.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     } else {
-                        Toast.makeText(PagoNuevo.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PagoNuevo.this, "Error de pago: " + response.code(), Toast.LENGTH_SHORT).show();
                     }
                 }
 

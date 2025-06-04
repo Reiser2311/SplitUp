@@ -1,4 +1,4 @@
-package com.example.splitup;
+package com.example.splitup.datos;
 
 public class DatosSplits {
     private String nombre;

@@ -10,7 +10,7 @@ import retrofit2.Callback;
 public class RepositorioUsuarioParticipante {
     private ApiService apiService;
 
-    public RepositorioUsuarioParticipante(ApiService apiService) {
+    public RepositorioUsuarioParticipante() {
         this.apiService = ApiClient.getRetrofitClient().create(ApiService.class);
     }
 

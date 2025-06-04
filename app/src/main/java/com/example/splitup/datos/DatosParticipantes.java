@@ -1,4 +1,6 @@
-package com.example.splitup;
+package com.example.splitup.datos;
+
+import androidx.annotation.NonNull;
 
 public class DatosParticipantes {
     int id;
@@ -23,5 +25,11 @@ public class DatosParticipantes {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return nombre;
     }
 }

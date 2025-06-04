@@ -1,6 +1,5 @@
 package com.example.splitup;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -27,6 +26,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
+import com.example.splitup.adaptadores.AdaptadorPagos;
+import com.example.splitup.adaptadores.AdaptadorSaldos;
+import com.example.splitup.datos.DatosPagos;
+import com.example.splitup.datos.DatosParticipantes;
+import com.example.splitup.datos.DatosSaldos;
 import com.example.splitup.objetos.Pago;
 import com.example.splitup.objetos.Participante;
 import com.example.splitup.repositorios.RepositorioPago;
@@ -62,7 +66,7 @@ public class Pagos extends AppCompatActivity {
     ArrayList<DatosSaldos> datosSaldos = new ArrayList<>();
     AdaptadorPagos adaptadorPagos;
     AdaptadorSaldos adaptadorSaldos;
-    List<String> participantes = new ArrayList<>();
+    ArrayList<DatosParticipantes> participantes = new ArrayList<>();
 
     @Override
     protected void onResume() {
@@ -90,10 +94,11 @@ public class Pagos extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     List<Participante> participantes = response.body();
                     for (Participante participante : participantes) {
-                        Pagos.this.participantes.add(participante.getNombre());
+                        DatosParticipantes datosParticipante = new DatosParticipantes(participante.getId(), participante.getNombre());
+                        Pagos.this.participantes.add(datosParticipante);
                     }
                 } else {
-                    Toast.makeText(Pagos.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Pagos.this, "Error en participantes : " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -108,6 +113,7 @@ public class Pagos extends AppCompatActivity {
         SharedPreferences preferences = getSharedPreferences("SplitActivo", MODE_PRIVATE);
         RepositorioPago repositorioPago = new RepositorioPago();
         int id = preferences.getInt("idSplit", 0);
+        Log.d("SplitActivo", "idSplit: " + id);
         if (ultimoItem) {
             layoutSiHayPagos.setVisibility(View.GONE);
             layoutNoHayPagos.setVisibility(View.VISIBLE);
@@ -117,10 +123,12 @@ public class Pagos extends AppCompatActivity {
             public void onResponse(Call<List<Pago>> call, Response<List<Pago>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<Pago> pagos = response.body();
-                    actualizarListaPagos(pagos);
-                    calcularSaldos(pagos);
+                    if (!pagos.isEmpty()) {
+                        actualizarListaPagos(pagos);
+                        calcularSaldos(pagos);
+                    }
                 } else {
-                    Toast.makeText(Pagos.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Pagos.this, "Error en pagos: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -137,34 +145,42 @@ public class Pagos extends AppCompatActivity {
             DatosPagos datosPago = new DatosPagos(pago.getTitulo(), pago.getPagadoPor(), pago.getImporte(), pago.getId());
             datosPagos.add(datosPago);
         }
+        adaptadorPagos = new AdaptadorPagos(Pagos.this, datosPagos);
+        listViewPagos.setAdapter(adaptadorPagos);
         adaptadorPagos.notifyDataSetChanged();
+
         layoutSiHayPagos.setVisibility(View.VISIBLE);
         layoutNoHayPagos.setVisibility(View.GONE);
     }
 
     private void calcularSaldos(List<Pago> pagos) {
 
-        HashMap<String, Double> pagosRealizados = new HashMap<>();
+        HashMap<Integer, Double> pagosRealizados = new HashMap<>();
         double totalGasto = 0.0;
 
-        for (String participante : participantes) {
-            pagosRealizados.put(participante, 0.0);
+        // Inicializamos con 0 todos los participantes
+        for (DatosParticipantes participante : participantes) {
+            pagosRealizados.put(participante.getId(), 0.0);
         }
 
+        // Sumamos los pagos por participante (por id)
         for (Pago pago : pagos) {
-            String pagador = pago.getPagadoPor();
+            int pagadorId = pago.getPagadoPor();
             double cantidad = pago.getImporte();
-            pagosRealizados.put(pagador, pagosRealizados.getOrDefault(pagador, 0.0) + cantidad);
+            pagosRealizados.put(pagadorId, pagosRealizados.getOrDefault(pagadorId, 0.0) + cantidad);
             totalGasto += cantidad;
         }
 
-        double deudaPorPersona = participantes.isEmpty() ? 0.00 : totalGasto / participantes.size();
+        double deudaPorPersona = participantes.isEmpty() ? 0.0 : totalGasto / participantes.size();
 
         datosSaldos.clear();
-        for (String participante : participantes) {
-            double saldoFinal = pagosRealizados.get(participante) - deudaPorPersona;
+
+        for (DatosParticipantes participante : participantes) {
+            int id = participante.getId();
+            String nombre = participante.getNombre();
+            double saldoFinal = pagosRealizados.get(id) - deudaPorPersona;
             saldoFinal = new BigDecimal(saldoFinal).setScale(2, RoundingMode.HALF_UP).doubleValue();
-            datosSaldos.add(new DatosSaldos(participante, saldoFinal));
+            datosSaldos.add(new DatosSaldos(id, nombre, saldoFinal));
         }
 
         if (datosSaldos.isEmpty()) {
@@ -173,6 +189,7 @@ public class Pagos extends AppCompatActivity {
 
         adaptadorSaldos.notifyDataSetChanged();
     }
+
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
@@ -284,6 +301,7 @@ public class Pagos extends AppCompatActivity {
                 SharedPreferences preferences = getSharedPreferences("PagoActivo", MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putInt("idPago", ((DatosPagos) parent.getItemAtPosition(position)).getId());
+//                editor.putStringSet("participantes", new HashSet<>(Pagos.this.participantes));
                 editor.apply();
 
                 Intent intent = new Intent(Pagos.this, PagoNuevo.class);

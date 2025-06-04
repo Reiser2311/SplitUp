@@ -1,6 +1,7 @@
-package com.example.splitup;
+package com.example.splitup.adaptadores;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.example.splitup.R;
 
 import java.util.ArrayList;
 
@@ -31,6 +34,7 @@ public class AdaptadorParticipantesSinId extends ArrayAdapter<String> {
         TextView nombre = elemento.findViewById(R.id.texto_item);
 
         nombre.setText(datosParticipantes.get(position));
+        nombre.setTextColor(Color.WHITE);
 
         return elemento;
     }

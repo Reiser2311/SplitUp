@@ -1,4 +1,4 @@
-package com.example.splitup;
+package com.example.splitup.adaptadores;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,6 +9,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.example.splitup.datos.DatosSplits;
+import com.example.splitup.R;
 
 import java.util.ArrayList;
 

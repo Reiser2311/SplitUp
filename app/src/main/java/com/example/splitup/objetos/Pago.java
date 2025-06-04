@@ -4,7 +4,7 @@ public class Pago {
     private int id;
     private double importe;
     private String titulo;
-    private String pagadoPor;
+    private int pagadoPor;
     private Split split;
 
     // Getters y Setters
@@ -32,11 +32,11 @@ public class Pago {
         this.titulo = titulo;
     }
 
-    public String getPagadoPor() {
+    public int getPagadoPor() {
         return pagadoPor;
     }
 
-    public void setPagadoPor(String pagadoPor) {
+    public void setPagadoPor(int pagadoPor) {
         this.pagadoPor = pagadoPor;
     }
 

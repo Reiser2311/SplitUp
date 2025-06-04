@@ -23,10 +23,15 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.splitup.adaptadores.AdaptadorTransacciones;
+import com.example.splitup.datos.DatosSaldos;
+import com.example.splitup.datos.DatosTransacciones;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -155,37 +160,53 @@ public class Transacciones extends AppCompatActivity {
 
         for (DatosSaldos dato : datos) {
             double diferencia = dato.getSaldo() - saldoMedio;
+            // Redondeo de diferencia para evitar errores de precisión flotante
+            diferencia = new BigDecimal(diferencia).setScale(2, RoundingMode.HALF_UP).doubleValue();
+
             if (diferencia < 0) {
-                deudores.add(dato);
+                deudores.add(new DatosSaldos(dato.getId(), dato.getNombre(), dato.getSaldo()));
             } else if (diferencia > 0) {
-                acreedores.add(dato);
+                acreedores.add(new DatosSaldos(dato.getId(), dato.getNombre(), dato.getSaldo()));
             }
         }
 
         datosTransacciones.clear();
         int i = 0, j = 0;
+
         while (i < deudores.size() && j < acreedores.size()) {
-            double deuda = - (deudores.get(i).getSaldo() - saldoMedio);
-            double credito = acreedores.get(j).getSaldo() - saldoMedio;
+            double deuda = new BigDecimal(saldoMedio - deudores.get(i).getSaldo())
+                    .setScale(2, RoundingMode.HALF_UP).doubleValue();
+            double credito = new BigDecimal(acreedores.get(j).getSaldo() - saldoMedio)
+                    .setScale(2, RoundingMode.HALF_UP).doubleValue();
 
             double transaccion = Math.min(deuda, credito);
+            transaccion = new BigDecimal(transaccion).setScale(2, RoundingMode.HALF_UP).doubleValue();
 
-            datosTransacciones.add(new DatosTransacciones(transaccion, acreedores.get(j).getNombre(), deudores.get(i).getNombre(), " paga a "));
+            datosTransacciones.add(new DatosTransacciones(transaccion,
+                    acreedores.get(j).getNombre(),
+                    deudores.get(i).getNombre(),
+                    " paga a "));
 
-            deudores.get(i).setSaldo(deudores.get(i).getSaldo() + transaccion);
-            acreedores.get(j).setSaldo(acreedores.get(j).getSaldo() - transaccion);
+            deudores.get(i).setSaldo(
+                    new BigDecimal(deudores.get(i).getSaldo() + transaccion)
+                            .setScale(2, RoundingMode.HALF_UP).doubleValue());
 
-            if (deudores.get(i).getSaldo() == saldoMedio) {
+            acreedores.get(j).setSaldo(
+                    new BigDecimal(acreedores.get(j).getSaldo() - transaccion)
+                            .setScale(2, RoundingMode.HALF_UP).doubleValue());
+
+            if (Math.abs(deudores.get(i).getSaldo() - saldoMedio) < 0.01) {
                 i++;
             }
 
-            if (acreedores.get(j).getSaldo() == saldoMedio) {
+            if (Math.abs(acreedores.get(j).getSaldo() - saldoMedio) < 0.01) {
                 j++;
             }
         }
 
         adaptadorTransacciones.notifyDataSetChanged();
     }
+
 
 
 

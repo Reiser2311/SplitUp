@@ -1,4 +1,4 @@
-package com.example.splitup;
+package com.example.splitup.datos;
 
 public class DatosTransacciones {
     private String textoDeudorTransaccion;

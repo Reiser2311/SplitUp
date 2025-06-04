@@ -63,7 +63,7 @@ public interface ApiService {
     Call<List<Pago>> obtenerPagos();
 
     @PUT("pagos/{id}")
-    Call<Void> actualizarPago(@Path("id") int id, @Query("titulo") String titulo, @Query("importe") Double importe, @Query("pagadoPor") String pagadoPor);
+    Call<Void> actualizarPago(@Path("id") int id, @Query("titulo") String titulo, @Query("importe") Double importe, @Query("pagadoPor") int pagadoPor);
 
     @DELETE("pagos/{id}")
     Call<Void> eliminarPago(@Path("id") int id);

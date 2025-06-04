@@ -25,6 +25,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.splitup.adaptadores.AdaptadorSplits;
+import com.example.splitup.datos.DatosSplits;
 import com.example.splitup.objetos.Split;
 import com.example.splitup.repositorios.RepositorioSplit;
 
@@ -53,6 +55,7 @@ public class Splits extends AppCompatActivity {
     Boolean ultimoItem = false;
     ArrayList<DatosSplits> datosSplits = new ArrayList<>();
     AdaptadorSplits adaptador;
+    int idUsuario = 0;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -176,13 +179,13 @@ public class Splits extends AppCompatActivity {
     private void rehacerLista() {
         SharedPreferences preferences = getSharedPreferences("InicioSesion", MODE_PRIVATE);
         RepositorioSplit repositorioSplit = new RepositorioSplit();
-        int id = preferences.getInt("id", 0);
+        idUsuario = preferences.getInt("id", 0);
         if (ultimoItem) {
             listaSplits.setVisibility(View.GONE);
             layoutNoHaySplits.setVisibility(View.VISIBLE);
         }
-        Log.d("Debug", "Obteniendo splits para el usuario con ID: " + id);
-        repositorioSplit.obtenerSplitsPorUsuario(id , new Callback<List<Split>>() {
+        Log.d("Debug", "Obteniendo splits para el usuario con ID: " + idUsuario);
+        repositorioSplit.obtenerSplitsPorUsuario(idUsuario , new Callback<List<Split>>() {
             @Override
             public void onResponse(Call<List<Split>> call, Response<List<Split>> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -192,7 +195,10 @@ public class Splits extends AppCompatActivity {
                         DatosSplits datosSplit = new DatosSplits(split.getTitulo(), split.getId());
                         datosSplits.add(datosSplit);
                     }
+                    adaptador = new AdaptadorSplits(Splits.this, datosSplits);
+                    listaSplits.setAdapter(adaptador);
                     adaptador.notifyDataSetChanged();
+
                     listaSplits.setVisibility(View.VISIBLE);
                     layoutNoHaySplits.setVisibility(View.GONE);
                 } else {
@@ -228,6 +234,11 @@ public class Splits extends AppCompatActivity {
         layoutNoHaySplits = findViewById(R.id.layoutNoHaySplits);
         adaptador = new AdaptadorSplits(Splits.this, datosSplits);
         listaSplits.setAdapter(adaptador);
+
+        SharedPreferences preferences = getSharedPreferences("SplitActivo", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.remove("idSplit");
+        editor.apply();
 
         String text = "SplitUp";
         SpannableString spannable = new SpannableString(text);

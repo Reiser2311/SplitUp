@@ -3,12 +3,15 @@ package com.example.splitup;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -68,6 +71,8 @@ public class Pagos extends AppCompatActivity {
     AdaptadorSaldos adaptadorSaldos;
     ArrayList<DatosParticipantes> participantes = new ArrayList<>();
 
+    int idSplitActivo;
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -112,13 +117,13 @@ public class Pagos extends AppCompatActivity {
     private void rehacerLista() {
         SharedPreferences preferences = getSharedPreferences("SplitActivo", MODE_PRIVATE);
         RepositorioPago repositorioPago = new RepositorioPago();
-        int id = preferences.getInt("idSplit", 0);
-        Log.d("SplitActivo", "idSplit: " + id);
+        idSplitActivo = preferences.getInt("idSplit", 0);
+        Log.d("SplitActivo", "idSplit: " + idSplitActivo);
         if (ultimoItem) {
             layoutSiHayPagos.setVisibility(View.GONE);
             layoutNoHayPagos.setVisibility(View.VISIBLE);
         }
-        repositorioPago.obtenerPagosPorSplit(id, new Callback<List<Pago>>() {
+        repositorioPago.obtenerPagosPorSplit(idSplitActivo, new Callback<List<Pago>>() {
             @Override
             public void onResponse(Call<List<Pago>> call, Response<List<Pago>> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -258,6 +263,29 @@ public class Pagos extends AppCompatActivity {
         editor.apply();
     }
 
+    private void cambiarColorOverflow() {
+        Drawable overflowIcon = miToolbar.getOverflowIcon();
+        if (overflowIcon != null) {
+            overflowIcon.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_ATOP);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.compartir) {
+
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_compartir, menu);
+        return true;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -286,6 +314,7 @@ public class Pagos extends AppCompatActivity {
         logo.setText(spannable);
 
         setSupportActionBar(miToolbar);
+        cambiarColorOverflow();
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
         registerForContextMenu(listViewPagos);
 

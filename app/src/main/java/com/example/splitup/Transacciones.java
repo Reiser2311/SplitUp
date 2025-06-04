@@ -50,7 +50,6 @@ public class Transacciones extends AppCompatActivity {
         super.onResume();
 
         SharedPreferences preferences = getSharedPreferences("Saldos", MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
 
         String json = preferences.getString("saldos", null);
 

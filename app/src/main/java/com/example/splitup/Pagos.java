@@ -275,7 +275,7 @@ public class Pagos extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.compartir) {
-
+            Toast.makeText(this, "Funcion aun en desarrollo", Toast.LENGTH_SHORT).show();
         }
         return true;
     }

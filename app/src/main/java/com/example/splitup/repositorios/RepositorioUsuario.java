@@ -36,8 +36,8 @@ public class RepositorioUsuario {
         call.enqueue(callback);
     }
 
-    public void actualizarUsuario(int id, String correo, String nombre, String contrasenya, Callback<Void> callback) {
-        Call<Void> call = apiService.actualizarUsuario(id, correo, nombre, contrasenya);
+    public void actualizarUsuario(int id, Usuario usuarioObjeto, Callback<Void> callback) {
+        Call<Void> call = apiService.actualizarUsuario(id, usuarioObjeto);
         call.enqueue(callback);
     }
 

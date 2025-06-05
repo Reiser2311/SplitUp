@@ -3,6 +3,7 @@ package com.example.splitup;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -27,8 +28,14 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.example.splitup.adaptadores.AdaptadorSplits;
 import com.example.splitup.datos.DatosSplits;
+import com.example.splitup.objetos.Participante;
 import com.example.splitup.objetos.Split;
+import com.example.splitup.objetos.UsuarioParticipante;
+import com.example.splitup.objetos.UsuarioSplit;
+import com.example.splitup.repositorios.RepositorioParticipante;
 import com.example.splitup.repositorios.RepositorioSplit;
+import com.example.splitup.repositorios.RepositorioUsuarioParticipante;
+import com.example.splitup.repositorios.RepositorioUsuarioSplit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -199,8 +206,13 @@ public class Splits extends AppCompatActivity {
                     listaSplits.setAdapter(adaptador);
                     adaptador.notifyDataSetChanged();
 
-                    listaSplits.setVisibility(View.VISIBLE);
-                    layoutNoHaySplits.setVisibility(View.GONE);
+                    if (!datosSplits.isEmpty()) {
+                        listaSplits.setVisibility(View.VISIBLE);
+                        layoutNoHaySplits.setVisibility(View.GONE);
+                    } else {
+                        listaSplits.setVisibility(View.GONE);
+                        layoutNoHaySplits.setVisibility(View.VISIBLE);
+                    }
                 } else {
                     Toast.makeText(Splits.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
@@ -218,6 +230,93 @@ public class Splits extends AppCompatActivity {
         if (overflowIcon != null) {
             overflowIcon.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_ATOP);
         }
+    }
+
+    private void vincularUsuarioASplitYParticipante(int idSplit, int idParticipante) {
+        SharedPreferences preferences = getSharedPreferences("InicioSesion", MODE_PRIVATE);
+        int idUsuario = preferences.getInt("id", 0);
+
+        RepositorioUsuarioSplit repoUS = new RepositorioUsuarioSplit();
+        repoUS.crearRelacion(new UsuarioSplit(idUsuario, idSplit), new Callback<UsuarioSplit>() {
+            @Override
+            public void onResponse(Call<UsuarioSplit> call, Response<UsuarioSplit> response) {
+                if (response.isSuccessful()) {
+                    Log.d("Invitacion", "UsuarioSplit creado o ya existía");
+
+                    RepositorioUsuarioParticipante repoUP = new RepositorioUsuarioParticipante();
+                    repoUP.crearRelacion(new UsuarioParticipante(idParticipante, idUsuario), new Callback<UsuarioParticipante>() {
+                        @Override
+                        public void onResponse(Call<UsuarioParticipante> call, Response<UsuarioParticipante> response) {
+                            if (response.isSuccessful()) {
+                                Toast.makeText(Splits.this, "Te has unido correctamente", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(Splits.this, "Ya estás vinculado", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<UsuarioParticipante> call, Throwable t) {
+                            Toast.makeText(Splits.this, "Error de red al vincular", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                } else {
+                    Toast.makeText(Splits.this, "Error al vincular al split", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UsuarioSplit> call, Throwable t) {
+                Toast.makeText(Splits.this, "Error de red al vincular al split", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void mostrarDialogoInvitacion(int idSplit) {
+        RepositorioParticipante repo = new RepositorioParticipante();
+        repo.obtenerParticipantePorSplit(idSplit, new Callback<List<Participante>>() {
+            @Override
+            public void onResponse(Call<List<Participante>> call, Response<List<Participante>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<Participante> participantes = response.body();
+
+                    String[] nombres = new String[participantes.size()];
+                    int[] ids = new int[participantes.size()];
+                    for (int i = 0; i < participantes.size(); i++) {
+                        nombres[i] = participantes.get(i).getNombre();
+                        ids[i] = participantes.get(i).getId();
+                    }
+
+                    final int[] seleccionado = {-1};
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Splits.this);
+                    builder.setTitle("¿Cuál eres tú?");
+                    builder.setSingleChoiceItems(nombres, -1, (dialog, which) -> {
+                        seleccionado[0] = which;
+                    });
+
+                    builder.setPositiveButton("Aceptar", (dialog, which) -> {
+                        if (seleccionado[0] != -1) {
+                            int idParticipante = ids[seleccionado[0]];
+                            vincularUsuarioASplitYParticipante(idSplit, idParticipante);
+                        } else {
+                            Toast.makeText(Splits.this, "Debes seleccionar un participante", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                    builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss());
+                    builder.show();
+
+                } else {
+                    Toast.makeText(Splits.this, "Error al obtener participantes: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Participante>> call, Throwable t) {
+                Toast.makeText(Splits.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -250,6 +349,22 @@ public class Splits extends AppCompatActivity {
         cambiarColorOverflow();
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
         registerForContextMenu(listaSplits);
+
+        Intent intentEnlace = getIntent();
+        if (Intent.ACTION_VIEW.equals(intentEnlace.getAction())) {
+            Uri data = intentEnlace.getData();
+            if (data != null && "splitup.app".equals(data.getHost())) {
+                String idSplitStr = data.getQueryParameter("splitId");
+                if (idSplitStr != null) {
+                    try {
+                        int idSplit = Integer.parseInt(idSplitStr);
+                        mostrarDialogoInvitacion(idSplit);
+                    } catch (NumberFormatException e) {
+                        Log.e("invitacion", "ID de split inválido:" + idSplitStr);
+                    }
+                }
+            }
+        }
 
         botonNuevoSplit.setOnClickListener(v -> {
             if (sesionIniciada) {

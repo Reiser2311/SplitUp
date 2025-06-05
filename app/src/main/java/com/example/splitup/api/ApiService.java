@@ -27,7 +27,7 @@ public interface ApiService {
     Call<List<Usuario>> obtenerUsuarios();
 
     @PUT("usuarios/{id}")
-    Call<Void> actualizarUsuario(@Path("id") int id, @Query("correo") String correo, @Query("nombre") String nombre, @Query("contrasenya") String constrasenya);
+    Call<Void> actualizarUsuario(@Path("id") int id, @Body Usuario usuarioObjeto);
 
     @DELETE("usuarios/{id}")
     Call<Void> eliminarUsuario(@Path("id") int id);

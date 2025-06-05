@@ -86,7 +86,7 @@ public class InicioSesion extends AppCompatActivity {
                             if (response.isSuccessful() && response.body() != null) {
                                 Usuario usuario = response.body();
                                 if (usuario.getContrasenya().equals(contrasenya)) {
-                                    Toast.makeText(InicioSesion.this, "Bienvenido, " + usuario.getNombre(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(InicioSesion.this, "Bienvenid@, " + usuario.getNombre(), Toast.LENGTH_SHORT).show();
                                     SharedPreferences preferences = getSharedPreferences("InicioSesion", MODE_PRIVATE);
                                     SharedPreferences.Editor editor = preferences.edit();
                                     editor.putBoolean("sesionIniciada", true);

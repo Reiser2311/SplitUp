@@ -22,6 +22,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.example.splitup.objetos.Usuario;
 import com.example.splitup.repositorios.RepositorioUsuario;
 import com.google.android.material.textfield.TextInputEditText;
@@ -50,6 +51,8 @@ public class Perfil extends AppCompatActivity {
     ActivityResultLauncher<Intent> imagePickerLauncher;
     ImageView imagenPerfil;
 
+    private Uri uriImagenSeleccionada;
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -66,7 +69,9 @@ public class Perfil extends AppCompatActivity {
                     Usuario usuario = response.body();
                     editTextCorreoPerfil.setText(usuario.getCorreo());
                     editTextNombrePerfil.setText(usuario.getNombre());
-                    Conversor.cargarImagenDesdeBase64(usuario.getFotoPerfil(), imagenPerfil);
+                    if (usuario.getFotoPerfil() != null) {
+                        Conversor.cargarImagenDesdeBase64(usuario.getFotoPerfil(), imagenPerfil);
+                    }
                 }
             }
 
@@ -83,16 +88,14 @@ public class Perfil extends AppCompatActivity {
                         !editTextNombrePerfil.getText().toString().isEmpty() &&
                         !editTextCorreoPerfil.getText().toString().isEmpty() &&
                         editTextContrasenyaPerfil.getText().toString().equals(editTextConfirmarContrasenyaPerfil.getText().toString())) {
+
                         Usuario usuario = new Usuario();
+                        usuario.setCorreo(editTextCorreoPerfil.getText().toString());
                         usuario.setNombre(editTextNombrePerfil.getText().toString());
                         usuario.setContrasenya(editTextContrasenyaPerfil.getText().toString());
-                        usuario.setCorreo(editTextCorreoPerfil.getText().toString());
                         usuario.setFotoPerfil(Conversor.imageViewToBase64(imagenPerfil));
 
-                        repositorioUsuario.actualizarUsuario(id,
-                                editTextCorreoPerfil.getText().toString(),
-                                editTextNombrePerfil.getText().toString(),
-                                editTextContrasenyaPerfil.getText().toString(),
+                        repositorioUsuario.actualizarUsuario(id, usuario,
                                 new Callback<Void>() {
                             @Override
                             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -102,21 +105,15 @@ public class Perfil extends AppCompatActivity {
                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(intent);
                                 } else {
-                                    Toast.makeText(Perfil.this, "Error: " +
-                                            response.code(), Toast.LENGTH_SHORT).show();
-                                    try {
-                                        Log.e("Respuesta", "Codigo: " + response.code() +
-                                                " - Error: " + response.errorBody().string());
-                                    } catch (IOException e) {
-                                        throw new RuntimeException(e);
-                                    }
+                                    Toast.makeText(Perfil.this, "Error: " +  response.code(), Toast.LENGTH_SHORT).show();
+                                    Log.e("Perfil", "Error al actualizar el perfil: " + response.code());
+
                                 }
                             }
 
                             @Override
                             public void onFailure(Call<Void> call, Throwable t) {
-                                Toast.makeText(Perfil.this, "Error de red: " +
-                                        t.getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(Perfil.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
 
@@ -236,7 +233,7 @@ public class Perfil extends AppCompatActivity {
                 new ActivityResultContracts.StartActivityForResult(), result -> {
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                         Uri uriImagenSeleccionada = result.getData().getData();
-                        imagenPerfil.setImageURI(uriImagenSeleccionada);
+                        Glide.with(this).load(uriImagenSeleccionada).into(imagenPerfil);
                     }
                 }
         );

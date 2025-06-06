@@ -350,21 +350,23 @@ public class Splits extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
         registerForContextMenu(listaSplits);
 
-        Intent intentEnlace = getIntent();
-        if (Intent.ACTION_VIEW.equals(intentEnlace.getAction())) {
-            Uri data = intentEnlace.getData();
-            if (data != null && "splitup.app".equals(data.getHost())) {
-                String idSplitStr = data.getQueryParameter("splitId");
-                if (idSplitStr != null) {
-                    try {
-                        int idSplit = Integer.parseInt(idSplitStr);
-                        mostrarDialogoInvitacion(idSplit);
-                    } catch (NumberFormatException e) {
-                        Log.e("invitacion", "ID de split inválido:" + idSplitStr);
-                    }
-                }
-            }
-        }
+        //este intent recoge la si la app se abre desde un enlace de invitacion
+
+//        Intent intentEnlace = getIntent();
+//        if (Intent.ACTION_VIEW.equals(intentEnlace.getAction())) {
+//            Uri data = intentEnlace.getData();
+//            if (data != null && "splitup.app".equals(data.getHost())) {
+//                String idSplitStr = data.getQueryParameter("splitId");
+//                if (idSplitStr != null) {
+//                    try {
+//                        int idSplit = Integer.parseInt(idSplitStr);
+//                        mostrarDialogoInvitacion(idSplit);
+//                    } catch (NumberFormatException e) {
+//                        Log.e("invitacion", "ID de split inválido:" + idSplitStr);
+//                    }
+//                }
+//            }
+//        }
 
         botonNuevoSplit.setOnClickListener(v -> {
             if (sesionIniciada) {

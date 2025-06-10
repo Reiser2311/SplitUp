@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
@@ -80,30 +82,28 @@ public class InicioSesion extends AppCompatActivity {
                 if (!correo.isEmpty() && !contrasenya.isEmpty() && esCorreoValido) {
                     RepositorioUsuario repositorioUsuario = new RepositorioUsuario();
 
-                    repositorioUsuario.obtenerUsuarioPorCorreo(correo, new Callback<Usuario>() {
+                    Usuario loginRequest = new Usuario();
+                    loginRequest.setCorreo(correo);
+                    loginRequest.setContrasenya(contrasenya);
+
+                    repositorioUsuario.login(loginRequest, new Callback<Usuario>() {
                         @Override
                         public void onResponse(Call<Usuario> call, Response<Usuario> response) {
                             if (response.isSuccessful() && response.body() != null) {
                                 Usuario usuario = response.body();
-                                if (usuario.getContrasenya().equals(contrasenya)) {
-                                    Toast.makeText(InicioSesion.this, "Bienvenid@, " + usuario.getNombre(), Toast.LENGTH_SHORT).show();
-                                    SharedPreferences preferences = getSharedPreferences("InicioSesion", MODE_PRIVATE);
-                                    SharedPreferences.Editor editor = preferences.edit();
-                                    editor.putBoolean("sesionIniciada", true);
-                                    editor.putInt("id", usuario.getId());
-                                    editor.apply();
-                                    finish();
-                                } else {
-                                    Toast.makeText(InicioSesion.this, "Contraseña incorrecta", Toast.LENGTH_SHORT).show();
-                                }
 
+                                Toast.makeText(InicioSesion.this, "Bienvenid@, " + usuario.getNombre(), Toast.LENGTH_SHORT).show();
 
-                            } else if (response.body() == null){
-                                Toast.makeText(InicioSesion.this, "Usuario no encotrado", Toast.LENGTH_SHORT).show();
+                                SharedPreferences preferences = getSharedPreferences("InicioSesion", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = preferences.edit();
+                                editor.putBoolean("sesionIniciada", true);
+                                editor.putInt("id", usuario.getId());
+                                editor.apply();
+
+                                finish();
                             } else {
-                                Toast.makeText(InicioSesion.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(InicioSesion.this, "Correo o contraseña incorrectos", Toast.LENGTH_SHORT).show();
                             }
-
                         }
 
                         @Override
@@ -111,37 +111,56 @@ public class InicioSesion extends AppCompatActivity {
                             Toast.makeText(InicioSesion.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                             Log.d("Red", t.getMessage());
                         }
-
                     });
 
 
-                } else if (correo.isEmpty()) {
-                    editTextCorreo.setError("El correo electrónico no puede estar vacío");
-                } else if (contrasenya.isEmpty()) {
-                    layoutContrasenya.setEndIconMode(TextInputLayout.END_ICON_NONE);
-                    editTextContrasenya.setError("La contraseña no puede estar vacía");
                 } else {
-                    editTextCorreo.setError("El correo electrónico no es válido");
+                    if (correo.isEmpty()) {
+                        editTextCorreo.setError("El correo electrónico no puede estar vacío");
+                    }
+                    if (contrasenya.isEmpty()) {
+                        layoutContrasenya.setEndIconMode(TextInputLayout.END_ICON_NONE);
+                        editTextContrasenya.setError("La contraseña no puede estar vacía");
+                    }
+                    if (!esCorreoValido) {
+                        editTextCorreo.setError("El correo electrónico no es válido");
+                    }
                 }
             }
         });
 
-        editTextCorreo.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        editTextCorreo.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    editTextCorreo.setError(null);
-                }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                editTextCorreo.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
 
-        editTextContrasenya.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        editTextContrasenya.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    editTextContrasenya.setError(null);
-                    layoutContrasenya.setEndIconMode(TextInputLayout.END_ICON_PASSWORD_TOGGLE);
-                }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                editTextContrasenya.setError(null);
+                layoutContrasenya.setEndIconMode(TextInputLayout.END_ICON_PASSWORD_TOGGLE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
     }

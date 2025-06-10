@@ -17,6 +17,9 @@ public interface ApiService {
     @POST("usuarios")
     Call<Usuario> crearUsuario(@Body Usuario usuarioObjeto);
 
+    @POST("usuarios/login")
+    Call<Usuario> login(@Body Usuario loginRequest);
+
     @GET("usuarios/correo/{correo}")
     Call<Usuario> obtenerUsuarioPorCorreo(@Path("correo") String correo);
 

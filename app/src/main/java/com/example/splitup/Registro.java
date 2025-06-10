@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.Button;
@@ -122,11 +124,9 @@ public class Registro extends AppCompatActivity {
                     repositorioUsuario.obtenerUsuarioPorCorreo(correo, new Callback<Usuario>() {
                         @Override
                         public void onResponse(Call<Usuario> call, Response<Usuario> response) {
-                            if (response.isSuccessful()) {
-                                //en caso de que existe avisa al usuario
+                            if (response.code() == 200 && response.body() != null) {
                                 Toast.makeText(Registro.this, "El usuario ya existe", Toast.LENGTH_SHORT).show();
-                            } else {
-                                //en caso de que no exista lo crea
+                            } else if (response.code() == 404) {
                                 repositorioUsuario.crearUsuario(usuario, new Callback<Usuario>() {
                                     @Override
                                     public void onResponse(Call<Usuario> call, Response<Usuario> response) {
@@ -143,11 +143,11 @@ public class Registro extends AppCompatActivity {
 
                                     @Override
                                     public void onFailure(Call<Usuario> call, Throwable t) {
-                                        Toast.makeText(Registro.this, "Error de red: " +
-                                                t.getMessage(), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(Registro.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                                     }
-
                                 });
+                            } else {
+                                Toast.makeText(Registro.this, "Error inesperado: " + response.code(), Toast.LENGTH_SHORT).show();
                             }
 
                         }
@@ -160,55 +160,104 @@ public class Registro extends AppCompatActivity {
 
                     });
 
-                } else if (correo.isEmpty()) {
-                    editTextCorreo.setError("El correo electrónico no puede estar vacío");
-                } else if (contrasenya.isEmpty()) {
-                    editTextContrasenya.requestFocus();
-                    layoutContrasenya.setEndIconMode(TextInputLayout.END_ICON_NONE);
-                    editTextContrasenya.setError("La contraseña no puede estar vacía");
-                } else if (confirmacion.isEmpty()) {
-                    layoutConfirmarContrasenya.setEndIconMode(TextInputLayout.END_ICON_NONE);
-                    editTextConfirmar.setError("La confirmación de contraseña no puede estar vacía");
-                } else if (!esContrasenyaSegura(contrasenya)) {
-                    layoutContrasenya.setEndIconMode(TextInputLayout.END_ICON_NONE);
-                    editTextContrasenya.setError("La contraseña debe contener minimo 8 caracteres, una mayuscula, una minuscula, un numero y un caracter especial");
-                } else if (!contrasenya.equals(confirmacion)) {
-                    layoutConfirmarContrasenya.setEndIconMode(TextInputLayout.END_ICON_NONE);
-                    editTextConfirmar.setError("Las contraseñas no coinciden");
                 } else {
-                    layoutCorreo.setEndIconMode(TextInputLayout.END_ICON_NONE);
-                    editTextCorreo.setError("El correo electrónico no es válido");
+                    if (correo.isEmpty()) {
+                        editTextCorreo.setError("El correo electrónico no puede estar vacío");
+                    }
+                    if (contrasenya.isEmpty()) {
+                        layoutContrasenya.setEndIconMode(TextInputLayout.END_ICON_NONE);
+                        editTextContrasenya.setError("La contraseña no puede estar vacía");
+                    }
+                    if (confirmacion.isEmpty()) {
+                        layoutConfirmarContrasenya.setEndIconMode(TextInputLayout.END_ICON_NONE);
+                        editTextConfirmar.setError("La confirmación de contraseña no puede estar vacía");
+                    }
+                    if (!esContrasenyaSegura(contrasenya)) {
+                        layoutContrasenya.setEndIconMode(TextInputLayout.END_ICON_NONE);
+                        editTextContrasenya.setError("La contraseña debe contener minimo 8 caracteres, una mayuscula, una minuscula, un numero y un caracter especial");
+                    }
+                    if (!contrasenya.equals(confirmacion)) {
+                        layoutConfirmarContrasenya.setEndIconMode(TextInputLayout.END_ICON_NONE);
+                        editTextConfirmar.setError("Las contraseñas no coinciden");
+                    }
+                    if (!esCorreoValido){
+                        layoutCorreo.setEndIconMode(TextInputLayout.END_ICON_NONE);
+                        editTextCorreo.setError("El correo electrónico no es válido");
+                    }
+                    if (editTextNombre.getText().toString().isEmpty()){
+                        editTextNombre.setError("El nombre no puede estar vacío");
+                    }
                 }
             }
         });
 
-        editTextNombre.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        editTextNombre.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
                 editTextNombre.setError(null);
             }
-        });
 
-        editTextCorreo.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                editTextCorreo.setError(null);
+            public void afterTextChanged(Editable s) {
+
             }
         });
 
-        editTextContrasenya.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        editTextCorreo.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                editTextCorreo.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        editTextContrasenya.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
                 editTextContrasenya.setError(null);
                 layoutContrasenya.setEndIconMode(TextInputLayout.END_ICON_PASSWORD_TOGGLE);
             }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
         });
 
-        editTextConfirmar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        editTextConfirmar.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
                 editTextConfirmar.setError(null);
                 layoutConfirmarContrasenya.setEndIconMode(TextInputLayout.END_ICON_PASSWORD_TOGGLE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
     }

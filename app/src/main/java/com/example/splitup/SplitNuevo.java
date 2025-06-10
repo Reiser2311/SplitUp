@@ -3,9 +3,11 @@ package com.example.splitup;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputType;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -388,12 +390,49 @@ public class SplitNuevo extends AppCompatActivity {
                             Log.e("Error", "Error de red: " + t.getMessage());
                         }
                     });
-                } else if ((participantes.isEmpty() && idSplitActivo != 0) || (participantesSinId.isEmpty() && idSplitActivo == 0)) {
-                    edtxtParticipante.setError("Los participantes no pueden estar vacios");
                 } else {
-                    edtxtNombre.setError("El nombre no puede estar vacio");
+                    if ((participantes.isEmpty() && idSplitActivo != 0) || (participantesSinId.isEmpty() && idSplitActivo == 0)) {
+                        edtxtParticipante.setError("Los participantes no pueden estar vacios");
+                    }
+                    if (edtxtNombre.getText().toString().isEmpty()){
+                        edtxtNombre.setError("El nombre no puede estar vacio");
+                    }
                 }
 
+
+            }
+        });
+
+        edtxtParticipante.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                edtxtParticipante.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        edtxtNombre.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                edtxtNombre.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
 
             }
         });

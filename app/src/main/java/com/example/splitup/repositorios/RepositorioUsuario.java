@@ -21,6 +21,11 @@ public class RepositorioUsuario {
         call.enqueue(callback);
     }
 
+    public void login(Usuario loginRequest, Callback<Usuario> callback) {
+        Call<Usuario> call = apiService.login(loginRequest);
+        call.enqueue(callback);
+    }
+
     public void obtenerUsuarioPorCorreo(String correo, Callback<Usuario> callback) {
         Call<Usuario> call = apiService.obtenerUsuarioPorCorreo(correo);
         call.enqueue(callback);

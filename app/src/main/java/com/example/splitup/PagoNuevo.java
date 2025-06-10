@@ -3,8 +3,10 @@ package com.example.splitup;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
@@ -121,12 +123,50 @@ public class PagoNuevo extends AppCompatActivity {
                             Toast.makeText(PagoNuevo.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
-                } else if (edtxtNombrePago.getText().toString().isEmpty()) {
-                    edtxtNombrePago.setError("El nombre no puede estar vacio");
                 } else {
-                    edtxtImportePago.setError("El importe no puede estar vacio");
+                    if (edtxtNombrePago.getText().toString().isEmpty()) {
+                        edtxtNombrePago.setError("El nombre no puede estar vacio");
+                    }
+
+                    if (edtxtImportePago.getText().toString().isEmpty()) {
+                        edtxtImportePago.setError("El importe no puede estar vacio");
+                    }
                 }
 
+
+            }
+        });
+
+        edtxtImportePago.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                edtxtImportePago.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        edtxtNombrePago.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                edtxtNombrePago.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
 
             }
         });

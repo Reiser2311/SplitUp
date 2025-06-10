@@ -163,6 +163,7 @@ public class Registro extends AppCompatActivity {
                 } else if (correo.isEmpty()) {
                     editTextCorreo.setError("El correo electrónico no puede estar vacío");
                 } else if (contrasenya.isEmpty()) {
+                    editTextContrasenya.requestFocus();
                     layoutContrasenya.setEndIconMode(TextInputLayout.END_ICON_NONE);
                     editTextContrasenya.setError("La contraseña no puede estar vacía");
                 } else if (confirmacion.isEmpty()) {

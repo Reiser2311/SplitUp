@@ -310,9 +310,9 @@ public class Pagos extends AppCompatActivity {
                                         intent.setType("message/rfc822");
                                         intent.putExtra(Intent.EXTRA_EMAIL, new String[]{input.getText().toString()});
                                         intent.putExtra(Intent.EXTRA_SUBJECT, "Invitacion a participar en Split");
-                                        intent.putExtra(Intent.EXTRA_TEXT, "Hola " + usuario.getNombre() + " se te ha añadido en un split como usuario," +
-                                                "cuando entres en la app podrás ver el nuevo split en tu listado para " +
-                                                "que puedas interactuar con el");
+                                        intent.putExtra(Intent.EXTRA_TEXT, "Hola " + usuario.getNombre() + ".\nSe te ha añadido en un split como usuario. " +
+                                                "Cuando entres en la app podrás ver el nuevo split en tu listado para " +
+                                                "que puedas interactuar con él");
 
                                         try {
                                             startActivity(Intent.createChooser(intent, "Enviar correo..."));

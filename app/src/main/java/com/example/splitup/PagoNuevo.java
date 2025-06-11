@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,15 +20,20 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.splitup.adaptadores.AdaptadorDivision;
 import com.example.splitup.adaptadores.AdaptadorParticipantesSpiner;
+import com.example.splitup.datos.DatosDivision;
 import com.example.splitup.datos.DatosParticipantes;
 import com.example.splitup.objetos.Pago;
 import com.example.splitup.objetos.Participante;
+import com.example.splitup.objetos.ParticipantePago;
 import com.example.splitup.objetos.Split;
 import com.example.splitup.repositorios.RepositorioPago;
 import com.example.splitup.repositorios.RepositorioParticipante;
+import com.example.splitup.repositorios.RepositorioParticipantePago;
 import com.example.splitup.repositorios.RepositorioSplit;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -49,6 +55,8 @@ public class PagoNuevo extends AppCompatActivity {
     Spinner pagadoPor;
     TextView txtNuevoPago;
     TextView txtEditarPago;
+    ListView listaDivision;
+    ArrayList<DatosDivision> datosDivision;
 
     ArrayList<DatosParticipantes> participantes;
 
@@ -72,9 +80,10 @@ public class PagoNuevo extends AppCompatActivity {
         pagadoPor = findViewById(R.id.spinnerPagadoPor);
         txtNuevoPago = findViewById(R.id.txtNuevoPago);
         txtEditarPago = findViewById(R.id.txtEditarPago);
+        listaDivision = findViewById(R.id.listaDividir);
 
         participantes = new ArrayList<>();
-
+        datosDivision = new ArrayList<>();
 
         String text = "SplitUp";
         SpannableString spannable = new SpannableString(text);
@@ -112,6 +121,41 @@ public class PagoNuevo extends AppCompatActivity {
                             if (response.isSuccessful()) {
                                 Pago pagoCreado = response.body();
                                 Toast.makeText(PagoNuevo.this, "Pago creado con exito: " + pagoCreado.getTitulo(), Toast.LENGTH_SHORT).show();
+                                RepositorioParticipantePago repositorioPP = new RepositorioParticipantePago();
+                                for (DatosDivision d : datosDivision) {
+                                    if (d.isSeleccionado()) {
+                                        ParticipantePago pp = new ParticipantePago(d.getId(), pagoCreado.getId());
+                                        Log.d("RELACION_DEBUG", "Enviando participante_id=" + d.getId() + " y pago_id=" + pagoCreado.getId());
+
+                                        repositorioPP.crearRelacion(pp, new Callback<ParticipantePago>() {
+                                            @Override
+                                            public void onResponse(Call<ParticipantePago> call, Response<ParticipantePago> response) {
+                                                Log.d("ParticipantePago", "Relacion creada con " + d.getNombre());
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<ParticipantePago> call, Throwable t) {
+                                                Log.e("ParticipantePago", "Error creando relación: " + t.getMessage());
+                                            }
+                                        });
+                                    }
+                                }
+                                List<Integer> idsSeleccionados = new ArrayList<>();
+
+                                for (DatosDivision d : datosDivision) {
+                                    if (d.isSeleccionado()) {
+                                        idsSeleccionados.add(d.getId());
+                                    }
+                                }
+
+                                SharedPreferences prefs = getSharedPreferences("ParticipantesPorPago", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = prefs.edit();
+
+                                Gson gson = new Gson();
+                                String json = gson.toJson(idsSeleccionados);
+
+                                editor.putString("pago_" + pagoCreado.getId(), json);
+                                editor.apply();
                                 finish();
                             } else {
                                 Toast.makeText(PagoNuevo.this, "Error al crear el pago: " + response.code(), Toast.LENGTH_SHORT).show();
@@ -123,6 +167,7 @@ public class PagoNuevo extends AppCompatActivity {
                             Toast.makeText(PagoNuevo.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
+
                 } else {
                     if (edtxtNombrePago.getText().toString().isEmpty()) {
                         edtxtNombrePago.setError("El nombre no puede estar vacio");
@@ -180,6 +225,39 @@ public class PagoNuevo extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
                         if (response.isSuccessful()) {
+
+                            RepositorioParticipantePago repositorioPP = new RepositorioParticipantePago();
+                            for (DatosDivision d : datosDivision) {
+                                repositorioPP.eliminarRelacion(d.getId(), idPagoActivo, new Callback<Void>() {
+                                    @Override
+                                    public void onResponse(Call<Void> call, Response<Void> response) {
+                                        Log.d("ParticipantePago", "Relacion eliminada");
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<Void> call, Throwable t) {
+                                        Log.e("ParticipantePago", "Error eliminando relación: " + t.getMessage());
+                                    }
+                                });
+                            }
+
+                            for (DatosDivision d : datosDivision) {
+                                if (d.isSeleccionado()) {
+                                    ParticipantePago pp = new ParticipantePago(d.getId(), idPagoActivo);
+                                    repositorioPP.crearRelacion(pp, new Callback<ParticipantePago>() {
+                                        @Override
+                                        public void onResponse(Call<ParticipantePago> call, Response<ParticipantePago> response) {
+                                            Log.d("ParticipantePago", "Relacion nueva creada");
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<ParticipantePago> call, Throwable t) {
+                                            Log.e("ParticipantePago", "Error creando nueva relación: " + t.getMessage());
+                                        }
+                                    });
+                                }
+                            }
+
                             Toast.makeText(PagoNuevo.this, "Pago actualizado correctamente", Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
@@ -236,22 +314,33 @@ public class PagoNuevo extends AppCompatActivity {
             public void onResponse(Call<List<Participante>> call, Response<List<Participante>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     participantes.clear();
-                    List<Participante> participantes = response.body();
-                    for (Participante participante : participantes) {
+                    datosDivision.clear();
+                    List<Participante> participantesAPI = response.body();
+
+                    for (Participante participante : participantesAPI) {
                         DatosParticipantes datosParticipante = new DatosParticipantes(participante.getId(), participante.getNombre());
-                        PagoNuevo.this.participantes.add(datosParticipante);
+                        participantes.add(datosParticipante);
+
+                        // Por defecto seleccionados
+                        DatosDivision division = new DatosDivision(true, participante.getNombre(), participante.getId());
+                        datosDivision.add(division);
                     }
-                    adaptadorParticipantes = new AdaptadorParticipantesSpiner(PagoNuevo.this, PagoNuevo.this.participantes);
+
+                    adaptadorParticipantes = new AdaptadorParticipantesSpiner(PagoNuevo.this, participantes);
                     pagadoPor.setAdapter(adaptadorParticipantes);
                     adaptadorParticipantes.notifyDataSetChanged();
+
+                    AdaptadorDivision adaptadorDivision = new AdaptadorDivision(PagoNuevo.this, datosDivision);
+                    listaDivision.setAdapter(adaptadorDivision);
                 }
             }
 
             @Override
             public void onFailure(Call<List<Participante>> call, Throwable t) {
-
+                Toast.makeText(PagoNuevo.this, "Error al obtener participantes", Toast.LENGTH_SHORT).show();
             }
         });
+
 
         if (idPagoActivo != 0) {
             buttonCrearPago.setVisibility(View.GONE);

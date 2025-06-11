@@ -26,6 +26,11 @@ import androidx.appcompat.widget.Toolbar;
 import com.example.splitup.adaptadores.AdaptadorTransacciones;
 import com.example.splitup.datos.DatosSaldos;
 import com.example.splitup.datos.DatosTransacciones;
+import com.example.splitup.objetos.Pago;
+import com.example.splitup.objetos.ParticipantePago;
+import com.example.splitup.objetos.Split;
+import com.example.splitup.repositorios.RepositorioPago;
+import com.example.splitup.repositorios.RepositorioParticipantePago;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -35,6 +40,10 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Transacciones extends AppCompatActivity {
 
@@ -181,10 +190,14 @@ public class Transacciones extends AppCompatActivity {
             double transaccion = Math.min(deuda, credito);
             transaccion = new BigDecimal(transaccion).setScale(2, RoundingMode.HALF_UP).doubleValue();
 
-            datosTransacciones.add(new DatosTransacciones(transaccion,
+            datosTransacciones.add(new DatosTransacciones(
+                    transaccion,
                     acreedores.get(j).getNombre(),
                     deudores.get(i).getNombre(),
-                    " paga a "));
+                    " paga a ",
+                    deudores.get(i).getId(),
+                    acreedores.get(j).getId()
+            ));
 
             deudores.get(i).setSaldo(
                     new BigDecimal(deudores.get(i).getSaldo() + transaccion)
@@ -203,8 +216,73 @@ public class Transacciones extends AppCompatActivity {
             }
         }
 
+        for (DatosSaldos saldo : datosSaldos) {
+            if (Math.abs(saldo.getSaldo()) < 0.01) {
+                saldo.setSaldo(0.0);
+            }
+        }
+
         adaptadorTransacciones.notifyDataSetChanged();
     }
+
+    public void aplicarTransaccionPagada(DatosTransacciones transaccion) {
+        RepositorioPago repositorioPago = new RepositorioPago();
+        RepositorioParticipantePago repositorioPP = new RepositorioParticipantePago();
+
+        SharedPreferences preferences = getSharedPreferences("SplitActivo", MODE_PRIVATE);
+        int idSplit = preferences.getInt("idSplit", 0);
+
+        Pago pago = new Pago();
+        pago.setImporte(transaccion.getImporteTransaccion() * -1);
+        pago.setPagadoPor(transaccion.getIdAcreedor()); // El acreedor paga
+        pago.setTitulo("Reembolso a " + transaccion.getTextoAcreedorTransaccion());
+
+        Split split = new Split();
+        split.setId(idSplit);
+        pago.setSplit(split);
+
+        repositorioPago.crearPago(pago, new Callback<Pago>() {
+            @Override
+            public void onResponse(Call<Pago> call, Response<Pago> response) {
+                if (response.isSuccessful()) {
+                    Pago pagoCreado = response.body();
+
+                    // Ahora se asocia el DEUDOR al pago creado
+                    ParticipantePago pp = new ParticipantePago(transaccion.getIdDeudor(), pagoCreado.getId());
+                    RepositorioParticipantePago repositorioPP = new RepositorioParticipantePago();
+
+                    repositorioPP.crearRelacion(pp, new Callback<ParticipantePago>() {
+                        @Override
+                        public void onResponse(Call<ParticipantePago> call, Response<ParticipantePago> response) {
+                            if (response.isSuccessful()) {
+                                Toast.makeText(Transacciones.this, "Pago registrado correctamente", Toast.LENGTH_SHORT).show();
+                                datosTransacciones.remove(transaccion);
+                                adaptadorTransacciones.notifyDataSetChanged();
+                            } else {
+                                Toast.makeText(Transacciones.this, "Pago OK, pero no se asignó el deudor", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ParticipantePago> call, Throwable t) {
+                            Toast.makeText(Transacciones.this, "Error al asociar participante: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                } else {
+                    Toast.makeText(Transacciones.this, "Error al guardar el pago: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Pago> call, Throwable t) {
+                Toast.makeText(Transacciones.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+
 
 
 

@@ -89,20 +89,33 @@ public interface ApiService {
     @DELETE("participantes/{id}")
     Call<Void> eliminarParticipante(@Path("id") int id);
 
-    @DELETE("usuario_split/{usuarioId}/{splitId}")
-    Call<Void> eliminarUsuarioDeSplit(@Path("usuarioId") int usuarioId, @Path("splitId") int splitId);
-
     @POST("usuario_split")
     Call<UsuarioSplit> crearRelacionUsuarioSplit(@Body UsuarioSplit usuarioSplit);
 
-    @GET("usuario_participante/usuario/{usuarioId}")
-    Call<List<Integer>> obtenerParticipantesDeUsuario(@Path("usuarioId") int usuarioId);
+    @GET("usuario_participante/participante/{usuarioId}")
+    Call<List<Participante>> obtenerParticipantesPorUsuario(@Path("usuarioId") int usuarioId);
 
-    @GET("usuario_participante/participante/{participanteId}")
-    Call<Integer> obtenerUsuarioDeParticipante(@Path("participanteId") int participanteId);
+    @GET("usuario_participante/usuario/{participanteId}")
+    Call<List<Usuario>> obtenerUsuarioPorParticipante(@Path("participanteId") int participanteId);
 
     @POST("usuario_participante")
     Call<UsuarioParticipante> crearRelacionUsuarioParticipante(@Body UsuarioParticipante relacion);
+
+    @GET("participante_pago/participante/{pagoId}")
+    Call<List<Participante>> obtenerParticipantesPorPago(@Path("splitId") int pagoId);
+
+    @GET("participante_pago/pago/{participanteId}")
+    Call<Pago> obtenerPagoPorParticipante(@Path("participanteId") int participanteId);
+
+    @GET("participante_pago/ids_participantes_por_pago/{pagoId}")
+    Call<List<Integer>> obtenerIdsParticipantesPorPago(@Path("pagoId") int pagoId);
+
+    @POST("participante_pago")
+    Call<ParticipantePago> crearRelacionParticipantePago(@Body ParticipantePago relacion);
+
+    @DELETE("participante_pago/{participanteId}/{pagoId}")
+    Call<Void> eliminarRelacionParticipantePago(@Path("participanteId") int participanteId, @Path("pagoId") int pagoId);
+
 
 
 

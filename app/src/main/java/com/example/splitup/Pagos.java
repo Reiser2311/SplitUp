@@ -42,10 +42,13 @@ import com.example.splitup.objetos.Usuario;
 import com.example.splitup.objetos.UsuarioSplit;
 import com.example.splitup.repositorios.RepositorioPago;
 import com.example.splitup.repositorios.RepositorioParticipante;
+import com.example.splitup.repositorios.RepositorioParticipantePago;
 import com.example.splitup.repositorios.RepositorioUsuario;
 import com.example.splitup.repositorios.RepositorioUsuarioSplit;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -165,41 +168,82 @@ public class Pagos extends AppCompatActivity {
     }
 
     private void calcularSaldos(List<Pago> pagos) {
-
         HashMap<Integer, Double> pagosRealizados = new HashMap<>();
-        double totalGasto = 0.0;
 
-        // Inicializamos con 0 todos los participantes
+        // Inicializar todos los saldos en 0
         for (DatosParticipantes participante : participantes) {
             pagosRealizados.put(participante.getId(), 0.0);
         }
 
-        // Sumamos los pagos por participante (por id)
+        RepositorioParticipante repositorio = new RepositorioParticipante();
+        int totalPagos = pagos.size();
+        final int[] pagosProcesados = {0};
+
         for (Pago pago : pagos) {
+            int pagoId = pago.getId();
+            double importe = pago.getImporte();
             int pagadorId = pago.getPagadoPor();
-            double cantidad = pago.getImporte();
-            pagosRealizados.put(pagadorId, pagosRealizados.getOrDefault(pagadorId, 0.0) + cantidad);
-            totalGasto += cantidad;
+
+            repositorio.obtenerIdsParticipantesPorPago(pagoId, new Callback<List<Integer>>() {
+                @Override
+                public void onResponse(Call<List<Integer>> call, Response<List<Integer>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        List<Integer> idsAfectados = response.body();
+
+                        if (idsAfectados.isEmpty()) {
+                            pagosProcesados[0]++;
+                            if (pagosProcesados[0] == totalPagos) {
+                                recalcularSaldosFinales(pagosRealizados);
+                            }
+                            return;
+                        }
+
+                        double importePorPersona = new BigDecimal(importe / idsAfectados.size())
+                                .setScale(2, RoundingMode.HALF_UP).doubleValue();
+
+                        for (int id : idsAfectados) {
+                            pagosRealizados.put(id, pagosRealizados.getOrDefault(id, 0.0) - importePorPersona);
+                        }
+
+                        pagosRealizados.put(pagadorId, pagosRealizados.getOrDefault(pagadorId, 0.0) + importe);
+                    }
+
+                    pagosProcesados[0]++;
+                    if (pagosProcesados[0] == totalPagos) {
+                        recalcularSaldosFinales(pagosRealizados);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<Integer>> call, Throwable t) {
+                    Log.e("SALDOS", "Error al obtener participantes del pago " + pagoId + ": " + t.getMessage());
+                    pagosProcesados[0]++;
+                    if (pagosProcesados[0] == totalPagos) {
+                        recalcularSaldosFinales(pagosRealizados);
+                    }
+                }
+            });
         }
+    }
 
-        double deudaPorPersona = participantes.isEmpty() ? 0.0 : totalGasto / participantes.size();
-
+    private void recalcularSaldosFinales(HashMap<Integer, Double> pagosRealizados) {
         datosSaldos.clear();
 
         for (DatosParticipantes participante : participantes) {
-            int id = participante.getId();
-            String nombre = participante.getNombre();
-            double saldoFinal = pagosRealizados.get(id) - deudaPorPersona;
-            saldoFinal = new BigDecimal(saldoFinal).setScale(2, RoundingMode.HALF_UP).doubleValue();
-            datosSaldos.add(new DatosSaldos(id, nombre, saldoFinal));
-        }
+            double saldo = pagosRealizados.getOrDefault(participante.getId(), 0.0);
 
-        if (datosSaldos.isEmpty()) {
-            Log.e("ERROR_SALDOS", "¡Error! La lista de saldos está vacía después de calcular.");
+            // Si el saldo está entre -0.10 y 0.10, lo consideramos 0
+            if (Math.abs(saldo) < 0.10) {
+                saldo = 0.0;
+            }
+
+            datosSaldos.add(new DatosSaldos(participante.getId(), participante.getNombre(), saldo));
         }
 
         adaptadorSaldos.notifyDataSetChanged();
     }
+
+
 
 
     @Override
@@ -431,13 +475,15 @@ public class Pagos extends AppCompatActivity {
         btnTransacciones.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Gson gson = new Gson();
-                String json = gson.toJson(datosSaldos);
-                Intent intent = new Intent(Pagos.this, Transacciones.class);
                 SharedPreferences preferences = getSharedPreferences("Saldos", MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();
+
+                String json = new Gson().toJson(datosSaldos);
+
                 editor.putString("saldos", json);
                 editor.apply();
+
+                Intent intent = new Intent(Pagos.this, Transacciones.class);
                 startActivity(intent);
             }
         });

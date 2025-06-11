@@ -32,6 +32,21 @@ public class RepositorioParticipante {
         call.enqueue(callback);
     }
 
+    public void obtenerParticipantesPorPago (int id, Callback<List<Participante>> callback) {
+        Call<List<Participante>> call = apiService.obtenerParticipantesPorPago(id);
+        call.enqueue(callback);
+    }
+
+    public void obtenerParticipantesPorUsuario (int id, Callback<List<Participante>> callback) {
+        Call<List<Participante>> call = apiService.obtenerParticipantesPorUsuario(id);
+        call.enqueue(callback);
+    }
+
+    public void obtenerIdsParticipantesPorPago (int id, Callback<List<Integer>> callback) {
+        Call<List<Integer>> call = apiService.obtenerIdsParticipantesPorPago(id);
+        call.enqueue(callback);
+    }
+
     public void obtenerTodosParticipantes(Callback<List<Participante>> callback) {
         Call<List<Participante>> call = apiService.obtenerParticipantes();
         call.enqueue(callback);

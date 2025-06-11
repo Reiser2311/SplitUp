@@ -36,6 +36,11 @@ public class RepositorioUsuario {
         call.enqueue(callback);
     }
 
+    public void obtenerUsuariosPorParticipante (int id, Callback<List<Usuario>> callback) {
+        Call<List<Usuario>> call = apiService.obtenerUsuarioPorParticipante(id);
+        call.enqueue(callback);
+    }
+
     public void obtenerTodosUsuarios(Callback<List<Usuario>> callback) {
         Call<List<Usuario>> call = apiService.obtenerUsuarios();
         call.enqueue(callback);

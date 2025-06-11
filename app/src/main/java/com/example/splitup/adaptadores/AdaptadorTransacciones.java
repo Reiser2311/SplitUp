@@ -5,11 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.splitup.Transacciones;
 import com.example.splitup.datos.DatosTransacciones;
 import com.example.splitup.R;
 
@@ -35,6 +37,18 @@ public class AdaptadorTransacciones extends ArrayAdapter<DatosTransacciones> {
         TextView textoTransaccion = elemento.findViewById(R.id.txtTextoTransaccion);
         TextView textoAcreedorTransaccion = elemento.findViewById(R.id.txtAcreedorTransaccion);
         TextView importeTransaccion = elemento.findViewById(R.id.txtImporteTransaccion);
+        Button btnEstaPagado = elemento.findViewById(R.id.btnEstaPagado);
+
+        btnEstaPagado.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatosTransacciones transaccion = datosTransacciones.get(position);
+
+                if (getContext() instanceof Transacciones) {
+                    ((Transacciones) getContext()).aplicarTransaccionPagada(transaccion);
+                }
+            }
+        });
 
         textoDeudorTransaccion.setText(datosTransacciones.get(position).getTextoDeudorTransaccion());
         textoTransaccion.setText(datosTransacciones.get(position).getTextoTransaccion());

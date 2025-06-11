@@ -3,6 +3,7 @@ package com.example.splitup.repositorios;
 import com.example.splitup.api.ApiClient;
 import com.example.splitup.api.ApiService;
 import com.example.splitup.objetos.Pago;
+import com.example.splitup.objetos.Participante;
 
 import java.util.List;
 
@@ -28,6 +29,11 @@ public class RepositorioPago {
 
     public void obtenerTodosPagos(Callback<List<Pago>> callback) {
         Call<List<Pago>> call = apiService.obtenerPagos();
+        call.enqueue(callback);
+    }
+
+    public void obtenerPagoPorParticipante(int id, Callback<Pago> callback) {
+        Call<Pago> call = apiService.obtenerPagoPorParticipante(id);
         call.enqueue(callback);
     }
 

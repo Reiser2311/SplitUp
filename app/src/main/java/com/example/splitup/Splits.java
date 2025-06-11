@@ -52,17 +52,17 @@ import androidx.core.content.ContextCompat;
 
 public class Splits extends AppCompatActivity {
 
-    TextView logo;
-    Toolbar miToolbar;
-    ListView listaSplits;
-    ArrayList<DatosSplits> lista;
-    Button botonNuevoSplit;
-    Boolean sesionIniciada;
-    RelativeLayout layoutNoHaySplits;
-    Boolean ultimoItem = false;
-    ArrayList<DatosSplits> datosSplits = new ArrayList<>();
-    AdaptadorSplits adaptador;
-    int idUsuario = 0;
+    private TextView logo;
+    private Toolbar miToolbar;
+    private ListView listaSplits;
+    private ArrayList<DatosSplits> lista;
+    private Button botonNuevoSplit;
+    private Boolean sesionIniciada;
+    private RelativeLayout layoutNoHaySplits;
+    private Boolean ultimoItem = false;
+    private ArrayList<DatosSplits> datosSplits = new ArrayList<>();
+    private AdaptadorSplits adaptador;
+    private int idUsuario = 0;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -155,6 +155,9 @@ public class Splits extends AppCompatActivity {
             layoutNoHaySplits.setVisibility(View.VISIBLE);
         } else if (id == R.id.Perfil) {
             Intent intent = new Intent(this, Perfil.class);
+            startActivity(intent);
+        } else if (id == R.id.Estadisticas) {
+            Intent intent = new Intent(this, Estadisticas.class);
             startActivity(intent);
         }
 

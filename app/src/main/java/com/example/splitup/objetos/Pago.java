@@ -1,11 +1,15 @@
 package com.example.splitup.objetos;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Pago {
     private int id;
     private double importe;
     private String titulo;
     private int pagadoPor;
     private Split split;
+    @SerializedName("fechaCreacion")
+    private String fechaCreacion;
 
     // Getters y Setters
     public int getId() {
@@ -46,5 +50,13 @@ public class Pago {
 
     public void setSplit(Split split) {
         this.split = split;
+    }
+
+    public String getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public void setFechaCreacion(String fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
     }
 }

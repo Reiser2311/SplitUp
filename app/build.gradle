@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.splitup"
-        minSdk 24
+        minSdk 26
         targetSdk 34
         versionCode 1
         versionName "1.0"
@@ -44,6 +44,7 @@ dependencies {
     implementation libs.material.v1110
     implementation libs.glide
     annotationProcessor libs.compiler
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
 
 

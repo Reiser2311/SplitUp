@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">SplitUp</string>
+    <string-array name="filtros_fecha">
+        <item>Dia</item>
+        <item>Mes</item>
+        <item>Año</item>
+    </string-array>
+
+
 </resources>

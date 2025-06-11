@@ -36,6 +36,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -46,25 +48,25 @@ import retrofit2.Response;
 
 public class PagoNuevo extends AppCompatActivity {
 
-    TextView logo;
-    Toolbar miToolbar;
-    Button buttonCrearPago;
-    Button buttonActualizarPago;
-    TextInputEditText edtxtNombrePago;
-    TextInputEditText edtxtImportePago;
-    Spinner pagadoPor;
-    TextView txtNuevoPago;
-    TextView txtEditarPago;
-    ListView listaDivision;
-    ArrayList<DatosDivision> datosDivision;
+    private TextView logo;
+    private Toolbar miToolbar;
+    private Button buttonCrearPago;
+    private Button buttonActualizarPago;
+    private TextInputEditText edtxtNombrePago;
+    private TextInputEditText edtxtImportePago;
+    private Spinner pagadoPor;
+    private TextView txtNuevoPago;
+    private TextView txtEditarPago;
+    private ListView listaDivision;
+    private ArrayList<DatosDivision> datosDivision;
 
-    ArrayList<DatosParticipantes> participantes;
+    private ArrayList<DatosParticipantes> participantes;
 
-    AdaptadorParticipantesSpiner adaptadorParticipantes;
+    private AdaptadorParticipantesSpiner adaptadorParticipantes;
 
-    int idPagoActivo;
+    private int idPagoActivo;
 
-    int idSplitActivo;
+    private int idSplitActivo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +113,9 @@ public class PagoNuevo extends AppCompatActivity {
                     pago.setSplit(split);
                     pago.setPagadoPor(((DatosParticipantes) pagadoPor.getSelectedItem()).getId());
                     pago.setTitulo(edtxtNombrePago.getText().toString());
+                    LocalDate fechaHoy = LocalDate.now();
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                    pago.setFechaCreacion(fechaHoy.format(formatter));
 
 //                    Log.d("Debug", "Pago a enviar: " + new Gson().toJson(pago));
 
@@ -232,6 +237,22 @@ public class PagoNuevo extends AppCompatActivity {
                                     @Override
                                     public void onResponse(Call<Void> call, Response<Void> response) {
                                         Log.d("ParticipantePago", "Relacion eliminada");
+                                        for (DatosDivision d : datosDivision) {
+                                            if (d.isSeleccionado()) {
+                                                ParticipantePago pp = new ParticipantePago(d.getId(), idPagoActivo);
+                                                repositorioPP.crearRelacion(pp, new Callback<ParticipantePago>() {
+                                                    @Override
+                                                    public void onResponse(Call<ParticipantePago> call, Response<ParticipantePago> response) {
+                                                        Log.d("ParticipantePago", "Relacion nueva creada");
+                                                    }
+
+                                                    @Override
+                                                    public void onFailure(Call<ParticipantePago> call, Throwable t) {
+                                                        Log.e("ParticipantePago", "Error creando nueva relación: " + t.getMessage());
+                                                    }
+                                                });
+                                            }
+                                        }
                                     }
 
                                     @Override
@@ -241,22 +262,7 @@ public class PagoNuevo extends AppCompatActivity {
                                 });
                             }
 
-                            for (DatosDivision d : datosDivision) {
-                                if (d.isSeleccionado()) {
-                                    ParticipantePago pp = new ParticipantePago(d.getId(), idPagoActivo);
-                                    repositorioPP.crearRelacion(pp, new Callback<ParticipantePago>() {
-                                        @Override
-                                        public void onResponse(Call<ParticipantePago> call, Response<ParticipantePago> response) {
-                                            Log.d("ParticipantePago", "Relacion nueva creada");
-                                        }
 
-                                        @Override
-                                        public void onFailure(Call<ParticipantePago> call, Throwable t) {
-                                            Log.e("ParticipantePago", "Error creando nueva relación: " + t.getMessage());
-                                        }
-                                    });
-                                }
-                            }
 
                             Toast.makeText(PagoNuevo.this, "Pago actualizado correctamente", Toast.LENGTH_SHORT).show();
                             finish();
@@ -332,6 +338,88 @@ public class PagoNuevo extends AppCompatActivity {
 
                     AdaptadorDivision adaptadorDivision = new AdaptadorDivision(PagoNuevo.this, datosDivision);
                     listaDivision.setAdapter(adaptadorDivision);
+
+                    if (idPagoActivo != 0) {
+                        buttonCrearPago.setVisibility(View.GONE);
+                        buttonActualizarPago.setVisibility(View.VISIBLE);
+                        txtNuevoPago.setVisibility(View.GONE);
+                        txtEditarPago.setVisibility(View.VISIBLE);
+
+                        RepositorioPago repositorioPago = new RepositorioPago();
+                        repositorioPago.obtenerPago(idPagoActivo, new Callback<Pago>() {
+                            @Override
+                            public void onResponse(Call<Pago> call, Response<Pago> response) {
+                                if (response.isSuccessful() && response.body() != null) {
+                                    Pago pago = response.body();
+                                    edtxtNombrePago.setText(pago.getTitulo());
+                                    edtxtImportePago.setText(Double.toString(pago.getImporte()));
+
+                                    for (int i = 0; i < participantes.size(); i++) {
+                                        if (participantes.get(i).getId() == pago.getPagadoPor()) {
+                                            pagadoPor.setSelection(i);
+                                            break;
+                                        }
+                                    }
+                                    RepositorioParticipante repositorioParticipante = new RepositorioParticipante();
+                                    repositorioParticipante.obtenerParticipante(pago.getPagadoPor(), new Callback<Participante>() {
+                                        @Override
+                                        public void onResponse(Call<Participante> call, Response<Participante> response) {
+                                            if (response.isSuccessful() && response.body() != null) {
+                                                Participante participante = response.body();
+                                                pagadoPor.setSelection(((ArrayAdapter<String>) pagadoPor.getAdapter()).getPosition(participante.getNombre()));
+                                            } else {
+                                                Toast.makeText(PagoNuevo.this, "Error de participante: " + response.code(), Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<Participante> call, Throwable t) {
+                                            Toast.makeText(PagoNuevo.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+
+                                    repositorioParticipante.obtenerIdsParticipantesPorPago(idPagoActivo, new Callback<List<Integer>>() {
+                                        @Override
+                                        public void onResponse(Call<List<Integer>> call, Response<List<Integer>> response) {
+                                            if (response.isSuccessful() && response.body() != null) {
+                                                List<Integer> idsParticipantesPago = response.body();
+
+                                                for (DatosDivision division : datosDivision) {
+                                                    if (!idsParticipantesPago.contains(division.getId())) {
+                                                        division.setSeleccionado(false);
+                                                    }
+                                                }
+
+                                                AdaptadorDivision nuevoAdaptador = new AdaptadorDivision(PagoNuevo.this, datosDivision);
+                                                listaDivision.setAdapter(nuevoAdaptador);
+                                                nuevoAdaptador.notifyDataSetChanged();
+                                            } else {
+                                                Toast.makeText(PagoNuevo.this, "Error al obtener participantes del pago", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<List<Integer>> call, Throwable t) {
+                                            Toast.makeText(PagoNuevo.this, "Error de red al recuperar participantes", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                } else {
+                                    Toast.makeText(PagoNuevo.this, "Error de pago: " + response.code(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Pago> call, Throwable t) {
+                                Toast.makeText(PagoNuevo.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+
+
+
+                    }
+                } else {
+                    Toast.makeText(PagoNuevo.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -342,49 +430,7 @@ public class PagoNuevo extends AppCompatActivity {
         });
 
 
-        if (idPagoActivo != 0) {
-            buttonCrearPago.setVisibility(View.GONE);
-            buttonActualizarPago.setVisibility(View.VISIBLE);
-            txtNuevoPago.setVisibility(View.GONE);
-            txtEditarPago.setVisibility(View.VISIBLE);
 
-            RepositorioPago repositorioPago = new RepositorioPago();
-            repositorioPago.obtenerPago(idPagoActivo, new Callback<Pago>() {
-                @Override
-                public void onResponse(Call<Pago> call, Response<Pago> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        Pago pago = response.body();
-                        edtxtNombrePago.setText(pago.getTitulo());
-                        edtxtImportePago.setText(Double.toString(pago.getImporte()));
-                        RepositorioParticipante repositorioParticipante = new RepositorioParticipante();
-                        repositorioParticipante.obtenerParticipante(pago.getPagadoPor(), new Callback<Participante>() {
-                            @Override
-                            public void onResponse(Call<Participante> call, Response<Participante> response) {
-                                if (response.isSuccessful() && response.body() != null) {
-                                    Participante participante = response.body();
-                                    pagadoPor.setSelection(((ArrayAdapter<String>) pagadoPor.getAdapter()).getPosition(participante.getNombre()));
-                                } else {
-                                    Toast.makeText(PagoNuevo.this, "Error de participante: " + response.code(), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Call<Participante> call, Throwable t) {
-                                Toast.makeText(PagoNuevo.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    } else {
-                        Toast.makeText(PagoNuevo.this, "Error de pago: " + response.code(), Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<Pago> call, Throwable t) {
-                    Toast.makeText(PagoNuevo.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
-
-        }
 
         super.onResume();
 

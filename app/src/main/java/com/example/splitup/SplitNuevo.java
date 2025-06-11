@@ -54,26 +54,26 @@ import retrofit2.Response;
 
 public class SplitNuevo extends AppCompatActivity {
 
-    TextView logo;
-    Toolbar miToolbar;
-    ListView listViewParticipantes;
-    Button buttonAnyadirParticipante;
-    Button buttonCrearSplit;
-    Button buttonActualizarSplit;
-    TextInputEditText edtxtNombre;
-    TextInputEditText edtxtParticipante;
-    TextView txtNuevoSplit;
-    TextView txtEditarSplit;
+    private TextView logo;
+    private Toolbar miToolbar;
+    private ListView listViewParticipantes;
+    private Button buttonAnyadirParticipante;
+    private Button buttonCrearSplit;
+    private Button buttonActualizarSplit;
+    private TextInputEditText edtxtNombre;
+    private TextInputEditText edtxtParticipante;
+    private TextView txtNuevoSplit;
+    private TextView txtEditarSplit;
 
-    ArrayList<DatosParticipantes> participantes;
-    ArrayList<String> participantesSinId;
+    private ArrayList<DatosParticipantes> participantes;
+    private ArrayList<String> participantesSinId;
 
-    AdaptadorParticipantes adapter;
-    AdaptadorParticipantesSinId adapterSinId;
+    private AdaptadorParticipantes adapter;
+    private AdaptadorParticipantesSinId adapterSinId;
 
-    int idSplitActivo;
-    int idUsuarioCreador;
-    String nombreUsuarioCreador = "";
+    private int idSplitActivo;
+    private int idUsuarioCreador;
+    private String nombreUsuarioCreador = "";
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {

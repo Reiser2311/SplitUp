@@ -40,8 +40,6 @@ public class AdaptadorDivision extends ArrayAdapter<DatosDivision> {
         if (division != null) {
             nombre.setText(division.getNombre());
 
-            seleccionado.setOnCheckedChangeListener(null);
-
             seleccionado.setChecked(division.isSeleccionado());
 
             seleccionado.setOnCheckedChangeListener((buttonView, isChecked) -> {

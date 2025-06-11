@@ -47,12 +47,12 @@ import retrofit2.Response;
 
 public class Transacciones extends AppCompatActivity {
 
-    Toolbar miToolbar;
-    TextView logo;
-    ListView listViewTransacciones;
-    ArrayList<DatosTransacciones> datosTransacciones;
-    AdaptadorTransacciones adaptadorTransacciones;
-    ArrayList<DatosSaldos> datosSaldos;
+    private Toolbar miToolbar;
+    private TextView logo;
+    private ListView listViewTransacciones;
+    private ArrayList<DatosTransacciones> datosTransacciones;
+    private AdaptadorTransacciones adaptadorTransacciones;
+    private ArrayList<DatosSaldos> datosSaldos;
 
     @Override
     protected void onResume() {
@@ -235,7 +235,7 @@ public class Transacciones extends AppCompatActivity {
         Pago pago = new Pago();
         pago.setImporte(transaccion.getImporteTransaccion() * -1);
         pago.setPagadoPor(transaccion.getIdAcreedor()); // El acreedor paga
-        pago.setTitulo("Reembolso a " + transaccion.getTextoAcreedorTransaccion());
+        pago.setTitulo("Reembolso de " + transaccion.getTextoDeudorTransaccion());
 
         Split split = new Split();
         split.setId(idSplit);

@@ -33,20 +33,20 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Registro extends AppCompatActivity {
-    TextView logo;
-    Toolbar miToolbar;
-    TextInputEditText editTextNombre;
-    TextInputEditText editTextCorreo;
-    TextInputEditText editTextContrasenya;
-    TextInputEditText editTextConfirmar;
-    Button botonRegistro;
-    TextInputLayout layoutContrasenya;
-    TextInputLayout layoutConfirmarContrasenya;
-    TextInputLayout layoutCorreo;
-    TextInputLayout layoutNombre;
+    private TextView logo;
+    private Toolbar miToolbar;
+    private TextInputEditText editTextNombre;
+    private TextInputEditText editTextCorreo;
+    private TextInputEditText editTextContrasenya;
+    private TextInputEditText editTextConfirmar;
+    private Button botonRegistro;
+    private TextInputLayout layoutContrasenya;
+    private TextInputLayout layoutConfirmarContrasenya;
+    private TextInputLayout layoutCorreo;
+    private TextInputLayout layoutNombre;
 
-    ActivityResultLauncher<Intent> imagePickerLauncher;
-    ImageView imagenPerfil;
+    private ActivityResultLauncher<Intent> imagePickerLauncher;
+    private ImageView imagenPerfil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

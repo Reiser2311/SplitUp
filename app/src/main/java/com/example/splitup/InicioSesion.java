@@ -31,13 +31,13 @@ import retrofit2.Response;
 
 public class InicioSesion extends AppCompatActivity {
 
-    TextView logo;
-    Toolbar miToolbar;
-    Button botonInicioSesion;
-    TextInputEditText editTextCorreo;
-    TextInputEditText editTextContrasenya;
-    TextInputLayout layoutCorreo;
-    TextInputLayout layoutContrasenya;
+    private TextView logo;
+    private Toolbar miToolbar;
+    private Button botonInicioSesion;
+    private TextInputEditText editTextCorreo;
+    private TextInputEditText editTextContrasenya;
+    private TextInputLayout layoutCorreo;
+    private TextInputLayout layoutContrasenya;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

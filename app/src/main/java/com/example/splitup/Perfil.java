@@ -36,20 +36,20 @@ import retrofit2.Response;
 
 public class Perfil extends AppCompatActivity {
 
-    TextInputEditText editTextCorreoPerfil;
-    TextInputEditText editTextNombrePerfil;
-    TextInputEditText editTextContrasenyaPerfil;
-    TextInputEditText editTextConfirmarContrasenyaPerfil;
-    Button buttonActualizarUsuario;
-    Button buttonBorrarUsuario;
-    TextView logo;
-    TextInputLayout layoutCorreoPerfil;
-    TextInputLayout layoutNombrePerfil;
-    TextInputLayout layoutContrasenyaPerfil;
-    TextInputLayout layoutConfirmarContrasenyaPerfil;
+     private TextInputEditText editTextCorreoPerfil;
+     private TextInputEditText editTextNombrePerfil;
+     private TextInputEditText editTextContrasenyaPerfil;
+     private TextInputEditText editTextConfirmarContrasenyaPerfil;
+     private Button buttonActualizarUsuario;
+     private Button buttonBorrarUsuario;
+     private TextView logo;
+     private TextInputLayout layoutCorreoPerfil;
+     private TextInputLayout layoutNombrePerfil;
+     private TextInputLayout layoutContrasenyaPerfil;
+     private TextInputLayout layoutConfirmarContrasenyaPerfil;
 
-    ActivityResultLauncher<Intent> imagePickerLauncher;
-    ImageView imagenPerfil;
+    private ActivityResultLauncher<Intent> imagePickerLauncher;
+    private ImageView imagenPerfil;
 
     private Uri uriImagenSeleccionada;
 

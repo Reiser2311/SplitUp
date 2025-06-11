@@ -62,25 +62,25 @@ import retrofit2.Response;
 
 public class Pagos extends AppCompatActivity {
 
-    TextView logo;
-    Toolbar miToolbar;
-    ListView listViewPagos;
-    Button nuevoPago;
-    RelativeLayout layoutNoHayPagos;
-    boolean ultimoItem = false;
-    ListView listViewSaldos;
-    LinearLayout layoutSiHayPagos;
-    Button btnPagos;
-    Button btnSaldos;
-    Button btnTransacciones;
-    LinearLayout layoutSaldos;
-    ArrayList<DatosPagos> datosPagos = new ArrayList<>();
-    ArrayList<DatosSaldos> datosSaldos = new ArrayList<>();
-    AdaptadorPagos adaptadorPagos;
-    AdaptadorSaldos adaptadorSaldos;
-    ArrayList<DatosParticipantes> participantes = new ArrayList<>();
+    private TextView logo;
+    private Toolbar miToolbar;
+    private ListView listViewPagos;
+    private Button nuevoPago;
+    private RelativeLayout layoutNoHayPagos;
+    private boolean ultimoItem = false;
+    private ListView listViewSaldos;
+    private LinearLayout layoutSiHayPagos;
+    private Button btnPagos;
+    private Button btnSaldos;
+    private Button btnTransacciones;
+    private LinearLayout layoutSaldos;
+    private ArrayList<DatosPagos> datosPagos = new ArrayList<>();
+    private ArrayList<DatosSaldos> datosSaldos = new ArrayList<>();
+    private AdaptadorPagos adaptadorPagos;
+    private AdaptadorSaldos adaptadorSaldos;
+    private ArrayList<DatosParticipantes> participantes = new ArrayList<>();
 
-    int idSplitActivo;
+    private int idSplitActivo;
 
     @Override
     protected void onResume() {

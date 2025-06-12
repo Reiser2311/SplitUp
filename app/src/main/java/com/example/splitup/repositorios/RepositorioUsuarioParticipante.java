@@ -19,4 +19,14 @@ public class RepositorioUsuarioParticipante {
         call.enqueue(callback);
     }
 
+    public void existeRelacion(int participanteId, int usuarioId, Callback<Boolean> callback) {
+        Call<Boolean> call = apiService.existeRelacionUsuarioParticipante(participanteId, usuarioId);
+        call.enqueue(callback);
+    }
+
+    public void eliminarRelacion(int participanteId, int usuarioId, Callback<Void> callback) {
+        Call<Void> call = apiService.eliminarRelacionUsuarioParticipante(participanteId, usuarioId);
+        call.enqueue(callback);
+    }
+
 }

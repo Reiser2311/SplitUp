@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.splitup.objetos.Usuario;
+import com.example.splitup.objetos.UsuarioDTO;
 import com.example.splitup.repositorios.RepositorioUsuario;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -121,17 +122,17 @@ public class Registro extends AppCompatActivity {
                     RepositorioUsuario repositorioUsuario = new RepositorioUsuario();
 
                     //Comprobacion de si el usario existe
-                    repositorioUsuario.obtenerUsuarioPorCorreo(correo, new Callback<Usuario>() {
+                    repositorioUsuario.obtenerUsuarioPorCorreo(correo, new Callback<UsuarioDTO>() {
                         @Override
-                        public void onResponse(Call<Usuario> call, Response<Usuario> response) {
+                        public void onResponse(Call<UsuarioDTO> call, Response<UsuarioDTO> response) {
                             if (response.code() == 200 && response.body() != null) {
                                 Toast.makeText(Registro.this, "El usuario ya existe", Toast.LENGTH_SHORT).show();
                             } else if (response.code() == 404) {
-                                repositorioUsuario.crearUsuario(usuario, new Callback<Usuario>() {
+                                repositorioUsuario.crearUsuario(usuario, new Callback<UsuarioDTO>() {
                                     @Override
-                                    public void onResponse(Call<Usuario> call, Response<Usuario> response) {
+                                    public void onResponse(Call<UsuarioDTO> call, Response<UsuarioDTO> response) {
                                         if (response.isSuccessful()) {
-                                            Usuario usuarioCreado = response.body();
+                                            UsuarioDTO usuarioCreado = response.body();
                                             Toast.makeText(Registro.this, "Usuario creado: " +
                                                     usuarioCreado.getNombre(), Toast.LENGTH_SHORT).show();
                                             finish();
@@ -142,7 +143,7 @@ public class Registro extends AppCompatActivity {
                                     }
 
                                     @Override
-                                    public void onFailure(Call<Usuario> call, Throwable t) {
+                                    public void onFailure(Call<UsuarioDTO> call, Throwable t) {
                                         Toast.makeText(Registro.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                                     }
                                 });
@@ -153,7 +154,7 @@ public class Registro extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onFailure(Call<Usuario> call, Throwable t) {
+                        public void onFailure(Call<UsuarioDTO> call, Throwable t) {
                             Toast.makeText(Registro.this, "Error de red: " +
                                     t.getMessage(), Toast.LENGTH_SHORT).show();
                         }

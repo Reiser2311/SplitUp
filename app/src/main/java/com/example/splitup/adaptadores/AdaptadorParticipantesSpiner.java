@@ -48,7 +48,7 @@ public class AdaptadorParticipantesSpiner extends ArrayAdapter<DatosParticipante
         TextView nombre = elemento.findViewById(R.id.texto_item);
 
         nombre.setText(datosParticipantes.get(position).getNombre());
-        nombre.setTextColor(Color.BLACK);
+        nombre.setTextColor(Color.WHITE);
 
         return elemento;
     }

@@ -15,19 +15,19 @@ import retrofit2.http.Query;
 
 public interface ApiService {
     @POST("usuarios")
-    Call<Usuario> crearUsuario(@Body Usuario usuarioObjeto);
+    Call<UsuarioDTO> crearUsuario(@Body Usuario usuarioObjeto);
 
     @POST("usuarios/login")
-    Call<Usuario> login(@Body Usuario loginRequest);
+    Call<UsuarioDTO> login(@Body Usuario loginRequest);
 
     @GET("usuarios/correo/{correo}")
-    Call<Usuario> obtenerUsuarioPorCorreo(@Path("correo") String correo);
+    Call<UsuarioDTO> obtenerUsuarioPorCorreo(@Path("correo") String correo);
 
     @GET("usuarios/{id}")
-    Call<Usuario> obtenerUsuarioPorId(@Path("id") int id);
+    Call<UsuarioDTO> obtenerUsuarioPorId(@Path("id") int id);
 
     @GET("usuarios")
-    Call<List<Usuario>> obtenerUsuarios();
+    Call<List<UsuarioDTO>> obtenerUsuarios();
 
     @PUT("usuarios/{id}")
     Call<Void> actualizarUsuario(@Path("id") int id, @Body Usuario usuarioObjeto);
@@ -98,8 +98,14 @@ public interface ApiService {
     @GET("usuario_participante/usuario/{participanteId}")
     Call<List<Usuario>> obtenerUsuarioPorParticipante(@Path("participanteId") int participanteId);
 
+    @GET("usuario_participante/existe/{participanteId}/{usuarioId}")
+    Call<Boolean> existeRelacionUsuarioParticipante(@Path("participanteId") int participanteId, @Path("usuarioId") int usuarioId);
+
     @POST("usuario_participante")
     Call<UsuarioParticipante> crearRelacionUsuarioParticipante(@Body UsuarioParticipante relacion);
+
+    @DELETE("usuario_participante/{participanteId}/{usuarioId}")
+    Call<Void> eliminarRelacionUsuarioParticipante(@Path("participanteId") int participanteId, @Path("usuarioId") int usuarioId);
 
     @GET("participante_pago/participante/{pagoId}")
     Call<List<Participante>> obtenerParticipantesPorPago(@Path("splitId") int pagoId);

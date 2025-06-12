@@ -353,24 +353,6 @@ public class Splits extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
         registerForContextMenu(listaSplits);
 
-        //este intent recoge la si la app se abre desde un enlace de invitacion
-
-//        Intent intentEnlace = getIntent();
-//        if (Intent.ACTION_VIEW.equals(intentEnlace.getAction())) {
-//            Uri data = intentEnlace.getData();
-//            if (data != null && "splitup.app".equals(data.getHost())) {
-//                String idSplitStr = data.getQueryParameter("splitId");
-//                if (idSplitStr != null) {
-//                    try {
-//                        int idSplit = Integer.parseInt(idSplitStr);
-//                        mostrarDialogoInvitacion(idSplit);
-//                    } catch (NumberFormatException e) {
-//                        Log.e("invitacion", "ID de split inválido:" + idSplitStr);
-//                    }
-//                }
-//            }
-//        }
-
         botonNuevoSplit.setOnClickListener(v -> {
             if (sesionIniciada) {
                 Intent intent = new Intent(Splits.this, SplitNuevo.class);
@@ -393,5 +375,26 @@ public class Splits extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        //este intent recoge la si la app se abre desde un enlace de invitacion
+//        Intent appLinkIntent = getIntent();
+//        String appLinkAction = appLinkIntent.getAction();
+//        Uri appLinkData = appLinkIntent.getData();
+//
+//        if (Intent.ACTION_VIEW.equals(appLinkAction) && appLinkData != null) {
+//            // Comprobamos que venga del host correcto
+//            if ("splitup-links.netlify.app".equals(appLinkData.getHost())) {
+//                List<String> segments = appLinkData.getPathSegments();
+//                if (segments.size() >= 2 && "split".equals(segments.get(0))) {
+//                    try {
+//                        int idSplit = Integer.parseInt(segments.get(1));
+//                        mostrarDialogoInvitacion(idSplit);
+//                    } catch (NumberFormatException e) {
+//                        Log.e("invitacion", "ID inválido en el enlace: " + segments.get(1));
+//                    }
+//                }
+//            }
+//        }
+
     }
 }

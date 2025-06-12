@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.example.splitup.objetos.Usuario;
+import com.example.splitup.objetos.UsuarioDTO;
 import com.example.splitup.repositorios.RepositorioUsuario;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -62,11 +63,11 @@ public class Perfil extends AppCompatActivity {
 
         RepositorioUsuario repositorioUsuario = new RepositorioUsuario();
 
-        repositorioUsuario.obtenerUsuarioPorId(id, new Callback<Usuario>() {
+        repositorioUsuario.obtenerUsuarioPorId(id, new Callback<UsuarioDTO>() {
             @Override
-            public void onResponse(Call<Usuario> call, Response<Usuario> response) {
+            public void onResponse(Call<UsuarioDTO> call, Response<UsuarioDTO> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Usuario usuario = response.body();
+                    UsuarioDTO usuario = response.body();
                     editTextCorreoPerfil.setText(usuario.getCorreo());
                     editTextNombrePerfil.setText(usuario.getNombre());
                     if (usuario.getFotoPerfil() != null) {
@@ -76,7 +77,7 @@ public class Perfil extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<Usuario> call, Throwable t) {
+            public void onFailure(Call<UsuarioDTO> call, Throwable t) {
                 Toast.makeText(Perfil.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

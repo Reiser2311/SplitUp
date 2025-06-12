@@ -33,6 +33,7 @@ import com.example.splitup.datos.DatosParticipantes;
 import com.example.splitup.objetos.Participante;
 import com.example.splitup.objetos.Split;
 import com.example.splitup.objetos.Usuario;
+import com.example.splitup.objetos.UsuarioDTO;
 import com.example.splitup.objetos.UsuarioParticipante;
 import com.example.splitup.objetos.UsuarioSplit;
 import com.example.splitup.repositorios.RepositorioParticipante;
@@ -81,7 +82,11 @@ public class SplitNuevo extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
         menu.setHeaderTitle(listViewParticipantes.getAdapter().getItem(info.position).toString());
-        inflater.inflate(R.menu.menu_lista_participantes, menu);
+        if (idSplitActivo == 0) {
+            inflater.inflate(R.menu.menu_lista_participantes, menu);
+        } else {
+            inflater.inflate(R.menu.menu_lista_participantes_existentes, menu);
+        }
     }
 
     @Override
@@ -177,10 +182,111 @@ public class SplitNuevo extends AppCompatActivity {
 
             AlertDialog dialog = builder.create();
             dialog.show();
+        } else if (id == R.id.soyYo) {
+            RepositorioParticipante repositorioParticipante = new RepositorioParticipante();
+            repositorioParticipante.obtenerParticipantePorSplit(idSplitActivo, new Callback<List<Participante>>() {
+                @Override
+                public void onResponse(Call<List<Participante>> call, Response<List<Participante>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        comprobarYReasignarRelacion(response.body(), idUsuarioCreador, datos.getId(), datos.getNombre());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<Participante>> call, Throwable t) {
+                    Toast.makeText(SplitNuevo.this, "Error al obtener participantes: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+
+
         }
 
         return super.onContextItemSelected(item);
     }
+
+    private void comprobarYReasignarRelacion(List<Participante> participantes, int idUsuario, int idNuevoParticipante, String nuevoNombre) {
+        comprobarRelacionSecuencial(participantes, idUsuario, 0, (idExistenteRelacion) -> {
+            if (idExistenteRelacion != null) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(SplitNuevo.this);
+                builder.setTitle("Ya estás vinculado");
+                builder.setMessage("Ya estás relacionado con otro participante. ¿Quieres cambiar la relación a \"" + nuevoNombre + "\"?");
+
+                builder.setPositiveButton("Sí", (dialog, which) -> {
+                    RepositorioUsuarioParticipante repoUP = new RepositorioUsuarioParticipante();
+                    repoUP.eliminarRelacion(idExistenteRelacion, idUsuario, new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            if (response.isSuccessful()) {
+                                crearRelacionUsuarioParticipante(idUsuario, idNuevoParticipante, nuevoNombre);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                            Toast.makeText(SplitNuevo.this, "Error al eliminar relación: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                });
+
+                builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
+                builder.show();
+            } else {
+                crearRelacionUsuarioParticipante(idUsuario, idNuevoParticipante, nuevoNombre);
+            }
+        });
+    }
+
+
+    private void comprobarRelacionSecuencial(List<Participante> participantes, int idUsuario, int indice, ParticipanteRelacionadoCallback callback) {
+        if (indice >= participantes.size()) {
+            callback.onResultado(null); // No hay relación
+            return;
+        }
+
+        Participante p = participantes.get(indice);
+        RepositorioUsuarioParticipante repo = new RepositorioUsuarioParticipante();
+        repo.existeRelacion(p.getId(), idUsuario, new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if (response.isSuccessful() && Boolean.TRUE.equals(response.body())) {
+                    callback.onResultado(p.getId()); // Ya está relacionado con este participante
+                } else {
+                    comprobarRelacionSecuencial(participantes, idUsuario, indice + 1, callback); // Sigue con el siguiente
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                Log.e("Red", "Error en relación: " + t.getMessage());
+                comprobarRelacionSecuencial(participantes, idUsuario, indice + 1, callback); // Intenta el siguiente igual
+            }
+        });
+    }
+
+
+    private void crearRelacionUsuarioParticipante(int idUsuario, int idParticipante, String nombreParticipante) {
+        RepositorioUsuarioParticipante repo = new RepositorioUsuarioParticipante();
+        UsuarioParticipante nuevaRelacion = new UsuarioParticipante(idParticipante, idUsuario);
+
+        repo.crearRelacion(nuevaRelacion, new Callback<UsuarioParticipante>() {
+            @Override
+            public void onResponse(Call<UsuarioParticipante> call, Response<UsuarioParticipante> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(SplitNuevo.this, "Ahora eres " + nombreParticipante, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(SplitNuevo.this, "Ya estás vinculado", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UsuarioParticipante> call, Throwable t) {
+                Toast.makeText(SplitNuevo.this, "Error al vincular: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -321,11 +427,11 @@ public class SplitNuevo extends AppCompatActivity {
                                 });
 
                                 RepositorioUsuario repositorioUsuario = new RepositorioUsuario();
-                                repositorioUsuario.obtenerUsuarioPorId(idUsuarioCreador, new Callback<Usuario>() {
+                                repositorioUsuario.obtenerUsuarioPorId(idUsuarioCreador, new Callback<UsuarioDTO>() {
                                     @Override
-                                    public void onResponse(Call<Usuario> call, Response<Usuario> response) {
+                                    public void onResponse(Call<UsuarioDTO> call, Response<UsuarioDTO> response) {
                                         if (response.isSuccessful() && response.body() != null) {
-                                            Usuario usuario = response.body();
+                                            UsuarioDTO usuario = response.body();
                                             nombreUsuarioCreador = usuario.getNombre();
 
                                             RepositorioParticipante repositorioParticipante = new RepositorioParticipante();
@@ -374,7 +480,7 @@ public class SplitNuevo extends AppCompatActivity {
                                     }
 
                                     @Override
-                                    public void onFailure(Call<Usuario> call, Throwable t) {
+                                    public void onFailure(Call<UsuarioDTO> call, Throwable t) {
                                         Log.e("Error", "Error de red al obtener usuario: " + t.getMessage());
                                     }
                                 });
@@ -474,6 +580,8 @@ public class SplitNuevo extends AppCompatActivity {
         idSplitActivo = preferences.getInt("idSplit", 0);
         editor.remove("idSplit");
         editor.apply();
+        SharedPreferences preferencias = getSharedPreferences("InicioSesion", MODE_PRIVATE);
+        idUsuarioCreador = preferencias.getInt("id", 0);
 
         if (idSplitActivo != 0) {
             adapter = new AdaptadorParticipantes(SplitNuevo.this, participantes);
@@ -502,18 +610,17 @@ public class SplitNuevo extends AppCompatActivity {
                 }
             });
         } else {
-            SharedPreferences preferencias = getSharedPreferences("InicioSesion", MODE_PRIVATE);
-            idUsuarioCreador = preferencias.getInt("id", 0);
+
             participantesSinId.clear();
             adapterSinId = new AdaptadorParticipantesSinId(SplitNuevo.this, participantesSinId);
             listViewParticipantes.setAdapter(adapterSinId);
 
             RepositorioUsuario repositorioUsuario = new RepositorioUsuario();
-            repositorioUsuario.obtenerUsuarioPorId(idUsuarioCreador, new Callback<Usuario>() {
+            repositorioUsuario.obtenerUsuarioPorId(idUsuarioCreador, new Callback<UsuarioDTO>() {
                 @Override
-                public void onResponse(Call<Usuario> call, Response<Usuario> response) {
+                public void onResponse(Call<UsuarioDTO> call, Response<UsuarioDTO> response) {
                     if (response.isSuccessful() && response.body() != null) {
-                        Usuario usuario = response.body();
+                        UsuarioDTO usuario = response.body();
                         participantesSinId.add(usuario.getNombre());
 
                         Log.d("Debug", "Usuario encontrado: " + new Gson().toJson(usuario));
@@ -525,7 +632,7 @@ public class SplitNuevo extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Call<Usuario> call, Throwable t) {
+                public void onFailure(Call<UsuarioDTO> call, Throwable t) {
                     Log.e("Error", "Error: " + t.getMessage());
                 }
             });

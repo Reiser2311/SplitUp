@@ -39,6 +39,7 @@ import com.example.splitup.datos.DatosSaldos;
 import com.example.splitup.objetos.Pago;
 import com.example.splitup.objetos.Participante;
 import com.example.splitup.objetos.Usuario;
+import com.example.splitup.objetos.UsuarioDTO;
 import com.example.splitup.objetos.UsuarioSplit;
 import com.example.splitup.repositorios.RepositorioPago;
 import com.example.splitup.repositorios.RepositorioParticipante;
@@ -329,7 +330,7 @@ public class Pagos extends AppCompatActivity {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(Pagos.this);
             builder.setTitle("Con quien quieres compartir este split?");
-            builder.setMessage("Intreduce el correo de la persona que quieras invitar");
+            builder.setMessage("Introduce el correo de la persona que quieras invitar");
 
             final EditText input = new EditText(Pagos.this);
             input.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -337,11 +338,11 @@ public class Pagos extends AppCompatActivity {
 
             builder.setPositiveButton("Enviar", (dialog, which) -> {
                 RepositorioUsuario repositorioUsuario = new RepositorioUsuario();
-                repositorioUsuario.obtenerUsuarioPorCorreo(input.getText().toString(), new Callback<Usuario>() {
+                repositorioUsuario.obtenerUsuarioPorCorreo(input.getText().toString(), new Callback<UsuarioDTO>() {
                     @Override
-                    public void onResponse(Call<Usuario> call, Response<Usuario> response) {
+                    public void onResponse(Call<UsuarioDTO> call, Response<UsuarioDTO> response) {
                         if (response.isSuccessful()) {
-                            Usuario usuario = response.body();
+                            UsuarioDTO usuario = response.body();
                             RepositorioUsuarioSplit repositorioUsuarioSplit = new RepositorioUsuarioSplit();
 
                             UsuarioSplit usuarioSplit = new UsuarioSplit(usuario.getId(), idSplitActivo);
@@ -380,16 +381,33 @@ public class Pagos extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<Usuario> call, Throwable t) {
+                    public void onFailure(Call<UsuarioDTO> call, Throwable t) {
                         Toast.makeText(Pagos.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
+
+
             });
 
             builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss());
 
             AlertDialog dialog = builder.create();
             dialog.show();
+
+//            Intent intent = new Intent(Intent.ACTION_SEND);
+//            intent.setType("message/rfc822");
+//            intent.putExtra(Intent.EXTRA_SUBJECT, "Invitacion a participar en Split");
+//            intent.putExtra(Intent.EXTRA_TEXT,
+//                    "¡Te han invitado a participar en un split de gastos en SplitUp!\n\n" +
+//                            "Pulsa el siguiente enlace desde tu móvil con la app instalada para unirte:\n\n" +
+//                            "https://splitup-links.netlify.app/split/" + idSplitActivo + "\n\n" +
+//                            "Podrás elegir quién eres entre los participantes y empezar a gestionar tus gastos compartidos. 💸"
+//            );
+//            try {
+//                startActivity(Intent.createChooser(intent, "Enviar correo..."));
+//            } catch (android.content.ActivityNotFoundException ex) {
+//                Toast.makeText(Pagos.this, "No hay aplicaciones de correo instaladas", Toast.LENGTH_SHORT).show();
+//            }
         }
         return true;
     }

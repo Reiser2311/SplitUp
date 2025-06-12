@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.splitup.objetos.Usuario;
+import com.example.splitup.objetos.UsuarioDTO;
 import com.example.splitup.repositorios.RepositorioUsuario;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -86,11 +87,11 @@ public class InicioSesion extends AppCompatActivity {
                     loginRequest.setCorreo(correo);
                     loginRequest.setContrasenya(contrasenya);
 
-                    repositorioUsuario.login(loginRequest, new Callback<Usuario>() {
+                    repositorioUsuario.login(loginRequest, new Callback<UsuarioDTO>() {
                         @Override
-                        public void onResponse(Call<Usuario> call, Response<Usuario> response) {
+                        public void onResponse(Call<UsuarioDTO> call, Response<UsuarioDTO> response) {
                             if (response.isSuccessful() && response.body() != null) {
-                                Usuario usuario = response.body();
+                                UsuarioDTO usuario = response.body();
 
                                 Toast.makeText(InicioSesion.this, "Bienvenid@, " + usuario.getNombre(), Toast.LENGTH_SHORT).show();
 
@@ -107,7 +108,7 @@ public class InicioSesion extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onFailure(Call<Usuario> call, Throwable t) {
+                        public void onFailure(Call<UsuarioDTO> call, Throwable t) {
                             Toast.makeText(InicioSesion.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                             Log.d("Red", t.getMessage());
                         }

@@ -3,6 +3,7 @@ package com.example.splitup.repositorios;
 import com.example.splitup.api.ApiClient;
 import com.example.splitup.api.ApiService;
 import com.example.splitup.objetos.Usuario;
+import com.example.splitup.objetos.UsuarioDTO;
 
 import java.util.List;
 
@@ -16,23 +17,23 @@ public class RepositorioUsuario {
         this.apiService = ApiClient.getRetrofitClient().create(ApiService.class);
     }
 
-    public void crearUsuario(Usuario usuarioObjeto, Callback<Usuario> callback) {
-        Call<Usuario> call = apiService.crearUsuario(usuarioObjeto);
+    public void crearUsuario(Usuario usuarioObjeto, Callback<UsuarioDTO> callback) {
+        Call<UsuarioDTO> call = apiService.crearUsuario(usuarioObjeto);
         call.enqueue(callback);
     }
 
-    public void login(Usuario loginRequest, Callback<Usuario> callback) {
-        Call<Usuario> call = apiService.login(loginRequest);
+    public void login(Usuario loginRequest, Callback<UsuarioDTO> callback) {
+        Call<UsuarioDTO> call = apiService.login(loginRequest);
         call.enqueue(callback);
     }
 
-    public void obtenerUsuarioPorCorreo(String correo, Callback<Usuario> callback) {
-        Call<Usuario> call = apiService.obtenerUsuarioPorCorreo(correo);
+    public void obtenerUsuarioPorCorreo(String correo, Callback<UsuarioDTO> callback) {
+        Call<UsuarioDTO> call = apiService.obtenerUsuarioPorCorreo(correo);
         call.enqueue(callback);
     }
 
-    public void obtenerUsuarioPorId(int id, Callback<Usuario> callback) {
-        Call<Usuario> call = apiService.obtenerUsuarioPorId(id);
+    public void obtenerUsuarioPorId(int id, Callback<UsuarioDTO> callback) {
+        Call<UsuarioDTO> call = apiService.obtenerUsuarioPorId(id);
         call.enqueue(callback);
     }
 
@@ -41,8 +42,8 @@ public class RepositorioUsuario {
         call.enqueue(callback);
     }
 
-    public void obtenerTodosUsuarios(Callback<List<Usuario>> callback) {
-        Call<List<Usuario>> call = apiService.obtenerUsuarios();
+    public void obtenerTodosUsuarios(Callback<List<UsuarioDTO>> callback) {
+        Call<List<UsuarioDTO>> call = apiService.obtenerUsuarios();
         call.enqueue(callback);
     }
 

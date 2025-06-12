@@ -290,7 +290,6 @@ public class Estadisticas extends AppCompatActivity {
 
         YAxis yAxisLeft = barChart.getAxisLeft();
         yAxisLeft.setTextColor(Color.WHITE);
-        yAxisLeft.setDrawGridLines(false);
 
         YAxis yAxisRight = barChart.getAxisRight();
         yAxisRight.setTextColor(Color.WHITE);

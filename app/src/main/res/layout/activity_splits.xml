@@ -18,10 +18,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:text="SlitUp"
+            android:text="SplitUp"
             android:textColor="@color/white"
             android:textSize="45sp"
             android:textStyle="bold"/>
+
+        <ImageView
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:src="@drawable/splitup_logo_white"
+            android:layout_marginStart="10dp"/>
 
     </androidx.appcompat.widget.Toolbar>
 
@@ -29,7 +35,8 @@
         android:id="@+id/layoutNoHaySplits"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:background="@drawable/fondo_con_logo">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -67,7 +74,8 @@
         android:layout_weight="1"
         android:visibility="gone"
         android:divider="@android:color/transparent"
-        android:dividerHeight="5dp"/>
+        android:dividerHeight="5dp"
+        android:background="@drawable/fondo_con_logo"/>
 
     <Button
         android:id="@+id/botonNuevoSplit"

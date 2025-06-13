@@ -10,6 +10,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -137,26 +138,29 @@ public class Registro extends AppCompatActivity {
                                                     usuarioCreado.getNombre(), Toast.LENGTH_SHORT).show();
                                             finish();
                                         } else {
-                                            Toast.makeText(Registro.this, "Error: " +
+                                            Toast.makeText(Registro.this, "Error inesperado" +
                                                     response.code(), Toast.LENGTH_SHORT).show();
+                                            Log.e("Error", "Error al crear usuario: " + response.code());
                                         }
                                     }
 
                                     @Override
                                     public void onFailure(Call<UsuarioDTO> call, Throwable t) {
-                                        Toast.makeText(Registro.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(Registro.this, "Error de red", Toast.LENGTH_SHORT).show();
+                                        Log.e("Error", "Error al crear usuario: " + t.getMessage());
                                     }
                                 });
                             } else {
-                                Toast.makeText(Registro.this, "Error inesperado: " + response.code(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(Registro.this, "Error inesperado", Toast.LENGTH_SHORT).show();
+                                Log.e("Error", "Error al obtener usuario: " + response.code());
                             }
 
                         }
 
                         @Override
                         public void onFailure(Call<UsuarioDTO> call, Throwable t) {
-                            Toast.makeText(Registro.this, "Error de red: " +
-                                    t.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Registro.this, "Error de red", Toast.LENGTH_SHORT).show();
+                            Log.e("Error", "Error al obtener usuario: " + t.getMessage());
                         }
 
                     });

@@ -78,17 +78,33 @@ public class Perfil extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<UsuarioDTO> call, Throwable t) {
-                Toast.makeText(Perfil.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(Perfil.this, "Error de red", Toast.LENGTH_SHORT).show();
+                Log.e("Perfil", "Error al obtener el usuario: " + t.getMessage());
+
             }
         });
 
         buttonActualizarUsuario.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String[] dominiosValidos = {
+                        "@gmail.com", "@hotmail.com", "@outlook.com", "@yahoo.com", "@live.com",
+                        "@icloud.com", "@gmx.com", "@mail.com", "@protonmail.com", "@zoho.com"
+                };
+
+                boolean esCorreoValido = false;
+                for (String dominio : dominiosValidos) {
+                    if (editTextCorreoPerfil.getText().toString().endsWith(dominio)) {
+                        esCorreoValido = true;
+                        break;
+                    }
+                }
+
                 if (!editTextContrasenyaPerfil.getText().toString().isEmpty() &&
                         !editTextNombrePerfil.getText().toString().isEmpty() &&
                         !editTextCorreoPerfil.getText().toString().isEmpty() &&
-                        editTextContrasenyaPerfil.getText().toString().equals(editTextConfirmarContrasenyaPerfil.getText().toString())) {
+                        editTextContrasenyaPerfil.getText().toString().equals(editTextConfirmarContrasenyaPerfil.getText().toString()) &&
+                        esCorreoValido) {
 
                         Usuario usuario = new Usuario();
                         usuario.setCorreo(editTextCorreoPerfil.getText().toString());
@@ -107,28 +123,41 @@ public class Perfil extends AppCompatActivity {
                                     startActivity(intent);
                                 } else {
                                     Toast.makeText(Perfil.this, "Error: " +  response.code(), Toast.LENGTH_SHORT).show();
-                                    Log.e("Perfil", "Error al actualizar el perfil: " + response.code());
-
+                                    Log.e("Perfil", "Error al actualizar el perfil");
+                                    try {
+                                        Log.e("Perfil", response.errorBody().string());
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                             }
 
                             @Override
                             public void onFailure(Call<Void> call, Throwable t) {
-                                Toast.makeText(Perfil.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(Perfil.this, "Error de red", Toast.LENGTH_SHORT).show();
+                                Log.e("Perfil", "Error al actualizar el perfil: " + t.getMessage());
                             }
                         });
 
 
-                } else if (!editTextContrasenyaPerfil.getText().toString().equals(editTextConfirmarContrasenyaPerfil.getText().toString())) {
-                    layoutConfirmarContrasenyaPerfil.setEndIconMode(TextInputLayout.END_ICON_NONE);
-                    editTextConfirmarContrasenyaPerfil.setError("Las contraseñas no coinciden");
-                } else if (editTextContrasenyaPerfil.getText().toString().isEmpty()) {
-                    layoutContrasenyaPerfil.setEndIconMode(TextInputLayout.END_ICON_NONE);
-                    editTextContrasenyaPerfil.setError("La contraseña no puede estar vacía");
-                } else if (editTextNombrePerfil.getText().toString().isEmpty()) {
-                    editTextNombrePerfil.setError("El nombre no puede estar vacio");
                 } else {
-                    editTextCorreoPerfil.setError("El correo no puede estar vacio");
+                    if (!editTextContrasenyaPerfil.getText().toString().equals(editTextConfirmarContrasenyaPerfil.getText().toString())) {
+                        layoutConfirmarContrasenyaPerfil.setEndIconMode(TextInputLayout.END_ICON_NONE);
+                        editTextConfirmarContrasenyaPerfil.setError("Las contraseñas no coinciden");
+                    }
+                    if (editTextContrasenyaPerfil.getText().toString().isEmpty()) {
+                        layoutContrasenyaPerfil.setEndIconMode(TextInputLayout.END_ICON_NONE);
+                        editTextContrasenyaPerfil.setError("La contraseña no puede estar vacía");
+                    }
+                    if (editTextNombrePerfil.getText().toString().isEmpty()) {
+                        editTextNombrePerfil.setError("El nombre no puede estar vacio");
+                    }
+                    if (editTextCorreoPerfil.getText().toString().isEmpty()){
+                        editTextCorreoPerfil.setError("El correo no puede estar vacio");
+                    }
+                    if (!esCorreoValido){
+                        editTextCorreoPerfil.setError("El correo electrónico no es válido");
+                    }
                 }
             }
         });
@@ -187,13 +216,17 @@ public class Perfil extends AppCompatActivity {
                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(intent);
                                 } else {
-                                    Toast.makeText(Perfil.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(Perfil.this, "Error inesperado", Toast.LENGTH_SHORT).show();
+                                    Log.e("Perfil", "Error al eliminar el usuario: " + response.code());
+
                                 }
                             }
 
                             @Override
                             public void onFailure(Call<Void> call, Throwable t) {
-                                Toast.makeText(Perfil.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(Perfil.this, "Error de red", Toast.LENGTH_SHORT).show();
+                                Log.e("Perfil", "Error de red al eliminar el usuario: " + t.getMessage());
+
                             }
                         });
                     }

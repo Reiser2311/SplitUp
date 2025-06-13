@@ -109,8 +109,8 @@ public class InicioSesion extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<UsuarioDTO> call, Throwable t) {
-                            Toast.makeText(InicioSesion.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                            Log.d("Red", t.getMessage());
+                            Toast.makeText(InicioSesion.this, "Error de red", Toast.LENGTH_SHORT).show();
+                            Log.e("InicioSesion", "Error de red al iniciar sesión: " + t.getMessage());
                         }
                     });
 

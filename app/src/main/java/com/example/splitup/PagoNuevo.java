@@ -163,13 +163,15 @@ public class PagoNuevo extends AppCompatActivity {
                                 editor.apply();
                                 finish();
                             } else {
-                                Toast.makeText(PagoNuevo.this, "Error al crear el pago: " + response.code(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(PagoNuevo.this, "Error al crear el pago", Toast.LENGTH_SHORT).show();
+                                Log.e("SplitActivo", "Error al crear el pago: " + response.code());
                             }
                         }
 
                         @Override
                         public void onFailure(Call<Pago> call, Throwable t) {
-                            Toast.makeText(PagoNuevo.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(PagoNuevo.this, "Error de red", Toast.LENGTH_SHORT).show();
+                            Log.e("SplitActivo", "Error de red al crear el pago: " + t.getMessage());
                         }
                     });
 
@@ -267,7 +269,7 @@ public class PagoNuevo extends AppCompatActivity {
                             Toast.makeText(PagoNuevo.this, "Pago actualizado correctamente", Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
-                            Toast.makeText(PagoNuevo.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(PagoNuevo.this, "Error inesperado", Toast.LENGTH_SHORT).show();
                             try {
                                 Log.e("Respuesta", "Codigo: " + response.code() + " - Error: " + response.errorBody().string());
                             } catch (IOException e) {
@@ -278,7 +280,8 @@ public class PagoNuevo extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<Void> call, Throwable t) {
-                        Toast.makeText(PagoNuevo.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PagoNuevo.this, "Error de red", Toast.LENGTH_SHORT).show();
+                        Log.e("SplitActivo", "Error de red al actualizar el pago: " + t.getMessage());
                     }
                 });
             }
@@ -304,13 +307,15 @@ public class PagoNuevo extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     Split split = response.body();
                 } else {
-                    Toast.makeText(PagoNuevo.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PagoNuevo.this, "Error inesperado", Toast.LENGTH_SHORT).show();
+                    Log.e("SplitActivo", "Error en split: " + response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<Split> call, Throwable t) {
-                Toast.makeText(PagoNuevo.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(PagoNuevo.this, "Error de red", Toast.LENGTH_SHORT).show();
+                Log.e("SplitActivo", "Error de red al obtener split: " + t.getMessage());
             }
         });
 
@@ -368,13 +373,15 @@ public class PagoNuevo extends AppCompatActivity {
                                                 Participante participante = response.body();
                                                 pagadoPor.setSelection(((ArrayAdapter<String>) pagadoPor.getAdapter()).getPosition(participante.getNombre()));
                                             } else {
-                                                Toast.makeText(PagoNuevo.this, "Error de participante: " + response.code(), Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(PagoNuevo.this, "Error de participante inesperado", Toast.LENGTH_SHORT).show();
+                                                Log.e("SplitActivo", "Error en participante: " + response.code());
                                             }
                                         }
 
                                         @Override
                                         public void onFailure(Call<Participante> call, Throwable t) {
-                                            Toast.makeText(PagoNuevo.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(PagoNuevo.this, "Error de red", Toast.LENGTH_SHORT).show();
+                                            Log.e("SplitActivo", "Error de red al obtener participante: " + t.getMessage());
                                         }
                                     });
 
@@ -395,22 +402,26 @@ public class PagoNuevo extends AppCompatActivity {
                                                 nuevoAdaptador.notifyDataSetChanged();
                                             } else {
                                                 Toast.makeText(PagoNuevo.this, "Error al obtener participantes del pago", Toast.LENGTH_SHORT).show();
+                                                Log.e("SplitActivo", "Error al obtener participantes del pago: " + response.code());
                                             }
                                         }
 
                                         @Override
                                         public void onFailure(Call<List<Integer>> call, Throwable t) {
-                                            Toast.makeText(PagoNuevo.this, "Error de red al recuperar participantes", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(PagoNuevo.this, "Error de red", Toast.LENGTH_SHORT).show();
+                                            Log.e("SplitActivo", "Error de red al obtener participantes del pago: " + t.getMessage());
                                         }
                                     });
                                 } else {
-                                    Toast.makeText(PagoNuevo.this, "Error de pago: " + response.code(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(PagoNuevo.this, "Error de pago inesperado", Toast.LENGTH_SHORT).show();
+                                    Log.e("SplitActivo", "Error en pago: " + response.code());
                                 }
                             }
 
                             @Override
                             public void onFailure(Call<Pago> call, Throwable t) {
-                                Toast.makeText(PagoNuevo.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(PagoNuevo.this, "Error de red", Toast.LENGTH_SHORT).show();
+                                Log.e("SplitActivo", "Error de red al obtener pago: " + t.getMessage());
                             }
                         });
 
@@ -419,13 +430,15 @@ public class PagoNuevo extends AppCompatActivity {
 
                     }
                 } else {
-                    Toast.makeText(PagoNuevo.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PagoNuevo.this, "Error inesperado", Toast.LENGTH_SHORT).show();
+                    Log.e("SplitActivo", "Error en participantes: " + response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<List<Participante>> call, Throwable t) {
-                Toast.makeText(PagoNuevo.this, "Error al obtener participantes", Toast.LENGTH_SHORT).show();
+                Toast.makeText(PagoNuevo.this, "Error de red", Toast.LENGTH_SHORT).show();
+                Log.e("SplitActivo", "Error de red al obtener participantes: " + t.getMessage());
             }
         });
 

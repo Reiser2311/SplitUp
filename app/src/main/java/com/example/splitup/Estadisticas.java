@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -102,7 +103,7 @@ public class Estadisticas extends AppCompatActivity {
                         idsParticipantes.add(p.getId());
                     }
 
-                    // Ahora obtenemos todos los pagos
+                    // Metodo real
 //                    RepositorioPago repoPago = new RepositorioPago();
 //                    repoPago.obtenerTodosPagos(new Callback<List<Pago>>() {
 //                        @Override
@@ -146,6 +147,7 @@ public class Estadisticas extends AppCompatActivity {
 //                        }
 //                    });
 
+                    //Metodo simulado
                     List<Pago> pagosSimulados = new ArrayList<>();
 
                     pagosSimulados.add(crearPagoFicticio(25.0, "2025-06-13"));
@@ -160,12 +162,14 @@ public class Estadisticas extends AppCompatActivity {
 
 
                 } else {
+                    Toast.makeText(Estadisticas.this, "Error inesperado", Toast.LENGTH_SHORT).show();
                     Log.e("Grafico", "No se pudieron obtener los participantes del usuario.");
                 }
             }
 
             @Override
             public void onFailure(Call<List<Participante>> call, Throwable t) {
+                Toast.makeText(Estadisticas.this, "Error de red", Toast.LENGTH_SHORT).show();
                 Log.e("Grafico", "Error de red: " + t.getMessage());
             }
         });

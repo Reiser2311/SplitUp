@@ -6,9 +6,11 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputType;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -113,13 +115,15 @@ public class Pagos extends AppCompatActivity {
                         Pagos.this.participantes.add(datosParticipante);
                     }
                 } else {
-                    Toast.makeText(Pagos.this, "Error en participantes : " + response.code(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Pagos.this, "Error en participantes inesperado", Toast.LENGTH_SHORT).show();
+                    Log.e("SplitActivo", "Error en participantes: " + response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<List<Participante>> call, Throwable t) {
-                Toast.makeText(Pagos.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(Pagos.this, "Error de red", Toast.LENGTH_SHORT).show();
+                Log.e("SplitActivo", "Error de red al obtener participantes: " + t.getMessage());
             }
         });
     }
@@ -143,13 +147,15 @@ public class Pagos extends AppCompatActivity {
                         calcularSaldos(pagos);
                     }
                 } else {
-                    Toast.makeText(Pagos.this, "Error en pagos: " + response.code(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Pagos.this, "Error en pagos inesperado", Toast.LENGTH_SHORT).show();
+                    Log.e("SplitActivo", "Error en pagos: " + response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<List<Pago>> call, Throwable t) {
-                Toast.makeText(Pagos.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(Pagos.this, "Error de red", Toast.LENGTH_SHORT).show();
+                Log.e("SplitActivo", "Error de red al obtener pagos: " + t.getMessage());
             }
         });
     }
@@ -285,13 +291,15 @@ public class Pagos extends AppCompatActivity {
                             rehacerLista();
                             Toast.makeText(Pagos.this, "Pago eliminado", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(Pagos.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Pagos.this, "Error inesperado", Toast.LENGTH_SHORT).show();
+                            Log.e("SplitActivo", "Error al eliminar el pago: " + response.code());
                         }
                     }
 
                     @Override
                     public void onFailure(Call<Void> call, Throwable t) {
-                        Toast.makeText(Pagos.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Pagos.this, "Error de red", Toast.LENGTH_SHORT).show();
+                        Log.e("SplitActivo", "Error de red al eliminar el pago: " + t.getMessage());
                     }
                 });
             });
@@ -329,85 +337,113 @@ public class Pagos extends AppCompatActivity {
 //            Toast.makeText(this, "Funcion aun en desarrollo", Toast.LENGTH_SHORT).show();
 
             AlertDialog.Builder builder = new AlertDialog.Builder(Pagos.this);
-            builder.setTitle("Con quien quieres compartir este split?");
+            builder.setTitle("¿Con quién quieres compartir este split?");
             builder.setMessage("Introduce el correo de la persona que quieras invitar");
 
             final EditText input = new EditText(Pagos.this);
             input.setInputType(InputType.TYPE_CLASS_TEXT);
             builder.setView(input);
 
-            builder.setPositiveButton("Enviar", (dialog, which) -> {
-                RepositorioUsuario repositorioUsuario = new RepositorioUsuario();
-                repositorioUsuario.obtenerUsuarioPorCorreo(input.getText().toString(), new Callback<UsuarioDTO>() {
-                    @Override
-                    public void onResponse(Call<UsuarioDTO> call, Response<UsuarioDTO> response) {
-                        if (response.isSuccessful()) {
-                            UsuarioDTO usuario = response.body();
-                            RepositorioUsuarioSplit repositorioUsuarioSplit = new RepositorioUsuarioSplit();
-
-                            UsuarioSplit usuarioSplit = new UsuarioSplit(usuario.getId(), idSplitActivo);
-
-                            repositorioUsuarioSplit.crearRelacion(usuarioSplit, new Callback<UsuarioSplit>() {
-                                @Override
-                                public void onResponse(Call<UsuarioSplit> call, Response<UsuarioSplit> response) {
-                                    if (response.isSuccessful()) {
-                                        Intent intent = new Intent(Intent.ACTION_SEND);
-                                        intent.setType("message/rfc822");
-                                        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{input.getText().toString()});
-                                        intent.putExtra(Intent.EXTRA_SUBJECT, "Invitacion a participar en Split");
-                                        intent.putExtra(Intent.EXTRA_TEXT, "Hola " + usuario.getNombre() + ".\nSe te ha añadido en un split como usuario. " +
-                                                "Cuando entres en la app podrás ver el nuevo split en tu listado para " +
-                                                "que puedas interactuar con él");
-
-                                        try {
-                                            startActivity(Intent.createChooser(intent, "Enviar correo..."));
-                                        } catch (android.content.ActivityNotFoundException ex) {
-                                            Toast.makeText(Pagos.this, "No hay aplicaciones de correo instaladas", Toast.LENGTH_SHORT).show();
-                                        }
-                                    } else {
-                                        Toast.makeText(Pagos.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(Call<UsuarioSplit> call, Throwable t) {
-                                    Toast.makeText(Pagos.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        } else {
-                            Toast.makeText(Pagos.this, "El usuario no esta registrado", Toast.LENGTH_SHORT).show();
-                            input.setText("");
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<UsuarioDTO> call, Throwable t) {
-                        Toast.makeText(Pagos.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-
-            });
-
+            builder.setPositiveButton("Enviar", null); // Lo asignamos luego
             builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss());
 
             AlertDialog dialog = builder.create();
-            dialog.show();
 
-//            Intent intent = new Intent(Intent.ACTION_SEND);
-//            intent.setType("message/rfc822");
-//            intent.putExtra(Intent.EXTRA_SUBJECT, "Invitacion a participar en Split");
-//            intent.putExtra(Intent.EXTRA_TEXT,
-//                    "¡Te han invitado a participar en un split de gastos en SplitUp!\n\n" +
-//                            "Pulsa el siguiente enlace desde tu móvil con la app instalada para unirte:\n\n" +
-//                            "https://splitup-links.netlify.app/split/" + idSplitActivo + "\n\n" +
-//                            "Podrás elegir quién eres entre los participantes y empezar a gestionar tus gastos compartidos. 💸"
-//            );
-//            try {
-//                startActivity(Intent.createChooser(intent, "Enviar correo..."));
-//            } catch (android.content.ActivityNotFoundException ex) {
-//                Toast.makeText(Pagos.this, "No hay aplicaciones de correo instaladas", Toast.LENGTH_SHORT).show();
-//            }
+            input.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    input.setError(null);
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {}
+            });
+
+            dialog.setOnShowListener(dlg -> {
+                Button botonEnviar = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                Button botonCancelar = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+                botonEnviar.setOnClickListener(v -> {
+                    String correo = input.getText().toString().trim();
+
+                    if (correo.isEmpty()) {
+                        input.setError("El correo no puede estar vacío");
+                        return;
+                    }
+
+                    String[] dominiosValidos = {
+                            "@gmail.com", "@hotmail.com", "@outlook.com", "@yahoo.com", "@live.com",
+                            "@icloud.com", "@gmx.com", "@mail.com", "@protonmail.com", "@zoho.com"
+                    };
+
+                    boolean esCorreoValido = false;
+                    for (String dominio : dominiosValidos) {
+                        if (correo.endsWith(dominio)) {
+                            esCorreoValido = true;
+                            break;
+                        }
+                    }
+
+                    if (!esCorreoValido) {
+                        input.setError("El correo no es válido");
+                        return;
+                    }
+
+                    RepositorioUsuario repositorioUsuario = new RepositorioUsuario();
+                    repositorioUsuario.obtenerUsuarioPorCorreo(correo, new Callback<UsuarioDTO>() {
+                        @Override
+                        public void onResponse(Call<UsuarioDTO> call, Response<UsuarioDTO> response) {
+                            if (response.isSuccessful() && response.body() != null) {
+                                UsuarioDTO usuario = response.body();
+                                RepositorioUsuarioSplit repositorioUsuarioSplit = new RepositorioUsuarioSplit();
+                                UsuarioSplit usuarioSplit = new UsuarioSplit(usuario.getId(), idSplitActivo);
+
+                                repositorioUsuarioSplit.crearRelacion(usuarioSplit, new Callback<UsuarioSplit>() {
+                                    @Override
+                                    public void onResponse(Call<UsuarioSplit> call, Response<UsuarioSplit> response) {
+                                        if (response.isSuccessful()) {
+                                            Intent intent = new Intent(Intent.ACTION_SEND);
+                                            intent.setType("message/rfc822");
+                                            intent.putExtra(Intent.EXTRA_EMAIL, new String[]{correo});
+                                            intent.putExtra(Intent.EXTRA_SUBJECT, "Invitación a participar en Split");
+                                            intent.putExtra(Intent.EXTRA_TEXT, "Hola " + usuario.getNombre() + ".\nSe te ha añadido en un split como usuario. " +
+                                                    "Cuando entres en la app podrás ver el nuevo split en tu listado para " +
+                                                    "que puedas interactuar con él");
+
+                                            try {
+                                                startActivity(Intent.createChooser(intent, "Enviar correo..."));
+                                                dialog.dismiss();
+                                            } catch (android.content.ActivityNotFoundException ex) {
+                                                Toast.makeText(Pagos.this, "No hay aplicaciones de correo instaladas", Toast.LENGTH_SHORT).show();
+                                            }
+                                        } else {
+                                            Toast.makeText(Pagos.this, "Error inesparado", Toast.LENGTH_SHORT).show();
+                                            Log.e("SplitActivo", "Error al crear la relacion: " + response.code());
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<UsuarioSplit> call, Throwable t) {
+                                        Toast.makeText(Pagos.this, "Error de red", Toast.LENGTH_SHORT).show();
+                                        Log.e("SplitActivo", "Error de red al crear la relacion: " + t.getMessage());
+                                    }
+                                });
+                            } else {
+                                input.setError("El usuario no está registrado");
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<UsuarioDTO> call, Throwable t) {
+                            Toast.makeText(Pagos.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                });
+            });
+
+            dialog.show();
         }
         return true;
     }
@@ -462,7 +498,6 @@ public class Pagos extends AppCompatActivity {
                 SharedPreferences preferences = getSharedPreferences("PagoActivo", MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putInt("idPago", ((DatosPagos) parent.getItemAtPosition(position)).getId());
-//                editor.putStringSet("participantes", new HashSet<>(Pagos.this.participantes));
                 editor.apply();
 
                 Intent intent = new Intent(Pagos.this, PagoNuevo.class);

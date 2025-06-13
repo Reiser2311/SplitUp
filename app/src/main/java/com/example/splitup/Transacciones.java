@@ -8,6 +8,7 @@ import android.text.InputType;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -255,22 +256,25 @@ public class Transacciones extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<ParticipantePago> call, Response<ParticipantePago> response) {
                             if (response.isSuccessful()) {
-                                Toast.makeText(Transacciones.this, "Pago registrado correctamente", Toast.LENGTH_SHORT).show();
+                                Log.d("Transacciones", "Pago OK, se asignó el deudor");
                                 datosTransacciones.remove(transaccion);
                                 adaptadorTransacciones.notifyDataSetChanged();
                             } else {
-                                Toast.makeText(Transacciones.this, "Pago OK, pero no se asignó el deudor", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(Transacciones.this, "Error inesperado", Toast.LENGTH_SHORT).show();
+                                Log.e("Transacciones", "Error al asignar el deudor: " + response.code());
                             }
                         }
 
                         @Override
                         public void onFailure(Call<ParticipantePago> call, Throwable t) {
-                            Toast.makeText(Transacciones.this, "Error al asociar participante: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Transacciones.this, "Error de red", Toast.LENGTH_SHORT).show();
+                            Log.e("Transacciones", "Error de red al asignar el deudor: " + t.getMessage());
                         }
                     });
 
                 } else {
-                    Toast.makeText(Transacciones.this, "Error al guardar el pago: " + response.code(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Transacciones.this, "Error inesperado", Toast.LENGTH_SHORT).show();
+                    Log.e("Transacciones", "Error al crear el pago: " + response.code());
                 }
             }
 

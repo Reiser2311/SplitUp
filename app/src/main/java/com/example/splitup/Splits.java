@@ -102,13 +102,16 @@ public class Splits extends AppCompatActivity {
                             rehacerLista();
                             Toast.makeText(Splits.this, "Split eliminado", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(Splits.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Splits.this, "Error inesperado", Toast.LENGTH_SHORT).show();
+                            Log.e("Split", "Error al eliminar split: " + response.code());
+
                         }
                     }
 
                     @Override
                     public void onFailure(Call<Void> call, Throwable t) {
-                        Toast.makeText(Splits.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Splits.this, "Error de red", Toast.LENGTH_SHORT).show();
+                        Log.e("Split", "Error al eliminar split: " + t.getMessage());
                     }
                 });
             });
@@ -217,13 +220,15 @@ public class Splits extends AppCompatActivity {
                         layoutNoHaySplits.setVisibility(View.VISIBLE);
                     }
                 } else {
-                    Toast.makeText(Splits.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Splits.this, "Error inesperado", Toast.LENGTH_SHORT).show();
+                    Log.e("Splits", "Error al obtener splits: " + response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<List<Split>> call, Throwable t) {
-                Toast.makeText(Splits.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(Splits.this, "Error de red", Toast.LENGTH_SHORT).show();
+                Log.e("Splits", "Error de red al obtener splits: " + t.getMessage());
             }
         });
     }

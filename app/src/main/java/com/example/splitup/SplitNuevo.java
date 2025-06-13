@@ -280,7 +280,8 @@ public class SplitNuevo extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<UsuarioParticipante> call, Throwable t) {
-                Toast.makeText(SplitNuevo.this, "Error al vincular: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(SplitNuevo.this, "Error de red", Toast.LENGTH_SHORT).show();
+                Log.e("Red", "Error al crear relación: " + t.getMessage());
             }
         });
     }
@@ -356,7 +357,8 @@ public class SplitNuevo extends AppCompatActivity {
 
                                 @Override
                                 public void onFailure(Call<Participante> call, Throwable t) {
-                                    Toast.makeText(SplitNuevo.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(SplitNuevo.this, "Error de red", Toast.LENGTH_SHORT).show();
+                                    Log.e("Error", "Error de red: " + t.getMessage());
                                 }
                             });
                         } else {
@@ -486,14 +488,16 @@ public class SplitNuevo extends AppCompatActivity {
                                 });
 
                             } else {
-                                Toast.makeText(SplitNuevo.this, "Error al crear el split: " + response.code(),
+                                Toast.makeText(SplitNuevo.this, "Error al crear el split",
                                         Toast.LENGTH_SHORT).show();
+                                Log.e("Error", "Error al crear el split: " + response.code());
                             }
                         }
 
                         @Override
                         public void onFailure(Call<Split> call, Throwable t) {
                             Log.e("Error", "Error de red: " + t.getMessage());
+                            Toast.makeText(SplitNuevo.this, "Error de red", Toast.LENGTH_SHORT).show();
                         }
                     });
                 } else {
@@ -555,7 +559,7 @@ public class SplitNuevo extends AppCompatActivity {
                             Toast.makeText(SplitNuevo.this, "Split actualizado correctamente", Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
-                            Toast.makeText(SplitNuevo.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SplitNuevo.this, "Error inesperado", Toast.LENGTH_SHORT).show();
                             try {
                                 Log.e("Respuesta", "Codigo: " + response.code() + " - Error: " + response.errorBody().string());
                             } catch (IOException e) {
@@ -600,13 +604,15 @@ public class SplitNuevo extends AppCompatActivity {
                         edtxtNombre.setText(split.getTitulo());
                         rehacerLista();
                     } else {
-                        Toast.makeText(SplitNuevo.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SplitNuevo.this, "Error inesperado", Toast.LENGTH_SHORT).show();
+                        Log.e("Error", "Error al obtener el split: " + response.code());
                     }
                 }
 
                 @Override
                 public void onFailure(Call<Split> call, Throwable t) {
-                    Toast.makeText(SplitNuevo.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SplitNuevo.this, "Error de red", Toast.LENGTH_SHORT).show();
+                    Log.e("Error", "Error de red: " + t.getMessage());
                 }
             });
         } else {
@@ -657,13 +663,15 @@ public class SplitNuevo extends AppCompatActivity {
                     adapter.notifyDataSetChanged();
                     listViewParticipantes.setVisibility(View.VISIBLE);
                 } else {
-                    Toast.makeText(SplitNuevo.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SplitNuevo.this, "Error inesperado", Toast.LENGTH_SHORT).show();
+                    Log.e("Error", "Error al obtener participantes: " + response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<List<Participante>> call, Throwable t) {
-                Toast.makeText(SplitNuevo.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(SplitNuevo.this, "Error de red", Toast.LENGTH_SHORT).show();
+                Log.e("Error", "Error de red: " + t.getMessage());
             }
         });
 
